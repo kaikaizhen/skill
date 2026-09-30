@@ -1,0 +1,20 @@
+# ---------------------------------------------------------------------------
+# Organization workspace - NEVER published.
+# Everything under workspace/ is organization-specific knowledge: architecture,
+# repository memory, business rules, corrections, unknowns, org-only tooling.
+# Only the empty skeleton (force-added .gitkeep files and PROFILE.example.md)
+# is tracked, so a fresh clone has the directories it needs.
+# ---------------------------------------------------------------------------
+enterprise-codebase-analysis/workspace/
+
+# Per-ticket output never belongs in the engine repo either
+issue/
+temp/
+
+# Local noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
