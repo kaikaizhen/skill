@@ -1,0 +1,38 @@
+# Per-installation settings. Copy to  workspace/deploy.yaml  (git-ignored) and edit.
+# The whole workspace/ folder except this example is never published.
+# Nothing environment-specific belongs in SKILL.md / references/ / templates/ /
+# runtime/. Never put a key, password or token here - the key lives in the
+# credential store under nas/ssh/key.
+
+paths:                      # remote paths on the host
+  deploy_root: </absolute/path/to/docker/projects>      # <deploy_root>/<project-folder>
+  nginx_conf_dir: </absolute/path/to/nginx/conf.d>      # <nginx_conf_dir>/<project-folder>.conf
+
+credential:
+  provider: gopass          # gopass | pass        (runtime/credential-provider.md)
+  # logical paths are fixed:  nas/ssh/config  and  nas/ssh/key
+
+transfer:
+  provider: scp             # scp | sftp | rsync   (runtime/transfer-provider.md)
+
+nas:
+  docker_cmd: auto          # auto-detect, or e.g. "sudo docker"
+  # host / user / port come from the credential store (nas/ssh/config), not from here
+
+nginx:
+  base_domain: <example.com>      # FQDN = <subdomain>.<base_domain>   (asked if absent)
+  container: <nginx container name>
+  network: <docker network Nginx shares with app containers>
+
+backup:
+  keep: 5                   # retention, backup-policy.md §5
+
+auto_apply: true            # allow `compose up -d` and `nginx reload` once their gates
+                            # pass; false = ask before each
+
+health:                     # default when a project defines none
+  type: http                # container | tcp | http
+  path: /health
+  expected_status: 200
+  timeout_s: 60
+  interval_s: 3

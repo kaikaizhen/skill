@@ -1,7 +1,7 @@
 ---
 name: enterprise-codebase-analysis
 description: Reusable analysis engine for organization-specific codebase work, backed by a persistent organization workspace. Use when repository evidence, architecture knowledge, historical context, business rules, cross-repository relationships or accumulated organization memory are material to the task - a repository under this skill's workspace/memory/repositories/, a repository the user calls an organization/company repo, or one whose own instructions identify it as such. Three modes. Mode A (Ticket) - ticket / bug / feature / optimization / refactor / migration / root cause / impact analysis / implementation - scoped scan, plan, human approval, local implementation, approval, local commit. Mode B (Repository Onboarding) - "scan / understand this repo", architecture, domains, endpoints - read-only, inline summary, seed memory, STOP. Mode C (Scoped Explanation) - "what does this API / service / DB flow do" - business meaning first, then technical flow, then where to look; no branch, no code change. Memory is a hint, current code wins. Never pushes, never creates MR/PR, never mutates a DB without explicit approval. Do NOT use for generic technology questions (what is Redis / OpenSearch / EF Core / async, Kafka vs RabbitMQ) or for repositories outside the organization workspace.
-version: 4.0
+version: 4.1
 status: stable
 ---
 
@@ -35,6 +35,17 @@ lives under `workspace/`, which is replaced wholesale when the engine is pointed
 a different organization. Start at `workspace/PROFILE.md` when you need to know what
 this organization is or where its knowledge lives; skip it when routing already
 names the target.
+
+**Runtime / model boundary.** This skill is a model-agnostic engineering
+methodology, not a model integration: it never selects, names, configures or calls
+a model, and the host's own model picker is the mechanism - no provider framework
+is built beside it. A provider, model, endpoint, host, port or token count appears
+nowhere in `SKILL.md`, `references/` or `templates/` (HARD RULE 15); the engine
+assumes only that the runtime can declare `context_limit` and `capabilities`, and
+derives its context budget from those. Switching model mid-ticket replaces the
+reasoner and nothing else - state, evidence, diff and passed gates all survive.
+Detail: `runtime-contract.md`; this installation's declared runtime:
+`workspace/references/runtime.yaml`.
 
 **Repository-local rules win** - a repository's own `CLAUDE.md`, `AGENTS.md` or
 `.claude/skills/*` outranks this skill on what it defines (branch naming, commit
@@ -128,6 +139,11 @@ produces no diff.
     accepted **blocks Approval Gate #2**.
 14. **THE FRONTEND IS NOT A SECURITY BOUNDARY** - confirm authoritative server-side
     enforcement; removing a UI entry does not close the route behind it.
+15. **THE ENGINE IS MODEL-AGNOSTIC** - no provider, model, endpoint, host, port,
+    token count or API key name in `SKILL.md` / `references/` / `templates/`; that
+    belongs to the runtime, declared in `workspace/references/runtime.yaml`. A
+    model's own claim is never evidence (see rule 10), tool execution is always
+    local, and no gate is skipped or shortened because the selected model is small.
 
 Each rule's procedure is in the reference the routing table below names.
 
@@ -147,7 +163,8 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Scan depth, stop conditions, carrier / registration traps | `scoped-scan.md` |
 | Writing code after Approval #1 - convention order, refactor vs bug/feature strategy, error handling, logging | `development-convention.md` |
 | P1-P5 need depth, or a new rule is proposed for this skill | `engineering-principles.md` |
-| Build verification, which tests to run, 驗收標準 / retrospective documents | `verification.md` |
+| Build verification, which tests to run, **the Fix Loop** after a failure, 驗收標準 / retrospective documents | `verification.md` |
+| Context budget is tight, context is being trimmed / summarised, the model was switched mid-ticket, or the question is about provider / endpoint / retrieval / decision seams | `runtime-contract.md` |
 | Any git step beyond `status` / `diff` / `log`, or a branch / commit message | `git-safety.md` |
 | Any DB access, and always before any write | `database-safety.md` |
 | **Writing** new reusable knowledge - admitted at all? which layer, which unit, update / create / split / reject | `memory-admission.md` (sufficient on its own) |

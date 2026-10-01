@@ -81,8 +81,26 @@ Unresolved HIGH findings: NONE
 Diff Summary:
 <!-- the important hunks, not the whole diff -->
 
+Acceptance Criteria:
+<!-- one line per criterion the TICKET stated (HARD RULE 12 - never invented here).
+     [x] met, with the evidence that shows it: test name, command output, diff
+     hunk, or the user's own confirmation. [ ] not met -> it is not complete.
+     A criterion no tool run can settle is labelled NEEDS USER CONFIRMATION. -->
+- [ ]
+
+Fix Loop:
+NONE
+<!-- or, if verification failed at least once (verification.md §3.5): how many Fix
+     Tasks, the failure each diagnosed, and what the smallest safe fix was. Report
+     FIX LOOP EXHAUSTED here if that is how it ended. -->
+
 Remaining Risks:
 -
+
+Unresolved:
+NONE
+<!-- open questions, non-blocking unknowns carried to workspace/memory/unknowns.md,
+     and anything explicitly left out of scope that the user should know about. -->
 
 Database Mutation:
 NONE / APPROVED (<date, operation>)
@@ -119,6 +137,13 @@ Branch:
 External Actions Needing Approval:
 <!-- e.g. "the workspace's ticket CLI work task add under T2544" - or NONE -->
 NONE
+
+Final Status:
+<!-- READY FOR LOCAL COMMIT   - build PASS, related tests run, no unresolved HIGH
+                                regression, acceptance criteria met
+     VERIFICATION INCOMPLETE  - build not PASS or tests NOT RUN (HARD RULE 10)
+     BLOCKED                  - awaiting a user decision named above
+     Never "DONE" before Approval Gate #2 is granted and the commit is made. -->
 
 ## Approval
 

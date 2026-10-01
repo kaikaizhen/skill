@@ -18,6 +18,12 @@ Ticket -> Repo (tentative) -> Parse Ticket
   -> Branch -> Implement -> [DB write? -> approval] -> [no tests? -> ask]
   -> Build / Test -> Diff -> [GATE 5 run 2] -> Memory Delta
   == APPROVAL GATE #2 ==   -> Local Commit -> [驗收標準] -> STOP
+
+  any failure at Build / Test / Lint / AC / Gate 5
+    -> FIX TASK (scoped context, not a ticket restart)
+    -> Diagnose -> Smallest Safe Fix -> Build / Test -> Verify
+    -> pass: resume at the failing step | fail: next Fix Task
+    -> no new information: FIX LOOP EXHAUSTED, report and stop  (verification.md §3.5)
 ```
 
 If the user asked only for analysis, stop after step 18 - Gates 4 and 5 run 1
@@ -215,6 +221,12 @@ row + what you added - via the runner's own filter, not the whole suite. A
 failure also failing at the Gate 5 baseline is `PRE-EXISTING FAILURE`, reported
 not fixed. Existing tests are preserved; never run a deploy/push target; confirm
 no skill document is staged.
+
+A build, test, lint, acceptance-criterion or Gate 5 failure opens a **Fix Task**
+(`verification.md` §3.5): diagnose from the real output, smallest safe fix,
+re-verify, resume at the step that failed. It is never a reason to re-run the
+analysis, rescan the repository or widen the approved scope, and never a reason to
+weaken a test.
 
 ## 21.5 GATE 5 run 2 - Contract Preservation on the real diff
 

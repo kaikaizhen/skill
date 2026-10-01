@@ -1,0 +1,11 @@
+# Installation-specific settings and anything secret-adjacent - never published.
+# Only the example descriptor is tracked.
+workspace/*
+!workspace/deploy.example.yaml
+*.pem
+*.key
+*.ppk
+id_*
+*.tar
+*.tar.gz
+.staging/

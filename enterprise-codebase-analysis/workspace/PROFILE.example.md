@@ -48,7 +48,12 @@ can find them:
 
 | File | Load when |
 |---|---|
+| `workspace/references/runtime.yaml` | the context budget matters, a model was switched mid-ticket, or you need this installation's declared model limits / capabilities / toolchain commands. Descriptive only - the host owns model selection; the engine's rules are in `references/runtime-contract.md` |
 | `workspace/references/<tool>.md` | <the trigger that should load it> |
+
+`runtime.yaml` is the **only** place a provider, model, endpoint or token count may
+appear (HARD RULE 15). Copy it from `runtime.example.yaml`. Record key *names*
+only - never a credential value.
 
 ## Domain Routing & Known Traps
 

@@ -133,6 +133,11 @@ AWAITING USER DECISION ON TEST COVERAGE     (no existing test covers the changed
                                              method / flow)
 EXISTING TEST CONTRADICTS TICKET            (an existing test's requirement and the
                                              ticket genuinely disagree)
+FIX LOOP EXHAUSTED                          (a build / test / lint / acceptance
+                                             failure's Fix Loop stopped producing
+                                             new information about the cause, or
+                                             the real cause sits outside the
+                                             approved scope - verification.md §3.5)
 REGRESSION RISK - HIGH - UNRESOLVED         (Gate 5 found a HIGH security,
                                              server-side enforcement, data-integrity,
                                              transaction or audit-loss regression

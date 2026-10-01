@@ -1,0 +1,9 @@
+{
+  "name": "expense-tool-fixture",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Fixture state for the 03-midway-lifecycle skill test",
+  "scripts": {
+    "test": "node --test"
+  }
+}

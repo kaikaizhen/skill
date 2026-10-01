@@ -2,8 +2,9 @@
 # Organization workspace - NEVER published.
 # Everything under workspace/ is organization-specific knowledge: architecture,
 # repository memory, business rules, corrections, unknowns, org-only tooling.
-# Only the empty skeleton (force-added .gitkeep files and PROFILE.example.md)
-# is tracked, so a fresh clone has the directories it needs.
+# Only the empty skeleton (force-added .gitkeep files, PROFILE.example.md and
+# runtime.example.yaml) is tracked, so a fresh clone has the directories and the
+# descriptor shapes it needs. The filled-in PROFILE.md and runtime.yaml are not.
 # ---------------------------------------------------------------------------
 enterprise-codebase-analysis/workspace/
 

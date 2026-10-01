@@ -1,0 +1,23 @@
+# <nginx_conf_dir>/{{PROJECT_FOLDER}}.conf
+# Default shape only. Align listen / TLS / headers / log paths with the existing
+# confs in conf.d/ (nginx-policy.md §2) - they win over this template.
+# Placeholders: {{PROJECT_FOLDER}} {{SERVER_NAME}} {{UPSTREAM_HOST}} {{UPSTREAM_PORT}}
+# {{SERVER_NAME}} = <subdomain>.<nginx.base_domain>
+
+server {
+    listen 80;
+    server_name {{SERVER_NAME}};
+
+    # TLS: copy the certificate / listen 443 pattern used by the sibling confs.
+
+    location / {
+        proxy_pass         http://{{UPSTREAM_HOST}}:{{UPSTREAM_PORT}};
+        proxy_http_version 1.1;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   Upgrade           $http_upgrade;
+        proxy_set_header   Connection        $connection_upgrade;
+    }
+}

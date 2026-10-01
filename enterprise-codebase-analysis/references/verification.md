@@ -176,6 +176,72 @@ AWAITING USER DECISION
 
 ---
 
+## 3.5 The Fix Loop - what happens when verification fails
+
+A failure at step 21 / 21.5 does **not** restart the ticket. Re-running the whole
+analysis re-opens settled scope, re-reads source already confirmed, and burns the
+context that the failure evidence needs. Instead, open a **Fix Task**: one failure,
+one diagnosis, one smallest safe fix, one re-verification.
+
+Triggers: build failure · test failure · lint failure · an acceptance criterion
+not met · a Gate 5 regression.
+
+```
+Failure
+  -> Fix Task  (carry only the context below)
+  -> Diagnose      root cause of THIS failure, from the real output
+  -> Smallest Safe Fix
+  -> Build  ->  Test  ->  Verify
+  -> pass?   yes -> back to the step that failed, continue forward
+             no  -> next Fix Task
+```
+
+**Context a Fix Task carries** - and nothing else (`runtime-contract.md` §3):
+
+```
+original goal, one paragraph        the acceptance criteria this failure touches
+current diff                        the failure evidence, verbatim
+the source the failure points at    previous decisions, as a summary
+```
+
+Dropped: the full analysis document, source outside the failing path, superseded
+tool output, failures already resolved. The ticket's scope decisions, gate outputs
+and acceptance criteria stay authoritative - a Fix Task may not quietly widen
+scope, and a fix that genuinely requires work outside the approved plan goes back
+to the user, not into the diff (HARD RULE 12).
+
+**Rules inside the loop:**
+
+- The fix is the smallest change that addresses the diagnosed cause -
+  `Understand -> Verify -> Modify`, existing-pattern-first
+  (`development-convention.md` §3b). Not a redesign, not a drive-by cleanup.
+- Diagnose from the actual error lines. Attempting a fix before the cause is named
+  is guessing; two guesses in a row on the same failure means stop and report.
+- **Never** make the signal green by weakening it: no deleted / skipped / disabled
+  test, no relaxed assertion, no suppressed warning-as-error, no commented-out
+  lint rule (HARD RULE 11).
+- A `PRE-EXISTING FAILURE` (§2) is not a Fix Task - it is reported and left alone.
+- Each iteration re-runs the build and the related test set, and if the diff
+  changed, Gate 5 run 2 as well (`regression-validator.md`). Earlier iterations'
+  output is superseded and dropped.
+- The loop is bounded by evidence, not by attempts: when an iteration produces no
+  new information about the cause, stop and report rather than cycling.
+
+```
+FIX LOOP EXHAUSTED
+Failure:     <command + the real error lines>
+Attempts:    <what was tried, and what each one ruled out>
+Diagnosis:   CONFIRMED <cause> | CANDIDATE <hypothesis> | UNKNOWN
+Blocked by:  <missing decision / missing access / out-of-scope cause>
+AWAITING USER DECISION
+```
+
+The loop ends in exactly one of: verification passes and the ticket continues to
+Approval Gate #2; `VERIFICATION INCOMPLETE` with the reason (HARD RULE 10); or
+`FIX LOOP EXHAUSTED` above. It never ends in a completion claim.
+
+---
+
 ## 4. Post-completion documents
 
 Both are skill-generated documents: **LOCAL ONLY**, outside the target

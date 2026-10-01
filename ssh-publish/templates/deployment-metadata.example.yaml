@@ -1,0 +1,43 @@
+# <project-folder>/.deploy/current.yaml  - written LAST, only after a passing health check.
+# Absence or a parse failure of this file on an existing directory means STOP, not NEW.
+# Contains no private key, password, token or .env content. Ever.
+
+project:
+  name: my-api
+  folder: my-api
+  subdomain: api
+
+deployment:
+  id: 20261001-221500
+  timestamp: 2026-10-01T22:15:00
+  mode: UPDATE                  # NEW | UPDATE
+
+image:
+  name: my-api
+  tag: 20261001-221500-a18c992
+  platform: linux/amd64
+
+git:
+  local_commit: a18c992         # read-only `git rev-parse --short HEAD`
+  dirty: false                  # true if there were uncommitted changes
+
+compose:
+  service: app
+  port: 8080
+
+nginx:
+  config_path: <nginx_conf_dir>/my-api.conf
+
+previous:
+  image_tag: 20260925-101200-77be310     # rollback target
+  backup_id: 2026-10-01_221500
+
+data:                                    # classification, backup-policy.md §3
+  - { kind: bind,     path: ./uploads, backup: ask }
+  - { kind: database, name: db,        backup: db-native }
+
+health:
+  type: http
+  path: /health
+  expected_status: 200
+  status: PASS
