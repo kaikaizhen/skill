@@ -61,15 +61,16 @@ never change code, never branch, never ask for a ticket number, AC or approval.
 ```
 A Ticket      ticket / bug / feature / refactor / migration / a reported problem's
               root cause / a requirement's impact.  Scan scoped to the issue.
-              analysis -> (approval) -> implementation -> (approval) -> local commit
-              loads workflow.md + whichever gates fire
+              analysis + change proposal -> (approval) -> implementation
+              -> (approval) -> local commit
+              loads workflow.md + change-proposal.md + whichever gates fire
 B Onboarding  "先掃 <repo>", "幫我理解這個專案", onboarding, build this repo's
               knowledge, architecture / domains / endpoints.  Breadth-first then
               core flows, read-only. -> inline summary + seeded memory
               loads repository-onboarding.md
 C Scoped      "這支 API 在做什麼", "幫我追這段 call flow" - no ticket behind it. Scan
   Explanation only what answers the question. -> business meaning -> technical flow
-              -> where to look.   loads this file
+              -> where to look.   loads explanation-standard.md
 ```
 
 **A vs C**: a ticket / bug / requirement is **Mode A** even when only diagnosis is
@@ -78,7 +79,10 @@ Mode C; it becomes A the moment a change is asked for. **Analysis-only (in Mode 
 stop after the analysis - no `AWAITING USER APPROVAL TO IMPLEMENT`, no offer to
 implement. **Mode C** labels every statement `CONFIRMED` / `INFERRED` / `UNKNOWN`
 and confirms the carrier in a multi-carrier domain, but runs no gate paperwork and
-produces no diff.
+produces no diff. Every mode's prose assumes the reader meets this system for the
+**first time**: explain each term on first use, name the actor of every action, give
+a value's provenance, and never leave the reader to chase "where did this come from"
+(`explanation-standard.md`).
 
 ## Evidence & Scope Invariants
 
@@ -160,6 +164,9 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | **Gate 3** Capability Ownership - reuse, a MISSING claim, or any new method / parameter / abstraction / shared-code change | `capability-reuse.md` |
 | **Gate 5** Contract Preservation - any change to an existing flow; runs TWICE | `regression-validator.md` |
 | Mode A starts - step order, both approval gates | `workflow.md` |
+| Assembling the Mode A report - proposal shape, regression grade, approval verdict, manager summary, implementation handoff | `change-proposal.md` |
+| The affected flow (or a change under review) contains encoded literals - status codes, bit flags/masks, thresholds, limits, legacy codes | `encoded-values.md` |
+| Writing any explanation for a reader - a Mode C answer, a Mode B summary, the prose of a Mode A report | `explanation-standard.md` |
 | Scan depth, stop conditions, carrier / registration traps | `scoped-scan.md` |
 | Writing code after Approval #1 - convention order, refactor vs bug/feature strategy, error handling, logging | `development-convention.md` |
 | P1-P5 need depth, or a new rule is proposed for this skill | `engineering-principles.md` |

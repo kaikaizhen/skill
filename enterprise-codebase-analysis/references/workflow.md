@@ -14,6 +14,7 @@ Ticket -> Repo (tentative) -> Parse Ticket
   -> Root Cause -> Impact -> Convention Baseline + Existing Test Coverage
   -> Solution -> Pseudocode -> Plan -> Test Plan
   -> [GATE 5 run 1] Contract Preservation -> [GATE 4] Final Consistency
+  -> Change Proposal: manager summary, candidates, risk, validation, verdict
   == APPROVAL GATE #1 ==   (+ PATTERN CHOICE if one qualifies)
   -> Branch -> Implement -> [DB write? -> approval] -> [no tests? -> ask]
   -> Build / Test -> Diff -> [GATE 5 run 2] -> Memory Delta
@@ -26,8 +27,8 @@ Ticket -> Repo (tentative) -> Parse Ticket
     -> no new information: FIX LOOP EXHAUSTED, report and stop  (verification.md §3.5)
 ```
 
-If the user asked only for analysis, stop after step 18 - Gates 4 and 5 run 1
-still happen, but no approval to implement is requested.
+If the user asked only for analysis, stop after step 18 - Gates 4 and 5 run 1 and
+the Change Proposal still happen, but no approval to implement is requested.
 
 ---
 
@@ -40,12 +41,11 @@ Never create `.company-skill/` or touch `.gitignore` / `.git/info/exclude`.
 ```
 Repository Scope: ServiceA          |  Frontend -> ServiceB -> ServiceA -> ShardedDb
 ```
-A first guess from what the ticket states; step 3 may confirm, narrow or replace
-it. Load only the repositories in this flow and only the `shared/` + `global/`
-entries it touches. When the workspace declares a ticket-system CLI (`workspace/PROFILE.md`), fetch a
-ticket number / URL with it read-only rather than asking the user to retype it,
-including the ticket's comments - the description field is often empty.
-Extract only what the ticket contains; leave a missing field blank, not invented:
+A first guess; step 3 may confirm, narrow or replace it. Load only this flow's
+repositories and only the `shared/` + `global/` entries it touches. When the
+workspace declares a ticket-system CLI (`workspace/PROFILE.md`), fetch a ticket
+number / URL with it read-only, including comments - the description is often
+empty. Extract only what the ticket contains; a missing field stays blank:
 
 ```
 Requirement / Current Behavior / Expected Behavior / Issue Type / Domain
@@ -89,17 +89,16 @@ needed product decision, a security risk.
 ```
 STATUS: BLOCKED  -> list what needs confirmation, then STOP | READY FOR ANALYSIS
 ```
-Two things that are **not** blockers: **a needed DB write** (the separate Database
-Mutation Approval - `database-safety.md` - escalates to BLOCKED only if the user
-declines, no read-only alternative exists, and root cause can't be found without
-it), and **a requirement decision** ("product hasn't decided beyond the baseline"
-doesn't block a ticket whose level-1 requirements are clear).
+Not blockers: **a needed DB write** (that is the Database Mutation Approval -
+`database-safety.md` - escalating to BLOCKED only if the user declines, no
+read-only path exists and root cause needs it) and **a requirement decision**
+(undecided scope beyond the baseline does not block clear level-1 requirements).
 
 Keep the five categories apart: requirement / baseline / gap / technical blocker /
-requirement decision (`requirement-evidence-gates.md`). Non-blocking unknowns go to
-`workspace/memory/unknowns.md` with `Blocking Now: NO`. Write In Scope / Out of Scope - Out
-of Scope is what stops the scan spreading; if step 3 flagged a multi-carrier
-domain, say whether any *other* carrier is in scope.
+requirement decision (`requirement-evidence-gates.md`). Non-blocking unknowns ->
+`workspace/memory/unknowns.md`, `Blocking Now: NO`. Write In Scope / Out of Scope -
+Out of Scope stops the scan spreading; if step 3 flagged a multi-carrier domain,
+say whether another carrier is in scope.
 ## 9.5 GATE 2 - Active Carrier Confirmation (conditional)
 
 Triggered by a page / screen / app-flow target, a designated baseline ("比照 X"), a
@@ -139,36 +138,32 @@ Evidence:   file / code / config / DB / log / runtime behaviour
 ```
 Never label a hypothesis `CONFIRMED`. Impact lists actual callers, shared
 services, other repositories, DB writes, cached values, indexed fields and jobs -
-not every theoretical consumer. In a multi-carrier domain, state explicitly
-whether another active carrier needs a matching change, or why not, using Gate 2's
-identity cards rather than a shared Service as the argument. A change to shared
-code owes P3 (`engineering-principles.md`): enumerate the callers, and say
-`UNKNOWN CALLERS` when the repository cannot prove there are none.
+not every theoretical consumer. In a multi-carrier domain say whether another
+active carrier needs a matching change, or why not, from Gate 2's identity cards
+rather than a shared Service. Shared code owes P3 (`engineering-principles.md`):
+enumerate callers, `UNKNOWN CALLERS` if it cannot prove there are none.
 
 ## 13.5 Convention Baseline + Existing Test Coverage
 
 Before designing the solution, record how this repository already writes this kind
-of code and what already tests it: coding / error handling / logging / testing,
-each with the file it came from and its source level, or `UNKNOWN`; plus which
-tests cover the method or flow and where you looked. Never infer a convention from
-the framework, and cover only the convention governing this ticket's diff
-(`development-convention.md` §1, `verification.md` §2).
+of code and what tests it: coding / error handling / logging / testing, each with
+its source file and level or `UNKNOWN`, plus which tests cover the flow and where
+you looked. Never infer a convention from the framework; cover only the convention
+governing this diff (`development-convention.md` §1, `verification.md` §2).
 
 ## 14-17. Solution, Pseudocode, Plan, Test Plan
 
 Bias: small, safe, existing-capability-first (`Understand -> Verify -> Modify`).
-**Bug/Feature/Migration**: existing-pattern-first, no deliberately-introduced
-pattern (`development-convention.md` §3b) - a more SOLID alternative is only an
-**option presented to the user**, when it passes all four §3b preconditions,
-otherwise a one-line follow-up note. **Optimization/Refactor**: this step *is*
-the mandatory Design & Implementation Strategy (§3a) - write it before the
-Pseudocode below. Neither path adds a method, parameter or abstraction for
-something an existing seam already reaches (Gate 3's `Reuse` column), or a
-drive-by rename, package upgrade or redesign outside that plan. Test plan
-minimum: happy path, original bug reproduction, regression, boundary - plus a
-case for every non-`unchanged` row of Gate 5's table, including each side
-effect firing once on success and not at all on failure. A test needing a DB
-write goes through the Database Mutation Approval Gate first.
+**Bug/Feature/Migration**: existing-pattern-first; a SOLID alternative is only an
+option presented to the user, per all four `development-convention.md` §3b
+preconditions. **Optimization/Refactor**: this step *is* the mandatory Design &
+Implementation Strategy (§3a). Neither path adds a method, parameter or
+abstraction an existing seam already reaches (Gate 3's `Reuse`), nor a drive-by
+rename, upgrade or redesign outside the plan. Each finding is filed Required /
+Recommended refactor / Out of scope (`change-proposal.md` §3). Test plan minimum:
+happy path, bug reproduction, regression, boundary - plus a case per
+non-`unchanged` Gate 5 row, each side effect firing once on success and not on
+failure. A test needing a DB write goes through the DB Mutation Approval first.
 
 ## 17.4-18. GATE 5 run 1, GATE 4, then APPROVAL GATE #1
 
@@ -186,11 +181,18 @@ every blocker really blocks; every MISSING meets Gate 3's threshold. Output a
 short `## Consistency Pass`. Runs for analysis-only requests too
 (`requirement-evidence-gates.md`).
 
+**The report** is assembled per `change-proposal.md` (shape, regression grade,
+Manager Summary, Approval Recommendation, Implementation Handoff) from
+`templates/issue-analysis.md` + `templates/change-proposal.md` appended into one
+document. A verdict recommends; it never self-approves.
+
 **Approval Gate #1** happens only when a change was asked for. Present the
 analysis, then `AWAITING USER APPROVAL TO IMPLEMENT` - plus
 `AWAITING USER PATTERN CHOICE` if step 14 produced a qualifying option
 (`development-convention.md` §3). "Looks good" is approval; silence is not;
 silence on the pattern choice means Option A. No branch before this gate.
+`NEEDS HUMAN DECISION` or `NOT RECOMMENDED` -> state what must be decided and
+stop; do not ask for implementation approval.
 
 ## 19-20. Branch and Implement
 
@@ -214,42 +216,39 @@ production mutation at any point.
 <build command>  <relevant test command>  git status  git diff
 git add <specific ticket files>           git diff --cached
 ```
-Build is reported as exactly one of `PASS` / `FAILED` / `NOT RUN` with the command
-run; only `PASS` permits saying the work is complete. Run tests **related to this
-change** - Existing Test Coverage + Impact Scope + one per non-`unchanged` Gate 5
-row + what you added - via the runner's own filter, not the whole suite. A
-failure also failing at the Gate 5 baseline is `PRE-EXISTING FAILURE`, reported
-not fixed. Existing tests are preserved; never run a deploy/push target; confirm
-no skill document is staged.
+Build is exactly one of `PASS` / `FAILED` / `NOT RUN` with the command run; only
+`PASS` permits "complete". Run tests **related to this change** - Existing Test
+Coverage + Impact Scope + one per non-`unchanged` Gate 5 row + what you added -
+via the runner's filter, not the whole suite. A failure that also fails at the
+Gate 5 baseline is `PRE-EXISTING FAILURE`, reported not fixed. Existing tests are
+preserved; never run a deploy/push target; no skill document staged.
 
-A build, test, lint, acceptance-criterion or Gate 5 failure opens a **Fix Task**
-(`verification.md` §3.5): diagnose from the real output, smallest safe fix,
-re-verify, resume at the step that failed. It is never a reason to re-run the
-analysis, rescan the repository or widen the approved scope, and never a reason to
-weaken a test.
+A build, test, lint, AC or Gate 5 failure opens a **Fix Task**
+(`verification.md` §3.5): diagnose from real output, smallest safe fix, re-verify,
+resume at the failing step. Never a reason to re-run the analysis, rescan, widen
+the approved scope or weaken a test.
 
 ## 21.5 GATE 5 run 2 - Contract Preservation on the real diff
 
-Re-run the table against `baseline -> final working tree`, not against run 1 and
-not against the previous commit, re-applying the five checks (sync -> background;
-exception swallowed but success returned; effect lost or duplicated; logging /
-audit downgraded; other callers affected). **Calling the same method is not the
-same contract.** A HIGH security, server-side enforcement, data-integrity,
-transaction-atomicity, audit-loss, lost-required-side-effect or changed-failure-
-semantics regression that is unresolved and not explicitly accepted by the user
-**blocks Approval Gate #2**: report `REGRESSION RISK - HIGH - UNRESOLVED` and
-stop for a decision (`regression-validator.md`, HARD RULE 13).
+Re-run the table against `baseline -> final working tree` - not run 1, not the
+previous commit - re-applying the five checks (sync -> background; exception
+swallowed but success returned; effect lost or duplicated; logging/audit
+downgraded; other callers affected). **Calling the same method is not the same
+contract.** An unresolved HIGH security, server-side-enforcement, data-integrity,
+transaction-atomicity, audit-loss, lost-side-effect or changed-failure-semantics
+regression the user has not accepted **blocks Approval Gate #2**: report
+`REGRESSION RISK - HIGH - UNRESOLVED` and stop (`regression-validator.md`, HR 13).
 
 ## 22-24. Memory Delta, APPROVAL GATE #2, Local Commit, STOP
 
 Run the admission gate (`memory-admission.md`) - `Memory Delta: NONE` is a normal
-result needing nothing further. If something is admitted, report targeted `ADD` /
-`UPDATE` / `CORRECT` / `PROMOTE` / `DEMOTE` by file + section, never a regenerated file (`memory-operations.md` §10-§11).
-Report with `templates/implementation-result.md` - build status with its command,
-test results with counts, the test-preservation statement, the convention source
-and Gate 5 run 2's result - ending `AWAITING USER APPROVAL TO LOCAL COMMIT`.
-Commit message format follows the same 5-level priority as the branch
-(`git-safety.md`). Then stop: push, MR, PR and merge belong to the user.
+result. If something is admitted, report targeted `ADD` / `UPDATE` / `CORRECT` /
+`PROMOTE` / `DEMOTE` by file + section, never a regenerated file
+(`memory-operations.md` §10-§11). Report with `templates/implementation-result.md`
+- build status with its command, test counts, the test-preservation statement, the
+convention source and Gate 5 run 2 - ending
+`AWAITING USER APPROVAL TO LOCAL COMMIT`. Commit format follows the branch's
+5-level priority (`git-safety.md`). Then stop: push, MR, PR, merge are the user's.
 
 ## 25. Post-Completion Documents (conditional)
 

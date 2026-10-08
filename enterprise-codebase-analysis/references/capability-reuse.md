@@ -20,6 +20,11 @@ method, parameter, overload, wrapper or abstraction, or modify shared code
 **Not triggered** by display-only, copy, styling or markup-only tickets, nor by "a
 reference document mentions this capability" alone.
 
+A **named value is a capability too**: when an enum, constant or option already
+defines the literal the code spells out (`status == 3` vs `JobStatus.Active = 3`),
+reuse it - defining a second name for one value is the duplication this gate exists
+to stop (`encoded-values.md` §8).
+
 **Required output** - `## Capability Ownership`:
 
 | Capability | Ticket requires? | Active owner (layer + file) | Authoritative state | Mutation point | Evidence | Result | Reuse |

@@ -107,6 +107,12 @@ For a ticket that requests a change, two main implementation approvals, always:
 2. AWAITING USER APPROVAL TO LOCAL COMMIT    (after build / test / diff)
 ```
 
+The analysis itself closes with an **Approval Recommendation** - one of `APPROVE`,
+`APPROVE WITH CONDITIONS`, `NEEDS HUMAN DECISION`, `NOT RECOMMENDED` - plus a
+Manager Summary and, when approved, an Implementation Handoff. It is a
+recommendation, never a self-approval: gate 1 above is still the user's
+(`change-proposal.md`).
+
 Plus conditional approvals and decisions, only when that situation actually arises:
 
 ```

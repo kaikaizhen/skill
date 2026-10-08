@@ -103,7 +103,10 @@ layers separate:
 
 ```
 Business meaning   what it does for whom / what condition it is verifying (not
-                    "Controller calls Service" / not "sends a POST request")
+                    "Controller calls Service" / not "sends a POST request").
+                    The reader is new here: explain each project term, abbreviation
+                    and field on first use, and name the actor of every action
+                    (`explanation-standard.md`)
 Technical flow      Service: entry -> service -> repository -> DB / cache /
                     search / external. Caller/tooling: how the request body is
                     built (data source, randomisation, ratios) -> target

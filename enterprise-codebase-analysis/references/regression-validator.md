@@ -143,32 +143,33 @@ NEEDS DECISION        a difference nobody asked for -> a regression until the
 
 ## The five checks that a passing build never catches
 
-Run these explicitly on every expanded row-5 effect. Each is a real failure mode
-that leaves the feature working and the tests green:
+Run these on every expanded row-5 effect - each leaves the feature working and the
+tests green:
 
 ```
 1  Sync -> background       an inline effect moved onto a task, thread, queue or
-                            fire-and-forget helper: it no longer shares the
-                            request's context, transaction or lifetime, and can
-                            be lost on process recycle unless the host guarantees
-                            otherwise. Confirm the platform's durability, not the
-                            intent of the wrapper.
+                            fire-and-forget helper no longer shares the request's
+                            context, transaction or lifetime, and can be lost on
+                            process recycle. Confirm the platform's durability,
+                            not the wrapper's intent.
 2  Swallowed exception,     the effect throws, it is caught and logged, and the
    success still returned   operation still reports success. The baseline failed
                             loudly; the new version fails silently. This is a
                             change of failure semantics, not "defensive coding".
-3  Lost or duplicated       an effect no success path reaches any more, or one now
+3  Lost or duplicated       an effect no success path reaches any more, or one
                             reachable twice (two call sites, a retry, a shared
                             method invoked at two layers).
 4  Logging / audit          a record downgraded in level, detail, correlation id
-   downgraded               or destination, or moved somewhere its consumers do
-                            not read. Losing the request/trace correlation when
-                            moving off the request thread counts.
+   downgraded               or destination, or moved where its consumers do not
+                            read. Losing request/trace correlation counts.
 5  Other callers of shared  the effect was added, removed or re-wrapped inside
-   code affected            shared code, so every other caller changed too (P3) -
-                            including call sites the diff left inline, which now
-                            have different semantics from the ones it touched.
+   code affected            shared code, so every other caller changed too (P3),
+                            including sites the diff left inline - now differing
+                            from the ones it touched.
 ```
+
+An **encoded value** (DB status code, bit flag/mask, protocol code) is itself contract -
+assessed on rows 3 and 7, never separately. Naming it is safe; changing it is a behaviour change with its own row and grade (`encoded-values.md` §9).
 
 ## Risk levels
 
@@ -176,24 +177,23 @@ that leaves the feature working and the tests green:
 HIGH    Security / auth / CSRF / ownership weakened or removed;
         server-side enforcement lost or never existed on a mutation path;
         data integrity, transaction atomicity or an audit/history record lost;
-        a REQUIRED BEHAVIOUR side effect lost, silently duplicated, or made
-        best-effort where it was guaranteed;
-        failure semantics changed so a failed effect now reports success;
-        a shared contract tightened with UNKNOWN callers;
-        an unguarded duplicate-submission or race window on a mutation.
+        a REQUIRED BEHAVIOUR side effect lost, duplicated, or made best-effort
+        where it was guaranteed; failure semantics changed so a failed effect
+        reports success; a shared contract tightened with UNKNOWN callers; an
+        unguarded duplicate-submission or race window on a mutation.
 
 MEDIUM  Observability reduced but not lost; a non-critical side effect changed;
-        ordering changed with a plausible but unconfirmed consumer; a caller set
-        enumerated but not all verified; a guard weaker than the baseline's; a
-        partial-failure state that is recoverable.
+        ordering changed with an unconfirmed consumer; a caller set enumerated
+        but not all verified; a guard weaker than the baseline's; a recoverable
+        partial-failure state.
 
 LOW     Cosmetic, message text, ordering with no observable consumer, a
         defensive improvement, or a delta the ticket explicitly required.
 ```
 
 A `NEEDS DECISION` delta on a required side effect, or any change to failure
-semantics, **cannot be reported as "no regression" while it is unresolved** - it
-is stated as an open item with its risk level, not summarised away.
+semantics, **cannot be reported as "no regression" while unresolved** - it is an
+open item with its risk level, not summarised away.
 
 ---
 
