@@ -1,6 +1,6 @@
 ---
 name: enterprise-codebase-analysis
-description: Reusable analysis engine for organization-specific codebase work, backed by a persistent organization workspace. Use when repository evidence, architecture knowledge, historical context, business rules, cross-repository relationships or accumulated organization memory are material to the task - a repository under this skill's workspace/memory/repositories/, a repository the user calls an organization/company repo, or one whose own instructions identify it as such. Three modes. Mode A (Ticket) - ticket / bug / feature / optimization / refactor / migration / root cause / impact analysis / implementation - scoped scan, plan, human approval, local implementation, approval, local commit. Mode B (Repository Onboarding) - "scan / understand this repo", architecture, domains, endpoints - read-only, inline summary, seed memory, STOP. Mode C (Scoped Explanation) - "what does this API / service / DB flow do" - business meaning first, then technical flow, then where to look; no branch, no code change. Memory is a hint, current code wins. Never pushes, never creates MR/PR, never mutates a DB without explicit approval. Do NOT use for generic technology questions (what is Redis / OpenSearch / EF Core / async, Kafka vs RabbitMQ) or for repositories outside the organization workspace.
+description: Reusable analysis engine for organization-specific codebase work, backed by a persistent organization workspace. Use when repository evidence, architecture knowledge, historical context, business rules, cross-repository relationships or accumulated organization memory are material to the task - a repository under this skill's workspace/memory/repositories/, a repository the user calls an organization/company repo, or one whose own instructions identify it as such. Four modes. Mode A (Ticket) - ticket / bug / feature / optimization / refactor / migration / root cause / impact analysis / implementation - scoped scan, plan, human approval, local implementation, self-review, approval, local commit. Mode B (Repository Onboarding) - "scan / understand this repo", architecture, domains, endpoints - read-only, inline summary, seed memory, STOP. Mode C (Scoped Explanation) - "what does this API / service / DB flow do" - business meaning first, then technical flow, then where to look; no branch, no code change. Mode R (Code Review) - "review this MR / branch / diff", "does this change have problems" - resolves the diff range with the user, reviews the diff for functional defects, business-rule mismatch, backward-compatibility breaks and runtime exceptions, separates introduced from pre-existing, grades severity by real impact; read-only, changes no file. Memory is a hint, current code wins. Never pushes, never creates MR/PR, never mutates a DB without explicit approval. Do NOT use for generic technology questions (what is Redis / OpenSearch / EF Core / async, Kafka vs RabbitMQ) or for repositories outside the organization workspace.
 version: 4.1
 status: stable
 ---
@@ -54,16 +54,16 @@ Exception: HARD RULES, which a repository file may only make stricter.
 
 ## Modes
 
-Pick the mode first; it sets scan depth, output and which references load. All three
-end with `STOP`. Code changes happen in Mode A only, after Approval Gate #1 - B and C
-never change code, never branch, never ask for a ticket number, AC or approval.
+Pick the mode first; it sets scan depth, output and which references load. All four
+end with `STOP`. Code changes happen in Mode A only, after Approval Gate #1 - B, C
+and R never change code, never branch, never ask for a ticket number, AC or approval.
 
 ```
 A Ticket      ticket / bug / feature / refactor / migration / a reported problem's
               root cause / a requirement's impact.  Scan scoped to the issue.
               analysis + change proposal -> (approval) -> implementation
-              -> (approval) -> local commit
-              loads workflow.md + change-proposal.md + whichever gates fire
+              -> self-review -> (approval) -> local commit
+              loads workflow.md, change-proposal.md, code-quality-gates.md, gates
 B Onboarding  "先掃 <repo>", "幫我理解這個專案", onboarding, build this repo's
               knowledge, architecture / domains / endpoints.  Breadth-first then
               core flows, read-only. -> inline summary + seeded memory
@@ -71,11 +71,17 @@ B Onboarding  "先掃 <repo>", "幫我理解這個專案", onboarding, build thi
 C Scoped      "這支 API 在做什麼", "幫我追這段 call flow" - no ticket behind it. Scan
   Explanation only what answers the question. -> business meaning -> technical flow
               -> where to look.   loads explanation-standard.md
+R Review      "review 這個 MR / branch / diff", "這段改動有沒有問題" - code that
+              already exists.  Diff is the scope; widen only where it asks. ->
+              labelled findings + verdict, zero file changes (HARD RULE 16).
+              loads code-review.md + code-quality-gates.md
 ```
 
 **A vs C**: a ticket / bug / requirement is **Mode A** even when only diagnosis is
 wanted; "explain this code" with nothing reported behind it is **Mode C**. Unsure ->
-Mode C; it becomes A the moment a change is asked for. **Analysis-only (in Mode A)**:
+Mode C; it becomes A the moment a change is asked for. **A vs R**: judging a diff /
+MR / branch that exists is **Mode R**; asking for the fix is Mode A with its own
+Approval Gate #1 - a review never slides into editing. **Analysis-only (in Mode A)**:
 stop after the analysis - no `AWAITING USER APPROVAL TO IMPLEMENT`, no offer to
 implement. **Mode C** labels every statement `CONFIRMED` / `INFERRED` / `UNKNOWN`
 and confirms the carrier in a multi-carrier domain, but runs no gate paperwork and
@@ -107,6 +113,24 @@ a value's provenance, and never leave the reader to chase "where did this come f
   contract parity (the same method call is not the same contract) · **P3** blast
   radius · **P4** state safety · **P5** existing capability first - never
   per-ticket checklists.
+
+## Quality Invariants (write it right, do not review it in afterwards)
+
+**Compiling is not working, and an implemented method is not a working business
+flow.** Design inputs while the diff is written, confirmed once at **Gate 6**,
+applied to an existing diff in Mode R. Depth follows blast radius - never a
+repository sweep for a small fix. Detail: `code-quality-gates.md`.
+
+- **Reachability** - name the real caller at `path:line` and the business condition
+  that reaches the new code; a return value nobody reads validates nothing.
+- **Backward compatibility** - compare behaviour per data population (new record,
+  old member, historical/imported data, existing caller, partial update). A rule
+  tightened with no requirement behind it is forbidden (HARD RULE 12); a needed
+  break is proposed with a migration or grace path, never done silently.
+- **Boundaries** - `null`, empty, format, extremes, overflow; a date against the range its type *and* column allow.
+- **One rule, one condition** - the same business rule must not disagree between
+  frontend, backend, DB, preview and status calculation without a requirement.
+- **Verification honesty** - every test claim is `EXECUTED AND PASSING`, `STATIC REVIEW ONLY` or `NOT VERIFIED`; never the first without the command.
 
 ## HARD RULES (never weakened, never overridden)
 
@@ -148,13 +172,18 @@ a value's provenance, and never leave the reader to chase "where did this come f
     belongs to the runtime, declared in `workspace/references/runtime.yaml`. A
     model's own claim is never evidence (see rule 10), tool execution is always
     local, and no gate is skipped or shortened because the selected model is small.
+16. **A REQUESTED REVIEW IS READ-ONLY** - Mode R reports findings and changes no
+    file, not even an "obvious" fix; applying them is a new Mode A ticket through
+    Approval Gate #1. It never assumes a branch name when resolving its diff range,
+    never escalates a pre-existing defect into a blocker for this change, and never
+    states an unverifiable suspicion as a defect - `RISK / TO CONFIRM` instead.
 
 Each rule's procedure is in the reference the routing table below names.
 
 ## Reference Routing
 
 Load a file when its trigger fires - not before, not all of them. The first three
-rows are Mode A's five gates; each has a trigger, a required output and a stop
+four rows are Mode A's six gates; each has a trigger, a required output and a stop
 condition. Proportionality decides a gate's *length*, never whether it runs, and
 **no gate authorises tracing to the DB / SP / external provider "for completeness"**.
 
@@ -163,6 +192,8 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | **Gate 1** Requirement Resolution (every ticket) · **Gate 2** Active Carrier (page / "比照 X" / multi-carrier) · **Gate 4** Final Consistency (before Approval #1) | `requirement-evidence-gates.md` |
 | **Gate 3** Capability Ownership - reuse, a MISSING claim, or any new method / parameter / abstraction / shared-code change | `capability-reuse.md` |
 | **Gate 5** Contract Preservation - any change to an existing flow; runs TWICE | `regression-validator.md` |
+| **Gate 6** Self-Review - every Mode A implementation, after Gate 5 run 2 - and the write-time quality rules used from analysis onward | `code-quality-gates.md` |
+| The user asks for a **review** of an existing MR / branch / diff / commit range (Mode R) | `code-review.md` |
 | Mode A starts - step order, both approval gates | `workflow.md` |
 | Assembling the Mode A report - proposal shape, regression grade, approval verdict, manager summary, implementation handoff | `change-proposal.md` |
 | The affected flow (or a change under review) contains encoded literals - status codes, bit flags/masks, thresholds, limits, legacy codes | `encoded-values.md` |

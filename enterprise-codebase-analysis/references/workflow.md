@@ -1,7 +1,8 @@
 # Workflow (Mode A - Detailed)
 
 One ticket, one pass, two hard stops. Mode B (`repository-onboarding.md`) scans a
-repo; Mode C (SKILL.md) explains existing code. Order of work and output per step
+repo; Mode C (SKILL.md) explains existing code; Mode R (`code-review.md`) reviews a
+diff without changing it. Order of work and output per step
 below - rules live in their own reference, not repeated here.
 
 ```
@@ -12,15 +13,16 @@ Ticket -> Repo (tentative) -> Parse Ticket
   -> Scoped Scan -> Existing Flow
   -> [GATE 3] Capability Ownership + Reuse + Negative Evidence (conditional)
   -> Root Cause -> Impact -> Convention Baseline + Existing Test Coverage
+  -> Behavior & Compatibility Pre-Check (quality dimensions 1, 2, 4)
   -> Solution -> Pseudocode -> Plan -> Test Plan
   -> [GATE 5 run 1] Contract Preservation -> [GATE 4] Final Consistency
   -> Change Proposal: manager summary, candidates, risk, validation, verdict
   == APPROVAL GATE #1 ==   (+ PATTERN CHOICE if one qualifies)
   -> Branch -> Implement -> [DB write? -> approval] -> [no tests? -> ask]
-  -> Build / Test -> Diff -> [GATE 5 run 2] -> Memory Delta
+  -> Build / Test -> Diff -> [GATE 5 run 2] -> [GATE 6 Self-Review] -> Memory Delta
   == APPROVAL GATE #2 ==   -> Local Commit -> [驗收標準] -> STOP
 
-  any failure at Build / Test / Lint / AC / Gate 5
+  any failure at Build / Test / Lint / AC / Gate 5 / a Gate 6 BLOCKER
     -> FIX TASK (scoped context, not a ticket restart)
     -> Diagnose -> Smallest Safe Fix -> Build / Test -> Verify
     -> pass: resume at the failing step | fail: next Fix Task
@@ -151,6 +153,19 @@ its source file and level or `UNKNOWN`, plus which tests cover the flow and wher
 you looked. Never infer a convention from the framework; cover only the convention
 governing this diff (`development-convention.md` §1, `verification.md` §2).
 
+## 13.6 Behavior & Compatibility Pre-Check (before designing the solution)
+
+Quality dimensions 1, 2 and 4 are **design inputs**, not review findings: answering
+them after the diff exists is how a change that compiles ends up unreachable, or
+blocks an existing member's edit. Produce three short lines - reachability (chain,
+caller at `path:line`, the business condition reaching it) · compatibility (which
+data populations pass the rule today, which the change would start rejecting) ·
+layer parity (every layer computing the same rule, and whether they still agree).
+A change that would reject existing legal data, or tighten a rule the ticket never
+asked about, is never implemented quietly: it becomes an explicit decision in the
+proposal - migration / grace rule / compatibility path (HARD RULE 12,
+`code-quality-gates.md` §1, §2, §4).
+
 ## 14-17. Solution, Pseudocode, Plan, Test Plan
 
 Bias: small, safe, existing-capability-first (`Understand -> Verify -> Modify`).
@@ -201,7 +216,10 @@ first, memory second); never branch off or commit onto `develop`/`main`/`master`
 Implement existing-pattern-first per the Convention Baseline: smallest reasonable
 diff, the repository's native error-handling channel, its logger and placeholder
 rule, no new abstraction or package the ticket does not need
-(`development-convention.md` §2, §4, §5).
+(`development-convention.md` §2, §4, §5). Quality dimensions 3, 5, 6 and 7 are
+written in while typing, not reviewed in afterwards: boundaries and runtime safety,
+validation order on the native failure channel, naming and no duplicated rule, the
+tests the new rule needs (`code-quality-gates.md` §3, §5, §6, §7).
 
 ```
 DB write needed?          -> DATABASE MUTATION APPROVAL REQUIRED, then wait
@@ -239,6 +257,17 @@ transaction-atomicity, audit-loss, lost-side-effect or changed-failure-semantics
 regression the user has not accepted **blocks Approval Gate #2**: report
 `REGRESSION RISK - HIGH - UNRESOLVED` and stop (`regression-validator.md`, HR 13).
 
+## 21.6 GATE 6 - Self-Review on the real diff
+
+Every implementation, every time, after Gate 5 run 2: read your own diff as a
+reviewer would and answer the seven dimensions in one compact block, ending with
+the test label `EXECUTED AND PASSING` / `STATIC REVIEW ONLY` / `NOT VERIFIED`
+(`code-quality-gates.md` §8). Seven short lines on a one-line fix. A `BLOCKER` is
+**fixed now** through the Fix Loop, inside the approved scope - not shipped as a
+known defect; if its fix needs unapproved scope, stop and ask (it blocks Approval
+Gate #2). `MAJOR` / `MINOR` / `RISK` are listed for the user. Gate 6 never widens
+scope and never repairs a pre-existing defect it merely noticed (HARD RULE 12).
+
 ## 22-24. Memory Delta, APPROVAL GATE #2, Local Commit, STOP
 
 Run the admission gate (`memory-admission.md`) - `Memory Delta: NONE` is a normal
@@ -246,7 +275,7 @@ result. If something is admitted, report targeted `ADD` / `UPDATE` / `CORRECT` /
 `PROMOTE` / `DEMOTE` by file + section, never a regenerated file
 (`memory-operations.md` §10-§11). Report with `templates/implementation-result.md`
 - build status with its command, test counts, the test-preservation statement, the
-convention source and Gate 5 run 2 - ending
+convention source, Gate 5 run 2 and the Gate 6 self-review block - ending
 `AWAITING USER APPROVAL TO LOCAL COMMIT`. Commit format follows the branch's
 5-level priority (`git-safety.md`). Then stop: push, MR, PR, merge are the user's.
 

@@ -151,9 +151,12 @@ as passing.
 ## 3. Reporting, and the regression re-check
 
 `templates/implementation-result.md` carries `Build`, `Tests`, the test
-preservation statement and **Gate 5 run 2**. Report what was actually executed,
-with the command and its real output. An honest `FAILED` / `NOT RUN` is always
-better than a confident claim the user later disproves.
+preservation statement, **Gate 5 run 2** and the **Gate 6** self-review block
+(`code-quality-gates.md` §8). Report what was actually executed, with the command
+and its real output. An honest `FAILED` / `NOT RUN` is always better than a
+confident claim the user later disproves - every test claim therefore carries one
+of `EXECUTED AND PASSING` / `STATIC REVIEW ONLY` / `NOT VERIFIED`, and a test that
+was not run is never described as passing (`code-quality-gates.md` §7).
 
 Before the report is written, re-run the Contract Parity table against the actual
 `authoritative baseline -> final working tree` diff, not against the plan and not

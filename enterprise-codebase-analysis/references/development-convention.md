@@ -81,6 +81,10 @@ optional parameter is still a shared-contract change, not a local edit.
 Scope authority is the ticket. A change that the ticket's acceptance criteria do
 not need does not belong in this diff.
 
+**Quality is written in, not reviewed in.** `code-quality-gates.md`'s seven dimensions
+shape the diff as it is typed - §3 boundaries, §5 validation order on the native
+failure channel, §6 naming / duplication / magic values, §7 tests - and Gate 6 confirms all seven.
+
 ---
 
 ## 3. Design & implementation strategy - by ticket classification

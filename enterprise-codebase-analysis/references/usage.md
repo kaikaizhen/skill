@@ -1,11 +1,12 @@
 # Usage & Triggers
 
-This skill has three modes - see SKILL.md -> "Modes" for the authoritative
+This skill has four modes - see SKILL.md -> "Modes" for the authoritative
 table and disambiguation rules. Summary for trigger-matching:
 
 - a ticket / bug / feature / requirement behind the request -> **Mode A**
 - understanding the repository / project as a whole -> **Mode B**
 - understanding one existing piece of code, no ticket or change behind it -> **Mode C**
+- judging a diff / MR / branch that already exists -> **Mode R** (read-only)
 
 ## Mode A - Ticket Workflow
 
@@ -62,10 +63,24 @@ ask for approval to implement. This is different from Mode C: Mode A analysis-on
 still starts from a ticket/problem and follows Mode A's scope and evidence rules;
 Mode C starts from "explain this code" with no ticket at all.
 
+## Mode R - Requested Code Review
+
+Trigger: the user asks for a review of code that **already exists** - an MR / PR,
+a branch, a commit range, a pasted diff ("幫我 review 這個 MR", "這段改動有沒有問題",
+"看一下這個分支的變更"). Read-only: findings only, no file changed (HARD RULE 16).
+
+The user is asked for the **two ends of the diff** if they are not already clear -
+source branch and target branch - because a review of the wrong range is worse
+than none; a branch name is never assumed. Procedure: `code-review.md`. Output:
+`templates/code-review.md`, written to `<workspace>/issue/<RepoName>/`.
+
+Wanting the findings fixed is a **new Mode A ticket** with its own Approval Gate #1.
+Merging, approving, pushing and posting MR comments stay with the user.
+
 ## When NOT To Invoke
 
 - Greenfield projects with no legacy context
-- Pure code review with no change intended
+- A style / formatting opinion with no code to look at (Mode R needs a real diff)
 - Anything that needs a push, MR, PR or remote merge - this skill stops at the
   local commit, always
 - Questions about the tooling itself
@@ -176,6 +191,7 @@ These are never performed by the skill, in any circumstance.
 |---|---|---|
 | Issue analysis | `<workspace>/issue/<RepoName>/<issue>.md` (e.g. `<workspace-root>/issue/<RepoName>/`) | Never (outside repository and skill) |
 | Acceptance test cases | `<workspace>/issue/<RepoName>/<issue>驗收標準.md` - only after the user confirms the feature works | Never |
+| Code review (Mode R) | `<workspace>/issue/<RepoName>/<branch-or-MR>-review.md` | Never |
 | Skill retrospective | `<workspace>/issue/<RepoName>/<issue>skill待優化項目.md` - only on explicit request | Never |
 | Memory | `<skill>/workspace/memory/**` (this installation) | Never (outside the repository) |
 | Unknowns / corrections | `<skill>/workspace/memory/unknowns.md`, `corrections.md` | Never |

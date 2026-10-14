@@ -167,6 +167,28 @@ Evidence: -
 | Component | Direct / Indirect / Unaffected / Unknown | Note |
 |---|---|---|
 
+## Behavior & Compatibility Pre-Check
+
+<!-- The quality dimensions that are design INPUTS, settled before the solution is
+     chosen (workflow.md §13.6). Three lines for a one-caller change. -->
+
+Reachability: <chain joined, caller at path:line, business condition that reaches it>
+
+Data populations after the change:
+
+| Population | Passes today | After the change | Evidence |
+|---|---|---|---|
+| new record | | | |
+| existing / historical record | | | |
+| existing API caller | | | |
+| partial update (one field edited) | | | |
+
+<!-- Rejecting data that is legal today, or tightening a rule the ticket never
+     asked about, is NOT done quietly (HARD RULE 12): it becomes an explicit
+     decision at Approval Gate #1 - migration / grace rule / compatibility path. -->
+Same rule computed elsewhere: NONE OBSERVED | <layer - path:line - its condition>
+<!-- FE / BE / DB constraint / preview / status job / report. Would they still agree? If not, why is that intended? -->
+
 ## Contract Parity (Gate 5, run 1 - planned change)
 
 <!-- Any change to an EXISTING flow. Baseline = main / the authoritative branch as of

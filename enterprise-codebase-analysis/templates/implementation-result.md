@@ -78,6 +78,26 @@ Unresolved HIGH findings: NONE
      semantic, may NOT be reported as "no regression" while unresolved. -->
 
 
+Self-Review (Gate 6):
+<!-- Read your own diff as a reviewer would, after Gate 5 run 2
+     (code-quality-gates.md §8). Proportional - seven short lines on a small fix,
+     but never skipped and never a repository sweep. OK means it was checked, not
+     that it was assumed. A BLOCKER is FIXED before this report, not listed here;
+     if the fix needed unapproved scope, stop and ask instead. -->
+1 Call chain / reachability : OK - caller at <path:line>, runs when <condition>
+2 Backward compatibility    : OK | <finding> - populations checked: <which>
+3 Boundaries / runtime      : OK | <finding>
+4 Cross-layer consistency   : OK | N/A - no shared rule touched | <finding>
+5 Validation order / errors : OK | <finding>
+6 Maintainability           : OK | <finding>
+7 Tests                     : EXECUTED AND PASSING | STATIC REVIEW ONLY
+                              | NOT VERIFIED  + gaps
+Findings for the user: NONE
+<!-- else: [MAJOR|MINOR|RISK / TO CONFIRM] claim - path:line - trigger - impact -
+     suggested fix. Judged by real impact; do not inflate improvements into
+     blockers. A pre-existing defect merely noticed is reported, not fixed
+     (HARD RULE 12). -->
+
 Diff Summary:
 <!-- the important hunks, not the whole diff -->
 

@@ -242,9 +242,9 @@ Gate 2  which carrier is actually active   -> decides whose baseline is compared
 Gate 3  does a capability exist at all     -> supplies rows 2 and 5
 Gate 4  one version of the truth           -> runs after run 1, before Approval #1
 Gate 5  what the change silently removed   -> runs 1 and 2, this file
+Gate 6  does the code do the right thing   -> after run 2, code-quality-gates.md
 P2      the seven dimensions and the six side-effect attributes
 P3      who else runs the shared code an effect was added to or wrapped inside
 ```
 
-Gate 5 never authorises a wider scan "for completeness". It is scoped to what the
-diff touches, plus the callers of what the diff touches.
+Gate 5 never authorises a wider scan "for completeness": it is scoped to the diff and that diff's callers.
