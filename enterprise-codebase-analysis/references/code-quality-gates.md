@@ -209,12 +209,15 @@ SELF-REVIEW (Gate 6)
 
 Severity (shared with `code-review.md`):
 
-| | Meaning |
-|---|---|
-| `BLOCKER` | wrong behaviour, a broken business rule, a compatibility break, or a runtime exception on a reachable path |
-| `MAJOR` | a real defect on a narrow or unproven path, or a missing test for a rule this change introduced |
-| `MINOR` | maintainability, naming, duplication - worth doing, does not hold the change |
-| `RISK / TO CONFIRM` | cannot be verified from here; stated as a risk, never asserted as a defect |
+| | Shown to the user as | Meaning |
+|---|---|---|
+| `BLOCKER` | 🔴 必須修正 | wrong behaviour, a broken business rule, a compatibility break, or a runtime exception on a reachable path |
+| `MAJOR` | 🟠 建議改善 | a real defect on a narrow or unproven path, or a missing test for a rule this change introduced |
+| `MINOR` | 🟡 可改善 / 🔵 可優化 | maintainability, naming, duplication, defensive guard (🟡); performance, structure, UX (🔵) - worth doing, does not hold the change |
+| `RISK / TO CONFIRM` | ❓ 待確認 | cannot be verified from here; stated as a risk, never asserted as a defect |
+
+Findings reach the user in the review table of `explanation-standard.md` §4 - one
+self-contained row each, with a concrete fix.
 
 A `BLOCKER` is **fixed before the report**, inside the approved scope, through the
 Fix Loop (`verification.md` §3.5) - not reported as a known defect. If fixing it

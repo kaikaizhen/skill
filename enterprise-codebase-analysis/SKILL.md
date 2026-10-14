@@ -1,7 +1,7 @@
 ---
 name: enterprise-codebase-analysis
-description: Reusable analysis engine for organization-specific codebase work, backed by a persistent organization workspace. Use when repository evidence, architecture knowledge, historical context, business rules, cross-repository relationships or accumulated organization memory are material to the task - a repository under this skill's workspace/memory/repositories/, a repository the user calls an organization/company repo, or one whose own instructions identify it as such. Four modes. Mode A (Ticket) - ticket / bug / feature / optimization / refactor / migration / root cause / impact analysis / implementation - scoped scan, plan, human approval, local implementation, self-review, approval, local commit. Mode B (Repository Onboarding) - "scan / understand this repo", architecture, domains, endpoints - read-only, inline summary, seed memory, STOP. Mode C (Scoped Explanation) - "what does this API / service / DB flow do" - business meaning first, then technical flow, then where to look; no branch, no code change. Mode R (Code Review) - "review this MR / branch / diff", "does this change have problems" - resolves the diff range with the user, reviews the diff for functional defects, business-rule mismatch, backward-compatibility breaks and runtime exceptions, separates introduced from pre-existing, grades severity by real impact; read-only, changes no file. Memory is a hint, current code wins. Never pushes, never creates MR/PR, never mutates a DB without explicit approval. Do NOT use for generic technology questions (what is Redis / OpenSearch / EF Core / async, Kafka vs RabbitMQ) or for repositories outside the organization workspace.
-version: 4.1
+description: Reusable analysis engine for organization-specific codebase work, backed by a persistent organization workspace. Use when repository evidence, architecture knowledge, historical context, business rules, cross-repository relationships or accumulated organization memory are material to the task - a repository under this skill's workspace/memory/repositories/, a repository the user calls an organization/company repo, or one whose own instructions identify it as such. Four modes. Mode A (Ticket) - ticket / bug / feature / optimization / refactor / migration / root cause / impact analysis / implementation - scoped scan, plan, human approval, local implementation, self-review, approval, local commit. Mode B (Repository Onboarding) - "scan / understand this repo", architecture, domains, endpoints - read-only, inline summary, seed memory, STOP. Mode C (Scoped Explanation) - "what does this API / service / DB flow do" - direct answer first, then business meaning, technical flow, where to look; no branch, no code change. Mode R (Code Review) - "review this MR / branch / diff", "does this change have problems" - resolves the diff range with the user, reviews the diff for functional defects, business-rule mismatch, backward-compatibility breaks and runtime exceptions, separates introduced from pre-existing, grades severity by real impact; read-only, changes no file. Every reply is conclusion-first and sized to the question (tables where they help, no cross-references); full gate records go to local files. Memory is a hint, current code wins. Never pushes, never creates MR/PR, never mutates a DB without explicit approval. Do NOT use for generic technology questions (what is Redis / OpenSearch / EF Core / async, Kafka vs RabbitMQ) or for repositories outside the organization workspace.
+version: 4.2
 status: stable
 ---
 
@@ -69,11 +69,11 @@ B Onboarding  "先掃 <repo>", "幫我理解這個專案", onboarding, build thi
               core flows, read-only. -> inline summary + seeded memory
               loads repository-onboarding.md
 C Scoped      "這支 API 在做什麼", "幫我追這段 call flow" - no ticket behind it. Scan
-  Explanation only what answers the question. -> business meaning -> technical flow
-              -> where to look.   loads explanation-standard.md
+  Explanation only what answers the question. -> direct answer -> business meaning
+              -> technical flow -> where to look.   loads explanation-standard.md
 R Review      "review 這個 MR / branch / diff", "這段改動有沒有問題" - code that
               already exists.  Diff is the scope; widen only where it asks. ->
-              labelled findings + verdict, zero file changes (HARD RULE 16).
+              verdict + findings table, zero file changes (HARD RULE 16).
               loads code-review.md + code-quality-gates.md
 ```
 
@@ -85,10 +85,38 @@ Approval Gate #1 - a review never slides into editing. **Analysis-only (in Mode 
 stop after the analysis - no `AWAITING USER APPROVAL TO IMPLEMENT`, no offer to
 implement. **Mode C** labels every statement `CONFIRMED` / `INFERRED` / `UNKNOWN`
 and confirms the carrier in a multi-carrier domain, but runs no gate paperwork and
-produces no diff. Every mode's prose assumes the reader meets this system for the
-**first time**: explain each term on first use, name the actor of every action, give
-a value's provenance, and never leave the reader to chase "where did this come from"
-(`explanation-standard.md`).
+produces no diff.
+
+## Response Invariants (every reply, every mode)
+
+Full analysis is the agent's job; the reply's job is to be understood fast. These
+govern **presentation only** - they never shorten a scan, skip a gate, drop an
+evidence label or an approval line. Detail and per-task table shapes:
+`explanation-standard.md`.
+
+- **Conclusion first** - the first line answers the question; no background or
+  analysis narrative before it. Then cause -> concrete fix -> next step.
+- **Size follows the question** - a simple question gets 1-3 sentences; a review
+  or analysis shows its 3-5 most important items by default; full detail only when
+  the user asks. Never widen an asked question into a research report.
+- **Tables first, not tables always** - status (✅ ❌ ❓), review findings (🔴 🟠 🟡
+  🔵 ❓ ✅), test plans, troubleshooting use the table shapes in
+  `explanation-standard.md` §4; a short answer stays prose.
+- **Concrete** - name the API, method, mechanism or `path:line`, never "improve the
+  validation".
+- **Plans are rows, not reasoning** - a Mode A plan is | 需求 | 目標 | 修改位置 |
+  修改方式 | 可安全執行 |, no "because ..., therefore ..." prose; anything not
+  confirmed tells the user exactly what to run or open (command / SQL / file ->
+  key) so they can supply it.
+- **Every item stands alone** - no "see C-02 / finding #3 / section 3.2 / Gate 5
+  row"; each row states its own problem, cause and fix.
+- **Reply is the digest, the file is the record** - templates and gate blocks are
+  written to the local issue / review file; the reply shows only what the user
+  needs to understand and decide, plus the file path and any required
+  `AWAITING ...` line.
+- **No chasing** - a project-specific term gets one short gloss on first use, every
+  action names its actor, a value its provenance - briefly, only where the reader
+  would otherwise get stuck.
 
 ## Evidence & Scope Invariants
 
@@ -197,7 +225,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Mode A starts - step order, both approval gates | `workflow.md` |
 | Assembling the Mode A report - proposal shape, regression grade, approval verdict, manager summary, implementation handoff | `change-proposal.md` |
 | The affected flow (or a change under review) contains encoded literals - status codes, bit flags/masks, thresholds, limits, legacy codes | `encoded-values.md` |
-| Writing any explanation for a reader - a Mode C answer, a Mode B summary, the prose of a Mode A report | `explanation-standard.md` |
+| Writing any reply or report for a reader - shape, length, table formats, no cross-references, clarity rules | `explanation-standard.md` |
 | Scan depth, stop conditions, carrier / registration traps | `scoped-scan.md` |
 | Writing code after Approval #1 - convention order, refactor vs bug/feature strategy, error handling, logging | `development-convention.md` |
 | P1-P5 need depth, or a new rule is proposed for this skill | `engineering-principles.md` |

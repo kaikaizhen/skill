@@ -105,7 +105,9 @@ corrected (Gate 4).
 ## 6. Validation plan - how we prove nothing broke
 
 Answers one question: *after the change, how do we show production behaviour is
-intact?* Rows of `Validation / Purpose / Expected`, drawn from the Test Plan and
+intact?* Rows of `測試案例 / 操作 / 預期結果` (`explanation-standard.md` §4) - the
+operation concrete enough to execute, the expected result observable - drawn from
+the Test Plan and
 `verification.md` §2 - build, existing tests (the related set, not the suite), new
 tests, manual check, DB/API verification where relevant. Include at least one
 **before/after behaviour comparison** for each non-`unchanged` Gate 5 row.
@@ -181,7 +183,27 @@ Stop conditions:                <what forces a stop back to the user: a DB write
 Omit it for `NEEDS HUMAN DECISION` and `NOT RECOMMENDED` - there is nothing approved
 to hand off.
 
-## 10. Length discipline
+## 10. Length discipline - and what the reply shows
+
+The **file** is the full record (templates, proportional). The **reply** that
+presents it is a digest, conclusion first (`explanation-standard.md` §6):
+
+```
+1 Recommendation + one-line reason                       <- line one
+2 Manager Summary (§8) - five short answers, or a 4-row table
+3 Execution plan - | 需求 | 目標 | 修改位置 | 修改方式 | 可安全執行 |
+  (`explanation-standard.md` §4): one row per requirement, no justification prose
+4 To confirm - for every ❓ / ❌ row: | 待確認項目 | 請你提供 | 查法 | with the
+  exact command / SQL / file / config key; plus any HIGH risk, each row
+  self-contained
+5 Validation - the 3-5 test cases that matter (測試案例 / 操作 / 預期結果)
+6 File: <path>  +  AWAITING USER APPROVAL TO IMPLEMENT (when a change was asked)
+```
+
+Gate names, parity tables, carrier separation and consistency passes stay in the
+file unless one of them holds a ❌ / ❓ / HIGH item - then that item is stated in
+plain words, never as "see Gate 5 row 3". Analysis-only requests get items 1, 2,
+4 and the file path.
 
 Decision-oriented, not a repository dump. Cite `file`, `class`, `method`, `line`
 instead of pasting source; include evidence only where it carries a key conclusion.

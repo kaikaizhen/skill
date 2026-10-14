@@ -9,7 +9,7 @@ Approval Gate #1.
 Mode R reuses, rather than re-inventing: the seven quality dimensions and the
 severity ladder come from `code-quality-gates.md`, contract loss from
 `regression-validator.md`, reuse and negative evidence from `capability-reuse.md`,
-and prose rules from `explanation-standard.md`. No gate paperwork (Gates 1-5) and
+and reply shape, table format and prose rules from `explanation-standard.md`. No gate paperwork (Gates 1-5) and
 no branch, commit, build-to-complete or memory write are required.
 
 ## 1. Resolve the two ends of the diff - ask, never assume
@@ -100,32 +100,50 @@ functional defect at priority 1 (P1, HARD RULE 14).
 
 ## 5. One finding, five facts
 
-Every finding gives all five, or it is not a finding:
+Every finding carries all five facts, or it is not a finding. They map onto the
+review table of `explanation-standard.md` §4 - one row per finding, each row
+complete on its own (no "same as #2", no "see above"):
 
-```
-[BLOCKER] <one-line claim>
-  Where:     <path:line>  (INTRODUCED | PRE-EXISTING | AGGRAVATED)
-  Trigger:   <the concrete input / state / population that reaches it>
-  Impact:    <what the user or data actually experiences>
-  Fix:       <the smallest change that resolves it, in this repo's idiom>
-  Evidence:  <path:line of what proves it> | UNVERIFIED - <what is missing>
-```
+| 分類 | 程式來源 | 原因／風險 | 建議修改方式 |
+|---|---|---|---|
+| 🔴 必須修正 | `path:line` · INTRODUCED | **Trigger**: the concrete input / state / population that reaches it -> **Impact**: what the user or data experiences | the smallest fix in this repo's idiom, naming the API / method (`int.TryParse()`, an `isSubmitting` guard) |
 
+- 程式來源 carries the location, the INTRODUCED / PRE-EXISTING / AGGRAVATED label
+  and the evidence `path:line`; an unreachable proof is written
+  `UNVERIFIED - <what is missing>`.
 - **Severity is judged by real impact**, using the ladder in
-  `code-quality-gates.md` §8. Do not file improvements as blockers: a review whose
-  every line is a blocker tells the reader nothing. Expect most diffs to produce
-  zero or one `BLOCKER`.
+  `code-quality-gates.md` §8: 🔴 `BLOCKER` · 🟠 `MAJOR` · 🟡 / 🔵 `MINOR` (🔵 =
+  performance / structure / UX optimisation) · ❓ `RISK / TO CONFIRM` · ✅ checked,
+  no change. Do not file improvements as blockers: a review whose every line is
+  🔴 tells the reader nothing. Expect most diffs to produce zero or one 🔴.
 - **An unverifiable suspicion is a risk, not a bug.** If you cannot reach the
   evidence - runtime-only behaviour, external service, production data, a config
-  you cannot see - file it as `RISK / TO CONFIRM` with the exact question to ask.
-  Never present an unconfirmed hypothesis as a defect (SKILL.md, negative
-  evidence).
-- A judgement about taste is marked as such and kept out of the blocking list.
+  you cannot see - file it as ❓ `RISK / TO CONFIRM`, and put the exact question to
+  ask (and who can answer it) in the fix column. Never present an unconfirmed
+  hypothesis as a defect (SKILL.md, negative evidence).
+- A judgement about taste is marked as such and kept out of 🔴 / 🟠.
+- Full code for a fix only when the user asks.
 
 ## 6. Output and verdict
 
-Use `templates/code-review.md`. The report ends with one verdict, which
-recommends - it never merges, approves or pushes anything:
+Two outputs, per `explanation-standard.md` §6:
+
+**The reply** (what the user reads):
+
+```
+REVIEW RESULT: <verdict>            <- line one
+Scope: <base>..<head>, <n> files     <- one line
+<findings table, most severe first - the 3-5 that matter most;
+ "+<n> more 🟡/🔵 in the review file" when there are more>
+Not reviewed: <one line, or omitted when nothing was skipped>
+Next: <one line - e.g. "fix the 🔴 row as a new ticket", or "ready from a code standpoint">
+File: <path to the review file>
+```
+
+**The review file** - `templates/code-review.md`, the full record: every finding,
+the dimension pass, what was opened beyond the diff and why.
+
+The verdict recommends - it never merges, approves or pushes anything:
 
 ```
 REVIEW RESULT: BLOCKING ISSUES FOUND (<n>) | NON-BLOCKING FINDINGS ONLY (<n>)

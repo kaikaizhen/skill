@@ -1,6 +1,24 @@
 # Implementation Result
 
-> Approval Gate #2 report. Present this, then STOP.
+> Approval Gate #2 record. Write it to the local issue file; the **reply** is the
+> digest below, then STOP (`explanation-standard.md` §6).
+>
+> Reply digest - conclusion first, every row self-contained:
+>
+> ```
+> <Final Status> - one line: what now works, and whether it is verified
+> | 狀態 | 項目 | 目前結果 | 下一步 |   <- Build, Tests, Acceptance Criteria,
+>                                         Regression (Gate 5 run 2), Self-review
+>                                         ✅ / ❌ / ❓, one row each
+> Changed files: <short list>
+> Findings for the user / unresolved HIGH regression: <table, or NONE>
+> Proposed commit message: <block>
+> File: <path>
+> AWAITING USER APPROVAL TO LOCAL COMMIT
+> ```
+>
+> Full sections below stay in the file; show one in the reply only when it is ❌,
+> ❓ or HIGH - and then state the problem in plain words, not by its gate name.
 
 Repository:
 
@@ -93,10 +111,10 @@ Self-Review (Gate 6):
 7 Tests                     : EXECUTED AND PASSING | STATIC REVIEW ONLY
                               | NOT VERIFIED  + gaps
 Findings for the user: NONE
-<!-- else: [MAJOR|MINOR|RISK / TO CONFIRM] claim - path:line - trigger - impact -
-     suggested fix. Judged by real impact; do not inflate improvements into
-     blockers. A pre-existing defect merely noticed is reported, not fixed
-     (HARD RULE 12). -->
+<!-- else the review table (explanation-standard.md §4), one self-contained row each:
+     | 分類 (🟠 / 🟡 / 🔵 / ❓) | 程式來源 path:line | 原因／風險 trigger -> impact | 建議修改方式 |
+     Judged by real impact; do not inflate improvements into blockers. A
+     pre-existing defect merely noticed is reported, not fixed (HARD RULE 12). -->
 
 Diff Summary:
 <!-- the important hunks, not the whole diff -->

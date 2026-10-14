@@ -145,12 +145,23 @@ For Repository Onboarding requests, **always produce a user-visible onboarding
 summary** in the reply. "先掃 <repo>" already means the user wants to see the
 result - do not finish with only the memory seed and a one-line note.
 
-The inline summary covers at least: version, what the project does, architecture
-(+ Mermaid if it helps), domain map, core endpoints with business meaning, quick
-locator (where logic / DB access / routing / config live), where to start
-debugging and changing, important unknowns, and a short **README ↔ Code
-Consistency** list (only if step 1.5 found any - omit the section when clean,
-never pad it).
+The inline summary is a digest the user can take in at a glance
+(`explanation-standard.md`), in this order:
+
+```
+1 What the project is - 1-2 sentences: purpose, stack, version
+2 Architecture - one arrow chain or a small Mermaid flow (only if it helps)
+3 Domain map / core endpoints - | 領域／端點 | 業務意義 | 主要位置 | ,
+  the core ones only, business meaning in plain words
+4 Quick locator - | 要找什麼 | 在哪裡 | : logic, DB access, routing, config,
+  where to start debugging / changing
+5 Unknowns and README ↔ Code mismatches - ❓ / ❌ rows, only if any exist;
+  omit the section when clean, never pad it
+```
+
+Each row stands on its own. The full endpoint inventory, every domain and the
+deep flows go to memory (and to the guide file if one is asked for), not the
+reply - offer "full endpoint list on request" instead.
 
 If the user explicitly asks for a file, **additionally** write
 `PROJECT-QUICK-GUIDE.md` to the requested location (a location the user names). Typical

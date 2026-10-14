@@ -72,7 +72,8 @@ a branch, a commit range, a pasted diff ("幫我 review 這個 MR", "這段改�
 The user is asked for the **two ends of the diff** if they are not already clear -
 source branch and target branch - because a review of the wrong range is worse
 than none; a branch name is never assumed. Procedure: `code-review.md`. Output:
-`templates/code-review.md`, written to `<workspace>/issue/<RepoName>/`.
+`templates/code-review.md`, written to `<workspace>/issue/<RepoName>/`; the reply
+is the verdict plus the top findings table (`code-review.md` §6).
 
 Wanting the findings fixed is a **new Mode A ticket** with its own Approval Gate #1.
 Merging, approving, pushing and posting MR comments stay with the user.

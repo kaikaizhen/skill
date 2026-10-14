@@ -31,12 +31,15 @@ Why not the alternatives:
 
 ## Proposed Code Changes
 
-<!-- List `No change` rows too - the deliberately untouched boundaries. Pseudocode
-     only where the change is not obvious from the table. -->
+<!-- One row per requirement -> change; the row shows which requirement it serves,
+     no "because ..., therefore ..." prose. 可安全執行: ✅ 可實作 / ❓ 待確認 /
+     ❌ 需決策. List `No change` rows too - the deliberately untouched boundaries.
+     Pseudocode only where the change is not obvious from the table. -->
 
-| File / Component | Current responsibility | Proposed change | Why |
-|---|---|---|---|
-| | | **No change** | <the boundary being respected> |
+| 需求 | 目標 | 修改位置 | 修改方式 | 可安全執行 |
+|---|---|---|---|---|
+| AC #<n> | <observable result> | `<path:line>` / <method> | <concrete change: API / condition / column> | ✅ 可實作 |
+| - | <boundary kept> | `<path>` | **No change** | ✅ |
 
 ```
 ```
@@ -53,12 +56,15 @@ Because:
 
 <!-- Include a before/after comparison per non-`unchanged` Gate 5 row. -->
 
-| Validation | Purpose | Expected |
+<!-- 操作 = concrete, executable steps with input; 預期結果 = observable and
+     verifiable (value, status code, message, row). explanation-standard.md §4. -->
+
+| 測試案例 | 操作 | 預期結果 |
 |---|---|---|
-| Build | compiles | PASS |
-| Existing tests (related set) | no regression | pass, counts reported |
-| New test(s) | the ticket's behaviour | |
-| Before / after comparison | production behaviour intact | |
+| Build | `<build command>` | PASS |
+| Existing tests (related set) | `<test command + filter>` | all pass, counts reported |
+| <ticket behaviour> | <steps + input> | <observable result> |
+| Before / after: <behaviour that must stay> | <same steps on baseline and change> | identical <value / status / row> |
 
 DB writes required: NO / YES -> requires Database Mutation Approval
 
@@ -69,9 +75,12 @@ Out of Scope:  -
 
 ## Unknowns / Questions
 
-<!-- Only what affects implementation correctness. -->
-Blocking:     None
-Non-blocking: -
+<!-- Only what affects implementation correctness. One row per ❓ / ❌ plan row:
+     tell the user exactly what to run or open - never "please confirm". -->
+
+| 待確認項目 | 請你提供 | 查法（直接執行） | 阻擋實作 |
+|---|---|---|---|
+| | | `<command / SQL / file -> key / log path>` | YES / NO |
 
 ## Memory Delta Candidate
 

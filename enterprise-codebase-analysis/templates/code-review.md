@@ -3,6 +3,33 @@
 > Mode R output. Read-only: this review changes no file. Local only, never written
 > inside the repository (HARD RULE 3). Rules: `references/code-review.md`.
 
+## Verdict
+
+```
+REVIEW RESULT: BLOCKING ISSUES FOUND (<n>) | NON-BLOCKING FINDINGS ONLY (<n>)
+             | NO FINDINGS - LOOKS CORRECT FOR THE STATED SCOPE
+             | CANNOT COMPLETE REVIEW - <what is missing>
+```
+
+<!-- Then 1-3 lines: what this change does, whether it does it, the one thing that
+     matters most. Plain language (explanation-standard.md). -->
+
+The verdict recommends. Merging, approving, pushing and commenting on the MR are
+the user's (HARD RULE 1).
+
+## Findings
+
+<!-- Most severe first. One row per finding, each row complete on its own - never
+     "same as above" or "see #2". Severity is real impact (code-quality-gates.md
+     §8): 🔴 BLOCKER · 🟠 MAJOR · 🟡 MINOR · 🔵 MINOR (optimisation)
+     · ❓ RISK / TO CONFIRM · ✅ checked, no change. Most diffs yield zero or one 🔴.
+     ❓ rows put the exact question to ask, and who answers it, in the fix column. -->
+
+| 分類 | 程式來源 | 原因／風險 | 建議修改方式 |
+|---|---|---|---|
+| 🔴 必須修正 | `<path:line>` · INTRODUCED · evidence `<path:line>` | Trigger: <input / state / population> -> Impact: <what the user or data experiences> | <smallest fix, naming the API / method> |
+| ❓ 待確認 | `<path:line>` · UNVERIFIED - <what is missing> | <why it may fail; why it cannot be verified here> | Ask <who>: <exact question> |
+
 ## Review Scope
 
 ```
@@ -23,59 +50,6 @@ Not reviewed:
      Naming the blind spots is mandatory. -->
 -
 
-## Summary
-
-<!-- 3-5 lines for a reader who has not opened the diff: what this change does,
-     whether it does it, and the one thing that matters most. Plain language,
-     every term explained on first use (explanation-standard.md). -->
-
-## Verdict
-
-```
-REVIEW RESULT: BLOCKING ISSUES FOUND (<n>) | NON-BLOCKING FINDINGS ONLY (<n>)
-             | NO FINDINGS - LOOKS CORRECT FOR THE STATED SCOPE
-             | CANNOT COMPLETE REVIEW - <what is missing>
-```
-
-| | Count |
-|---|---|
-| `BLOCKER` | |
-| `MAJOR` | |
-| `MINOR` | |
-| `RISK / TO CONFIRM` | |
-| `PRE-EXISTING` (informational) | |
-
-The verdict recommends. Merging, approving, pushing and commenting on the MR are
-the user's (HARD RULE 1).
-
-## Findings
-
-<!-- Most severe first. Every finding carries all five facts or it is not a
-     finding. Severity is real impact, not aspiration - most diffs yield zero or
-     one BLOCKER. An unverifiable suspicion is RISK / TO CONFIRM, never a bug. -->
-
-### [BLOCKER] <one-line claim>
-
-```
-Where:     <path:line>   (INTRODUCED | PRE-EXISTING | AGGRAVATED)
-Trigger:   <the concrete input / state / data population that reaches it>
-Impact:    <what the user or the data actually experiences>
-Fix:       <smallest change that resolves it, in this repository's idiom>
-Evidence:  <path:line that proves it> | UNVERIFIED - <what is missing>
-Dimension: <1-7 from code-quality-gates.md>
-```
-
-### [MAJOR] <...>
-
-### [MINOR] <...>
-
-### [RISK / TO CONFIRM] <...>
-
-```
-Question to ask: <the exact question, and who can answer it>
-Why unverifiable here: <runtime only / external service / production data / config>
-```
-
 ## Pre-existing issues noticed (informational, not blocking)
 
 <!-- Listed once, never escalated into a reason to reject this change, never
@@ -85,16 +59,17 @@ Why unverifiable here: <runtime only / external service / production data / conf
 ## Dimension Pass
 
 <!-- One line each, so the reader knows which checks actually ran. N/A is a
-     legitimate answer when the diff does not touch that dimension. -->
+     legitimate answer when the diff does not touch that dimension. A ❌ line
+     names the problem itself - never "see finding #n". -->
 
 ```
-1 Call chain / reachability : OK | N/A | see finding #<n>
-2 Backward compatibility    : OK | N/A | see finding #<n>
-3 Boundaries / runtime      : OK | N/A | see finding #<n>
-4 Cross-layer consistency   : OK | N/A | see finding #<n>
-5 Validation order / errors : OK | N/A | see finding #<n>
-6 Maintainability           : OK | N/A | see finding #<n>
-7 Tests                     : OK | N/A | see finding #<n>
+1 Call chain / reachability : OK | N/A | ❌ <the problem in a few words, path:line>
+2 Backward compatibility    : OK | N/A | ❌ <...>
+3 Boundaries / runtime      : OK | N/A | ❌ <...>
+4 Cross-layer consistency   : OK | N/A | ❌ <...>
+5 Validation order / errors : OK | N/A | ❌ <...>
+6 Maintainability           : OK | N/A | ❌ <...>
+7 Tests                     : OK | N/A | ❌ <...>
 Contract loss (Gate 5 dims) : unchanged | <delta> - <intended? evidence>
 ```
 

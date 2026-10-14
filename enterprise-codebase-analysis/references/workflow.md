@@ -202,7 +202,8 @@ Manager Summary, Approval Recommendation, Implementation Handoff) from
 document. A verdict recommends; it never self-approves.
 
 **Approval Gate #1** happens only when a change was asked for. Present the
-analysis, then `AWAITING USER APPROVAL TO IMPLEMENT` - plus
+analysis as the reply digest (`change-proposal.md` §10 - the file holds the full
+report), then `AWAITING USER APPROVAL TO IMPLEMENT` - plus
 `AWAITING USER PATTERN CHOICE` if step 14 produced a qualifying option
 (`development-convention.md` §3). "Looks good" is approval; silence is not;
 silence on the pattern choice means Option A. No branch before this gate.
