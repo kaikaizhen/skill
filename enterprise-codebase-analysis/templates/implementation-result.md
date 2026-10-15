@@ -100,8 +100,8 @@ Self-Review (Gate 6):
 <!-- Read your own diff as a reviewer would, after Gate 5 run 2
      (code-quality-gates.md §8). Proportional - seven short lines on a small fix,
      but never skipped and never a repository sweep. OK means it was checked, not
-     that it was assumed. A BLOCKER is FIXED before this report, not listed here;
-     if the fix needed unapproved scope, stop and ask instead. -->
+     that it was assumed. A 🔴 建議修正 is FIXED before this report, not listed
+     here; if its fix needed unapproved scope, stop and ask instead. -->
 1 Call chain / reachability : OK - caller at <path:line>, runs when <condition>
 2 Backward compatibility    : OK | <finding> - populations checked: <which>
 3 Boundaries / runtime      : OK | <finding>
@@ -111,10 +111,13 @@ Self-Review (Gate 6):
 7 Tests                     : EXECUTED AND PASSING | STATIC REVIEW ONLY
                               | NOT VERIFIED  + gaps
 Findings for the user: NONE
-<!-- else the review table (explanation-standard.md §4), one self-contained row each:
-     | 分類 (🟠 / 🟡 / 🔵 / ❓) | 程式來源 path:line | 原因／風險 trigger -> impact | 建議修改方式 |
-     Judged by real impact; do not inflate improvements into blockers. A
-     pre-existing defect merely noticed is reported, not fixed (HARD RULE 12). -->
+<!-- else the review table (explanation-standard.md §4), one self-contained row
+     each, with all three axes kept apart:
+     | 嚴重度 (🟡 / 🟢) | 驗證 (✅ / ❓) | 新舊 | 程式來源 path:line | 原因／風險
+       trigger -> impact | 建議修改方式 |
+     Judged by real impact; do not inflate improvements into 🔴. A ❓ goes to a
+     待確認事項 line with the exact question. A pre-existing defect merely noticed
+     is reported, not fixed (HARD RULE 12). -->
 
 Diff Summary:
 <!-- the important hunks, not the whole diff -->

@@ -22,7 +22,7 @@ Ticket -> Repo (tentative) -> Parse Ticket
   -> Build / Test -> Diff -> [GATE 5 run 2] -> [GATE 6 Self-Review] -> Memory Delta
   == APPROVAL GATE #2 ==   -> Local Commit -> [驗收標準] -> STOP
 
-  any failure at Build / Test / Lint / AC / Gate 5 / a Gate 6 BLOCKER
+  any failure at Build / Test / Lint / AC / Gate 5 / a Gate 6 🔴
     -> FIX TASK (scoped context, not a ticket restart)
     -> Diagnose -> Smallest Safe Fix -> Build / Test -> Verify
     -> pass: resume at the failing step | fail: next Fix Task
@@ -79,28 +79,16 @@ document (`requirement-evidence-gates.md`).
 
 ## 7-9. Classification, Blocking Check, Scope
 
-Classification decides scan depth (`scoped-scan.md`): **Bug** (root cause
-mandatory) / **Optimization / Refactor** (flow, bottleneck, dependency, impact,
-risk) / **Migration** (both sides, coexistence, rollback) / **Feature** (minimal
-integration scan).
+Classification decides scan depth (`scoped-scan.md`): **Bug** (root cause mandatory) / **Optimization / Refactor** (flow, bottleneck, dependency, impact, risk) / **Migration** (both sides, coexistence, rollback) / **Feature** (minimal integration scan).
 
-Blocking means "cannot safely continue without it": a contradictory requirement, a
-missing business rule the change depends on, an unknown critical data source, a
-needed product decision, a security risk.
+Blocking means "cannot safely continue without it": a contradictory requirement, a missing business rule the change depends on, an unknown critical data source, a needed product decision, a security risk.
 
 ```
 STATUS: BLOCKED  -> list what needs confirmation, then STOP | READY FOR ANALYSIS
 ```
-Not blockers: **a needed DB write** (that is the Database Mutation Approval -
-`database-safety.md` - escalating to BLOCKED only if the user declines, no
-read-only path exists and root cause needs it) and **a requirement decision**
-(undecided scope beyond the baseline does not block clear level-1 requirements).
+Not blockers: **a needed DB write** (that is the Database Mutation Approval - `database-safety.md` - escalating to BLOCKED only if the user declines, no read-only path exists and root cause needs it) and **a requirement decision** (undecided scope beyond the baseline does not block clear level-1 requirements).
 
-Keep the five categories apart: requirement / baseline / gap / technical blocker /
-requirement decision (`requirement-evidence-gates.md`). Non-blocking unknowns ->
-`workspace/memory/unknowns.md`, `Blocking Now: NO`. Write In Scope / Out of Scope -
-Out of Scope stops the scan spreading; if step 3 flagged a multi-carrier domain,
-say whether another carrier is in scope.
+Keep the five categories apart: requirement / baseline / gap / technical blocker / requirement decision (`requirement-evidence-gates.md`). Non-blocking unknowns -> `workspace/memory/unknowns.md`, `Blocking Now: NO`. Write In Scope / Out of Scope - Out of Scope stops the scan spreading; if step 3 flagged a multi-carrier domain, say whether another carrier is in scope.
 ## 9.5 GATE 2 - Active Carrier Confirmation (conditional)
 
 Triggered by a page / screen / app-flow target, a designated baseline ("比照 X"), a
@@ -182,52 +170,23 @@ failure. A test needing a DB write goes through the DB Mutation Approval first.
 
 ## 17.4-18. GATE 5 run 1, GATE 4, then APPROVAL GATE #1
 
-**Gate 5 run 1** compares the **planned** change against the authoritative
-baseline (main / the authoritative branch as of the ticket's start - never the
-feature branch's previous commit) across the seven contract dimensions, after a
-Side-effect Discovery sweep of the mutation's success **and** failure paths.
-Every unintended delta is resolved in the plan, or carried to the approval gate
-as an explicit decision. Table, baseline rules, the six side-effect attributes
-and risk levels: `regression-validator.md`.
+**Gate 5 run 1** compares the **planned** change against the authoritative baseline (main / the authoritative branch as of the ticket's start - never the feature branch's previous commit) across the seven contract dimensions, after a Side-effect Discovery sweep of the mutation's success **and** failure paths. Every unintended delta is resolved in the plan, or carried to the approval gate as an explicit decision. Table, baseline rules, the six side-effect attributes and risk levels: `regression-validator.md`.
 
-**Gate 4** is then a recompute, not a rewrite or a rescan: superseded conclusions
-are **deleted**, not annotated; every plan item traces to a level-1 requirement;
-every blocker really blocks; every MISSING meets Gate 3's threshold. Output a
-short `## Consistency Pass`. Runs for analysis-only requests too
-(`requirement-evidence-gates.md`).
+**Gate 4** is then a recompute, not a rewrite or a rescan: superseded conclusions are **deleted**, not annotated; every plan item traces to a level-1 requirement; every blocker really blocks; every MISSING meets Gate 3's threshold. Output a short `## Consistency Pass`. Runs for analysis-only requests too (`requirement-evidence-gates.md`).
 
-**The report** is assembled per `change-proposal.md` (shape, regression grade,
-Manager Summary, Approval Recommendation, Implementation Handoff) from
-`templates/issue-analysis.md` + `templates/change-proposal.md` appended into one
-document. A verdict recommends; it never self-approves.
+**The report** is assembled per `change-proposal.md` (shape, regression grade, Manager Summary, Approval Recommendation, Implementation Handoff) from `templates/issue-analysis.md` + `templates/change-proposal.md` appended into one document. A verdict recommends; it never self-approves.
 
-**Approval Gate #1** happens only when a change was asked for. Present the
-analysis as the reply digest (`change-proposal.md` §10 - the file holds the full
-report), then `AWAITING USER APPROVAL TO IMPLEMENT` - plus
-`AWAITING USER PATTERN CHOICE` if step 14 produced a qualifying option
-(`development-convention.md` §3). "Looks good" is approval; silence is not;
-silence on the pattern choice means Option A. No branch before this gate.
-`NEEDS HUMAN DECISION` or `NOT RECOMMENDED` -> state what must be decided and
-stop; do not ask for implementation approval.
+**Approval Gate #1** happens only when a change was asked for. Present the analysis as the reply digest (`change-proposal.md` §10 - the file holds the full report), then `AWAITING USER APPROVAL TO IMPLEMENT`, plus `AWAITING USER PATTERN CHOICE` if step 14 produced a qualifying option (`development-convention.md` §3). "Looks good" is approval; silence is not; silence on the pattern choice means Option A. No branch before this gate. `NEEDS HUMAN DECISION` / `NOT RECOMMENDED` -> state what must be decided and stop; do not ask for implementation approval.
 
 ## 19-20. Branch and Implement
 
-Branch name by the 5-level priority in `git-safety.md` (live repository rule file
-first, memory second); never branch off or commit onto `develop`/`main`/`master`.
-Implement existing-pattern-first per the Convention Baseline: smallest reasonable
-diff, the repository's native error-handling channel, its logger and placeholder
-rule, no new abstraction or package the ticket does not need
-(`development-convention.md` §2, §4, §5). Quality dimensions 3, 5, 6 and 7 are
-written in while typing, not reviewed in afterwards: boundaries and runtime safety,
-validation order on the native failure channel, naming and no duplicated rule, the
-tests the new rule needs (`code-quality-gates.md` §3, §5, §6, §7).
+Branch name by the 5-level priority in `git-safety.md` (live repository rule file first, memory second); never branch off or commit onto `develop`/`main`/`master`. Implement existing-pattern-first per the Convention Baseline: smallest reasonable diff, the repository's native error-handling channel, its logger and placeholder rule, no new abstraction or package the ticket does not need (`development-convention.md` §2, §4, §5). Quality dimensions 3, 5, 6 and 7 are written in while typing, not reviewed in afterwards: boundaries and runtime safety, validation order on the native failure channel, naming and no duplicated rule, the tests the new rule needs (`code-quality-gates.md` §3, §5, §6, §7).
 
 ```
 DB write needed?          -> DATABASE MUTATION APPROVAL REQUIRED, then wait
 No test covers the flow?  -> NO RELEVANT TESTS FOUND, ask the user, wait
 ```
-No local destructive git without approval; no push / MR / PR / remote or
-production mutation at any point.
+No local destructive git without approval; no push / MR / PR / remote or production mutation at any point.
 
 ## 21. Build / Test / Diff  (`verification.md` §1-§3)
 
@@ -235,17 +194,9 @@ production mutation at any point.
 <build command>  <relevant test command>  git status  git diff
 git add <specific ticket files>           git diff --cached
 ```
-Build is exactly one of `PASS` / `FAILED` / `NOT RUN` with the command run; only
-`PASS` permits "complete". Run tests **related to this change** - Existing Test
-Coverage + Impact Scope + one per non-`unchanged` Gate 5 row + what you added -
-via the runner's filter, not the whole suite. A failure that also fails at the
-Gate 5 baseline is `PRE-EXISTING FAILURE`, reported not fixed. Existing tests are
-preserved; never run a deploy/push target; no skill document staged.
+Build is exactly one of `PASS` / `FAILED` / `NOT RUN` with the command run; only `PASS` permits "complete". Run tests **related to this change** - Existing Test Coverage + Impact Scope + one per non-`unchanged` Gate 5 row + what you added - via the runner's filter, not the whole suite. A failure that also fails at the Gate 5 baseline is `PRE-EXISTING FAILURE`, reported not fixed. Existing tests are preserved; never run a deploy/push target; no skill document staged.
 
-A build, test, lint, AC or Gate 5 failure opens a **Fix Task**
-(`verification.md` §3.5): diagnose from real output, smallest safe fix, re-verify,
-resume at the failing step. Never a reason to re-run the analysis, rescan, widen
-the approved scope or weaken a test.
+A build, test, lint, AC or Gate 5 failure, or a Gate 6 🔴, opens a **Fix Task** (`verification.md` §3.5): diagnose from real output, smallest safe fix, re-verify, resume at the failing step. Never a reason to re-run the analysis, rescan, widen the approved scope or weaken a test.
 
 ## 21.5 GATE 5 run 2 - Contract Preservation on the real diff
 
@@ -263,11 +214,11 @@ regression the user has not accepted **blocks Approval Gate #2**: report
 Every implementation, every time, after Gate 5 run 2: read your own diff as a
 reviewer would and answer the seven dimensions in one compact block, ending with
 the test label `EXECUTED AND PASSING` / `STATIC REVIEW ONLY` / `NOT VERIFIED`
-(`code-quality-gates.md` §8). Seven short lines on a one-line fix. A `BLOCKER` is
+(`code-quality-gates.md` §8). Seven short lines on a one-line fix. A 🔴 建議修正 is
 **fixed now** through the Fix Loop, inside the approved scope - not shipped as a
 known defect; if its fix needs unapproved scope, stop and ask (it blocks Approval
-Gate #2). `MAJOR` / `MINOR` / `RISK` are listed for the user. Gate 6 never widens
-scope and never repairs a pre-existing defect it merely noticed (HARD RULE 12).
+Gate #2). 🟡 / 🟢 are listed for the user and a ❓ goes to 待確認事項. Gate 6 never
+widens scope, nor repairs a pre-existing defect it merely noticed (HARD RULE 12).
 
 ## 22-24. Memory Delta, APPROVAL GATE #2, Local Commit, STOP
 

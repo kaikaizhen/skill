@@ -27,27 +27,11 @@ Build: NOT RUN     <command that would be used>   <why it cannot run here>
 
 Rules:
 
-- **Only `PASS` permits the words "完成" / "done" / "implemented".** A build that
-  was not run, or did not pass, means the work is reported as *unverified*.
-- `FAILED` -> fix it. If it genuinely cannot be fixed inside this ticket's scope,
-  report `FAILED` with the errors, state what is blocked, and stop at Approval
-  Gate #2 with the change explicitly marked unverified. Never summarise a failing
-  build as "just warnings".
-- `NOT RUN` (toolchain absent, restore needs network/credentials that are not
-  available, build requires Docker or an IDE that is not installed, building
-  would touch a shared artefact) -> name exactly what is missing and write:
-
-  ```
-  VERIFICATION INCOMPLETE - completion not claimed
-  ```
-
-  then ask the user to run it if they can, and report their result rather than
-  assuming it.
-- Reading the code, a linter, an IDE squiggle, or "this should compile" never
-  substitutes for a build.
-- **Never run a build target that deploys, pushes an image, or touches a shared
-  environment** (`*-docker-build-push`, `*-deploy-qa`, `*-deploy-production`, or
-  equivalents). Local compile only. This follows from HARD RULE 1.
+- **Only `PASS` permits the words "完成" / "done" / "implemented".** A build not run, or not passing, means the work is reported as *unverified*.
+- `FAILED` -> fix it. If it genuinely cannot be fixed inside this ticket's scope, report `FAILED` with the errors, state what is blocked, and stop at Approval Gate #2 with the change explicitly marked unverified. Never summarise a failing build as "just warnings".
+- `NOT RUN` (toolchain absent; restore needs network or credentials that are not available; build needs Docker or an IDE that is not installed; building would touch a shared artefact) -> name exactly what is missing, write `VERIFICATION INCOMPLETE - completion not claimed`, then ask the user to run it if they can and report *their* result rather than assuming it.
+- Reading the code, a linter, an IDE squiggle, or "this should compile" never substitutes for a build.
+- **Never run a build target that deploys, pushes an image, or touches a shared environment** (`*-docker-build-push`, `*-deploy-qa`, `*-deploy-production`, or equivalents). Local compile only - this follows from HARD RULE 1.
 
 ---
 
@@ -80,13 +64,9 @@ document under `## Existing Test Coverage`.
 
 ### Which tests to run - related, not everything
 
-Run the tests **related to this change**, and report their counts honestly. Not
-just the test you added; not the whole suite either. A legacy repository usually
-carries failures this ticket did not cause, and running everything turns those
-into a permanent block on unrelated work.
+Run the tests **related to this change**, and report their counts honestly. Not just the test you added; not the whole suite either - a legacy repository usually carries failures this ticket did not cause, and running everything turns those into a permanent block on unrelated work.
 
-The related set is already written down by earlier steps - it is not a new
-judgement call:
+The related set is already written down by earlier steps - it is not a new judgement call:
 
 ```
 1  the tests listed in ## Existing Test Coverage  (the changed method / flow)
@@ -97,29 +77,18 @@ judgement call:
 4  the test you added or adjusted
 ```
 
-Select them with the runner's own filter (test class, namespace, category, name
-pattern, file path) rather than by running the project and reading past the
-noise. State the filter used, so the scope is reviewable.
+Select them with the runner's own filter (test class, namespace, category, name pattern, file path) rather than by running the project and reading past the noise. State the filter used, so the scope is reviewable. Widen beyond that set only when the change is in shared code whose callers could not be enumerated (`UNKNOWN CALLERS`, P3) - and then say why.
 
-Widen beyond that set only when the change is in shared code whose callers could
-not be enumerated (`UNKNOWN CALLERS`, P3) - and then say why.
-
-**A failure that also fails on the authoritative baseline is not this ticket's.**
-Before treating any failure as caused by this change, check the same test at the
-Gate 5 baseline (`regression-validator.md`). Report it as:
+**A failure that also fails on the authoritative baseline is not this ticket's.** Before treating any failure as caused by this change, check the same test at the Gate 5 baseline (`regression-validator.md`). Report it as:
 
 ```
 PRE-EXISTING FAILURE   <test>   fails at baseline <ref> too - not caused by this
                        change, not fixed here (that would be scope creep)
 ```
 
-and carry on. Only a test that passes at the baseline and fails now blocks the
-work. Never "fix" an unrelated broken test inside this ticket, and never delete,
-skip or weaken one to make the run green (HARD RULE 11) - if an unrelated failure
-makes the related set unrunnable, say so and let the user decide.
+and carry on. Only a test that passes at the baseline and fails now blocks the work. Never "fix" an unrelated broken test inside this ticket, and never delete, skip or weaken one to make the run green (HARD RULE 11) - if an unrelated failure makes the related set unrunnable, say so and let the user decide.
 
-"改 A 壞 B" is caught by the related set above - specifically by items 2 and 3,
-which is why they are derived from the impact analysis rather than guessed.
+"改 A 壞 B" is caught by items 2 and 3 of the related set, which is why they are derived from the impact analysis rather than guessed.
 
 ### When no existing tests cover it
 
@@ -181,13 +150,9 @@ AWAITING USER DECISION
 
 ## 3.5 The Fix Loop - what happens when verification fails
 
-A failure at step 21 / 21.5 does **not** restart the ticket. Re-running the whole
-analysis re-opens settled scope, re-reads source already confirmed, and burns the
-context that the failure evidence needs. Instead, open a **Fix Task**: one failure,
-one diagnosis, one smallest safe fix, one re-verification.
+A failure at step 21 / 21.5 does **not** restart the ticket. Re-running the whole analysis re-opens settled scope, re-reads confirmed source, and burns the context the failure evidence needs. Instead open a **Fix Task**: one failure, one diagnosis, one smallest safe fix, one re-verification.
 
-Triggers: build failure · test failure · lint failure · an acceptance criterion
-not met · a Gate 5 regression.
+Triggers: build · test · lint failure · an acceptance criterion not met · a Gate 5 regression · a Gate 6 🔴.
 
 ```
 Failure
@@ -207,28 +172,16 @@ current diff                        the failure evidence, verbatim
 the source the failure points at    previous decisions, as a summary
 ```
 
-Dropped: the full analysis document, source outside the failing path, superseded
-tool output, failures already resolved. The ticket's scope decisions, gate outputs
-and acceptance criteria stay authoritative - a Fix Task may not quietly widen
-scope, and a fix that genuinely requires work outside the approved plan goes back
-to the user, not into the diff (HARD RULE 12).
+Dropped: the full analysis document, source outside the failing path, superseded tool output, failures already resolved. The ticket's scope decisions, gate outputs and acceptance criteria stay authoritative - a Fix Task may not quietly widen scope, and a fix needing work outside the approved plan goes back to the user, not into the diff (HARD RULE 12).
 
 **Rules inside the loop:**
 
-- The fix is the smallest change that addresses the diagnosed cause -
-  `Understand -> Verify -> Modify`, existing-pattern-first
-  (`development-convention.md` §3b). Not a redesign, not a drive-by cleanup.
-- Diagnose from the actual error lines. Attempting a fix before the cause is named
-  is guessing; two guesses in a row on the same failure means stop and report.
-- **Never** make the signal green by weakening it: no deleted / skipped / disabled
-  test, no relaxed assertion, no suppressed warning-as-error, no commented-out
-  lint rule (HARD RULE 11).
+- The fix is the smallest change addressing the diagnosed cause - `Understand -> Verify -> Modify`, existing-pattern-first (`development-convention.md` §3b). Not a redesign, not a drive-by cleanup.
+- Diagnose from the actual error lines. Fixing before the cause is named is guessing; two guesses in a row on the same failure means stop and report.
+- **Never** make the signal green by weakening it: no deleted / skipped / disabled test, no relaxed assertion, no suppressed warning-as-error, no commented-out lint rule (HARD RULE 11).
 - A `PRE-EXISTING FAILURE` (§2) is not a Fix Task - it is reported and left alone.
-- Each iteration re-runs the build and the related test set, and if the diff
-  changed, Gate 5 run 2 as well (`regression-validator.md`). Earlier iterations'
-  output is superseded and dropped.
-- The loop is bounded by evidence, not by attempts: when an iteration produces no
-  new information about the cause, stop and report rather than cycling.
+- Each iteration re-runs the build and the related test set, plus Gate 5 run 2 if the diff changed (`regression-validator.md`). Earlier output is superseded and dropped.
+- The loop is bounded by evidence, not attempts: when an iteration produces no new information about the cause, stop and report rather than cycling.
 
 ```
 FIX LOOP EXHAUSTED
@@ -239,9 +192,7 @@ Blocked by:  <missing decision / missing access / out-of-scope cause>
 AWAITING USER DECISION
 ```
 
-The loop ends in exactly one of: verification passes and the ticket continues to
-Approval Gate #2; `VERIFICATION INCOMPLETE` with the reason (HARD RULE 10); or
-`FIX LOOP EXHAUSTED` above. It never ends in a completion claim.
+The loop ends in exactly one of: verification passes and the ticket continues to Approval Gate #2; `VERIFICATION INCOMPLETE` with the reason (HARD RULE 10); or `FIX LOOP EXHAUSTED` above. It never ends in a completion claim.
 
 ---
 

@@ -1,0 +1,83 @@
+# Runtime declaration - EXAMPLE / EMPTY TEMPLATE
+#
+# Copy to `runtime.yaml` beside this file and fill in what you actually know:
+#     cp runtime.example.yaml runtime.yaml
+#
+# What this file is for
+#   This is the ONLY place in the whole skill where a provider, model, endpoint,
+#   host, port or token count may appear (HARD RULE 15). SKILL.md, references/ and
+#   templates/ stay model-agnostic; they read what is declared here.
+#   Rules that consume it: references/runtime-contract.md (§2 CurrentModel,
+#   §3 context budget, §5 model switching, §8 retrieval seams).
+#
+# What it is NOT for
+#   Never put a credential value here - no API key, token, password or connection
+#   string. Record the key *NAME* or the environment variable name only
+#   (HARD RULE 3). This file is organization-local and git-ignored; only this
+#   .example copy is tracked.
+#
+# Leaving a field as UNKNOWN is a valid, supported state, not an error. The engine
+# then takes the conservative branch: an undeclared context_limit is treated as
+# *small*, and an undeclared capability as *absent*. No gate is ever skipped,
+# shortened or substituted because of what is declared here.
+
+declared_at: UNKNOWN            # YYYY-MM-DD - when these values were last checked
+declared_by: UNKNOWN            # who checked them (a person, or the host's docs)
+
+# --------------------------------------------------------------------------
+# The model the host currently has selected. Descriptive only - the HOST owns
+# model selection; this skill never selects, configures or calls a model.
+# --------------------------------------------------------------------------
+model:
+  name: UNKNOWN                 # free text, as the host's own picker labels it
+  id: UNKNOWN                   # the host's identifier, if it exposes one
+  context_limit: UNKNOWN        # usable input+output window, in tokens (integer)
+  capabilities:
+    supports_tools: UNKNOWN             # true | false | UNKNOWN
+    supports_structured_output: UNKNOWN
+    supports_reasoning: UNKNOWN
+    supports_multimodal: UNKNOWN
+
+# --------------------------------------------------------------------------
+# Context budget. DERIVED from context_limit by runtime-contract.md §3 - do not
+# hardcode token counts. Only set these if this installation must override the
+# default fractions; otherwise leave them commented out.
+# --------------------------------------------------------------------------
+# budget:
+#   soft_limit_fraction: 0.75     # working ceiling      (default 0.70 - 0.80)
+#   reserved_output_fraction: 0.12  # never spent on input (default 0.10 - 0.15)
+
+# --------------------------------------------------------------------------
+# Toolchain commands this installation actually uses, when they are not already
+# in a repository's own rule file or its memory patterns.md. The repository's own
+# file always wins (development-convention.md §1); this is only a fallback so the
+# engine does not guess a build command.
+# --------------------------------------------------------------------------
+toolchain:
+  # <repo-name>:
+  #   build: UNKNOWN
+  #   test: UNKNOWN              # must support a filter - related tests only
+  #   test_filter_flag: UNKNOWN  # e.g. the runner's name/category filter flag
+  #   lint: UNKNOWN
+  # Never list a target that deploys, pushes an image or touches a shared
+  # environment (verification.md §1, HARD RULE 1).
+
+# --------------------------------------------------------------------------
+# Optional: semantic / vector retrieval infrastructure, if this installation has
+# any. Results from it are CANDIDATES ONLY and must be confirmed in current code
+# before being cited (runtime-contract.md §8). Key NAMES only.
+# --------------------------------------------------------------------------
+# retrieval:
+#   enabled: false
+#   embedding_model: UNKNOWN
+#   index: UNKNOWN
+#   store: UNKNOWN
+#   credential_env_var: UNKNOWN   # the variable NAME - never its value
+
+# --------------------------------------------------------------------------
+# Notes - anything a future reader needs to interpret the values above: when the
+# host last changed model, a limit that is enforced by a gateway rather than the
+# model, a capability that is declared but unreliable in practice.
+# --------------------------------------------------------------------------
+notes: |
+  UNKNOWN

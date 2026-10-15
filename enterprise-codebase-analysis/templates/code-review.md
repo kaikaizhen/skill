@@ -19,16 +19,23 @@ the user's (HARD RULE 1).
 
 ## Findings
 
-<!-- Most severe first. One row per finding, each row complete on its own - never
-     "same as above" or "see #2". Severity is real impact (code-quality-gates.md
-     §8): 🔴 BLOCKER · 🟠 MAJOR · 🟡 MINOR · 🔵 MINOR (optimisation)
-     · ❓ RISK / TO CONFIRM · ✅ checked, no change. Most diffs yield zero or one 🔴.
-     ❓ rows put the exact question to ask, and who answers it, in the fix column. -->
+<!-- Most severe first. One row per finding, complete on its own - never "same as
+     above" or "see #2". THREE AXES, never merged (explanation-standard.md §4):
+     嚴重度 🔴 建議修正 / 🟡 建議改善 / 🟢 小問題或備註   (how bad if real)
+     驗證   ✅ 已驗證 / ❓ 待確認                        (how sure we are)
+     新舊   本次新增 / 既有 / 既有但本次擴大            (where it came from)
+     Judged by real impact - most diffs yield zero or one 🔴. ❓ rows belong in the
+     待確認事項 block below, not here, and carry a conditional severity. If the
+     repository's own review chapter words these levels differently, ITS wording
+     wins for that repository (code-review.md preamble). -->
 
-| 分類 | 程式來源 | 原因／風險 | 建議修改方式 |
-|---|---|---|---|
-| 🔴 必須修正 | `<path:line>` · INTRODUCED · evidence `<path:line>` | Trigger: <input / state / population> -> Impact: <what the user or data experiences> | <smallest fix, naming the API / method> |
-| ❓ 待確認 | `<path:line>` · UNVERIFIED - <what is missing> | <why it may fail; why it cannot be verified here> | Ask <who>: <exact question> |
+| 嚴重度 | 驗證 | 新舊 | 程式來源 | 原因／風險 | 建議修改方式 |
+|---|---|---|---|---|---|
+| 🔴 建議修正 | ✅ 已驗證 | 本次新增 | `<path:line>` evidence `<path:line>` | Trigger: <input / state / population> -> Impact: <what the user or data experiences> | <smallest fix, naming the API / method> |
+| 🟡 建議改善 | ✅ 已驗證 | 既有但本次擴大 | `<path:line>` | <trigger -> impact> | <fix> |
+
+Counts: 🔴 <n> · 🟡 <n> · 🟢 <n> ｜ 待確認 ❓ <n> ｜ 本次新增 <n> · 既有 <n>
+<!-- The three axes are counted separately; a ❓ is in no severity total. -->
 
 ## Review Scope
 
@@ -50,10 +57,53 @@ Not reviewed:
      Naming the blind spots is mandatory. -->
 -
 
-## Pre-existing issues noticed (informational, not blocking)
+## 已追蹤的呼叫路徑與受影響元件 (Traced Path)
 
-<!-- Listed once, never escalated into a reason to reject this change, never
-     folded into the recommendation. A separate ticket (HARD RULE 12). -->
+<!-- Required in every review (code-review.md §2.5). Read the implementations -
+     a method name is not evidence. Every line answered, `NONE` / `UNCHANGED` /
+     `UNKNOWN CALLERS` included. -->
+
+```
+<entry point path:line> -> <service path:line> -> <data access path:line>
+  -> <query / stored procedure / external call>     <data store or service>
+Shared with:      <other callers of each shared member, path:line> | SOLE CALLER
+Transaction:      <scope, isolation, timeout, what runs inside it> | NONE
+External I/O:     <cache / mail / HTTP / queue + its timeout> | NONE
+Registration:     <new or changed DI registration + lifetime> | UNCHANGED
+Contract surface: <DTO fields / status codes / messages changed> | UNCHANGED
+                  consumers: <web / app / partner / internal> | UNKNOWN CALLERS
+Not traced:       <what stayed closed, and why>
+```
+
+## 既有高風險問題與 Hotfix 建議 (Pre-existing, not blocking)
+
+<!-- Found along the traced path, outside this diff. Being outside the diff is NOT
+     a reason to omit a SQL-injection sink, a missing authorization / ownership
+     check, a leaked secret or a data-loss path. Listed with evidence and a
+     separate-hotfix recommendation; it does NOT block this change, and the two
+     decisions are stated as separate (code-review.md §3, HARD RULE 12). -->
+
+| 風險 | 程式來源 | 為何危險 | 建議 |
+|---|---|---|---|
+| 🔴 | `<path:line>` · PRE-EXISTING · evidence `<path:line>` | <trigger -> impact> | 另開 hotfix：<what to change> |
+
+- NONE
+
+## 待確認事項（未驗證）To Confirm
+
+<!-- NEVER mixed into the findings table. One block per open item, all four lines
+     filled (code-review.md §5.5). Its verdict is completed only after the user
+     answers; without an answer the review is still delivered, partial, with the
+     item left explicitly unverified. A ❓ counts toward no severity total. -->
+
+```
+❓ <the open item in one line>
+Established:   <what WAS verified, with path:line>
+Missing:       <the specific information you could not reach, and why>
+Scenarios:     if <A> -> <conclusion A>; if <B> -> <conclusion B>
+Question:      <one concrete question>  ->  <who can answer it>
+```
+
 - NONE
 
 ## Dimension Pass
@@ -83,6 +133,10 @@ Status: EXECUTED AND PASSING | STATIC REVIEW ONLY | NOT VERIFIED
 
 Command (if any):
 Coverage the diff should have but does not:
+-
+Verification this review could NOT complete:
+<!-- runtime-only behaviour, an external service, production data, a stored
+     procedure or configuration that could not be read. Never implied as clear. -->
 -
 
 ## Next Step

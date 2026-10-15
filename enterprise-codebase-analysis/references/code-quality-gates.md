@@ -207,21 +207,24 @@ SELF-REVIEW (Gate 6)
                               | NOT VERIFIED   + gaps
 ```
 
-Severity (shared with `code-review.md`):
+Severity is one of **three** levels, and it is never mixed with how sure you are or
+with where the problem came from. The three axes and their values are defined once,
+in `explanation-standard.md` §4:
 
-| | Shown to the user as | Meaning |
-|---|---|---|
-| `BLOCKER` | 🔴 必須修正 | wrong behaviour, a broken business rule, a compatibility break, or a runtime exception on a reachable path |
-| `MAJOR` | 🟠 建議改善 | a real defect on a narrow or unproven path, or a missing test for a rule this change introduced |
-| `MINOR` | 🟡 可改善 / 🔵 可優化 | maintainability, naming, duplication, defensive guard (🟡); performance, structure, UX (🔵) - worth doing, does not hold the change |
-| `RISK / TO CONFIRM` | ❓ 待確認 | cannot be verified from here; stated as a risk, never asserted as a defect |
+| 嚴重度 | Here that means |
+|---|---|
+| 🔴 建議修正 | wrong behaviour, a broken business rule, a compatibility break, or a runtime exception on a reachable path |
+| 🟡 建議改善 | a real defect on a narrow or unproven path, a missing test for a rule this change introduced, or maintainability / naming / duplication / performance worth fixing |
+| 🟢 小問題或備註 | a minor point or a note for the next reader; no action required |
 
-Findings reach the user in the review table of `explanation-standard.md` §4 - one
-self-contained row each, with a concrete fix.
+Separately: **驗證狀態** ✅ 已驗證 / ❓ 待確認, and **新舊** 本次新增 / 既有 /
+既有但本次擴大. Findings reach the user in the review table of
+`explanation-standard.md` §4 - one self-contained row each, with a concrete fix.
 
-A `BLOCKER` is **fixed before the report**, inside the approved scope, through the
-Fix Loop (`verification.md` §3.5) - not reported as a known defect. If fixing it
-needs scope the user has not approved, stop and ask; it blocks Approval Gate #2.
-`MAJOR` and below are listed in the Gate #2 report for the user to decide.
+In Mode A, a 🔴 is **fixed before the report**, inside the approved scope, through
+the Fix Loop (`verification.md` §3.5) - not reported as a known defect. If fixing
+it needs scope the user has not approved, stop and ask; it blocks Approval Gate #2.
+🟡 and 🟢 are listed in the Gate #2 report for the user to decide; a ❓ goes to the
+待確認事項 block instead, and its severity is stated conditionally.
 Gate 6 never widens the approved scope on its own, and never fixes a pre-existing
 defect it merely happened to notice - that is reported (HARD RULE 12).

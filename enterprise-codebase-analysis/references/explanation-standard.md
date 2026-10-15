@@ -75,20 +75,24 @@ Pick the one that fits; mix only when the question really spans two.
 
 **Code review / code analysis** (Mode R, Gate 6 findings, a review inside Mode A)
 
-| 分類 | 程式來源 | 原因／風險 | 建議修改方式 |
-|---|---|---|---|
-| 🔴 | `path:line` | trigger -> impact | the concrete API / method / mechanism |
+Three axes, kept apart - **severity is not a verification state, and neither is
+"new or pre-existing"**. A finding row carries all three:
 
-| Icon | Meaning | Severity (`code-quality-gates.md` §8) |
-|---|---|---|
-| 🔴 必須修正 | clear defect or major risk | `BLOCKER` |
-| 🟠 建議改善 | real problem, fix in this change | `MAJOR` |
-| 🟡 可改善 | maintainability, readability, defensive guard | `MINOR` |
-| 🔵 可優化 | performance, structure, UX improvement | `MINOR` (optimisation) |
-| ❓ 待確認 | evidence not reachable here | `RISK / TO CONFIRM` |
-| ✅ 已通過 | checked, no change needed | - |
+| 嚴重度 | 驗證 | 新舊 | 程式來源 | 原因／風險 | 建議修改方式 |
+|---|---|---|---|---|---|
+| 🔴 建議修正 | ✅ 已驗證 | 本次新增 | `path:line` | trigger -> impact | the concrete API / method / mechanism |
 
-The fix column names the method / API / approach; full code only when asked.
+| Axis | Values |
+|---|---|
+| **嚴重度** (how bad if real) | 🔴 建議修正 - clear defect or major risk, fix before this change goes out · 🟡 建議改善 - a real but narrower problem, or maintainability / performance / readability worth fixing · 🟢 小問題或備註 - minor point or note, no action required |
+| **驗證狀態** (how sure we are) | ✅ 已驗證 - confirmed from the evidence at `path:line` · ❓ 待確認 - the evidence is not reachable here; the row moves to 待確認事項 and its severity is stated conditionally ("if A -> 🔴") |
+| **新舊** (where it came from) | 本次新增 `INTRODUCED` · 既有 `PRE-EXISTING` · 既有但本次擴大 `AGGRAVATED` |
+
+A ❓ row never counts toward the 🔴 / 🟡 totals, and "probably a bug" is not a
+severity. In a chat reply the 驗證 and 新舊 cells may be merged into one
+(`✅ 本次新增`) to keep the table readable; the review file keeps all three
+columns. The fix column names the method / API / approach; full code only when
+asked.
 
 **Execution / change plan** (Mode A proposal, "how would you change this")
 
