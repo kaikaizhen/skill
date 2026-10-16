@@ -29,6 +29,13 @@ compare data across shards
 read repository code
 ```
 
+Two limits apply to every read-only investigation (detail and the report form:
+`e2e-investigation.md` Phase 2): **reading one shard proves one shard** - never
+generalise a schema, index or data state to the others without reading each; and
+with no access, write the read-only SQL a DBA can run, say which database it runs
+against and what each result would mean, and leave the item `❓ 待確認` - an unrun
+query's expected output is never a finding.
+
 ---
 
 ## Requires Explicit Approval

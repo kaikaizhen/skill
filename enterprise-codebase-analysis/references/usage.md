@@ -63,6 +63,16 @@ ask for approval to implement. This is different from Mode C: Mode A analysis-on
 still starts from a ticket/problem and follows Mode A's scope and evidence rules;
 Mode C starts from "explain this code" with no ticket at all.
 
+### E2E anomaly / deep root cause analysis (within Mode A)
+
+An E2E run that exposes something a user could notice - a wrong business result
+behind a success screen, data inconsistency, a duplicate / lost / overwritten row,
+a cross-system side effect, a concurrency or timing defect - is a **Mode A bug with
+escalated depth**, not a new mode: `e2e-investigation.md` Phases 1-8, reported on
+`templates/e2e-bug-report.md`. The same escalation serves an explicit request for a
+deep root cause analysis. Investigation is read-only; implementing a fix still goes
+through Approval Gate #1.
+
 ## Mode R - Requested Code Review
 
 Trigger: the user asks for a review of code that **already exists** - an MR / PR,
@@ -193,6 +203,7 @@ These are never performed by the skill, in any circumstance.
 | Issue analysis | `<workspace>/issue/<RepoName>/<issue>.md` (e.g. `<workspace-root>/issue/<RepoName>/`) | Never (outside repository and skill) |
 | Acceptance test cases | `<workspace>/issue/<RepoName>/<issue>驗收標準.md` - only after the user confirms the feature works | Never |
 | Code review (Mode R) | `<workspace>/issue/<RepoName>/<branch-or-MR>-review.md` | Never |
+| E2E / root-cause investigation | `<workspace>/issue/<RepoName>/<issue>-調查報告.md` | Never |
 | Skill retrospective | `<workspace>/issue/<RepoName>/<issue>skill待優化項目.md` - only on explicit request | Never |
 | Memory | `<skill>/workspace/memory/**` (this installation) | Never (outside the repository) |
 | Unknowns / corrections | `<skill>/workspace/memory/unknowns.md`, `corrections.md` | Never |

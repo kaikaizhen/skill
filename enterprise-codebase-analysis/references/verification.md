@@ -31,6 +31,7 @@ Rules:
 - `FAILED` -> fix it. If it genuinely cannot be fixed inside this ticket's scope, report `FAILED` with the errors, state what is blocked, and stop at Approval Gate #2 with the change explicitly marked unverified. Never summarise a failing build as "just warnings".
 - `NOT RUN` (toolchain absent; restore needs network or credentials that are not available; build needs Docker or an IDE that is not installed; building would touch a shared artefact) -> name exactly what is missing, write `VERIFICATION INCOMPLETE - completion not claimed`, then ask the user to run it if they can and report *their* result rather than assuming it.
 - Reading the code, a linter, an IDE squiggle, or "this should compile" never substitutes for a build.
+- **An end-to-end run is judged by its business result, not its status code.** HTTP 200, a success screen, a finished step and an empty console prove only that nothing threw; within what the environment allows, confirm the data the operation was supposed to produce. A user-visible anomaly, data inconsistency or duplicate / lost / overwritten row escalates to `e2e-investigation.md`, not a "pass with a note".
 - **Never run a build target that deploys, pushes an image, or touches a shared environment** (`*-docker-build-push`, `*-deploy-qa`, `*-deploy-production`, or equivalents). Local compile only - this follows from HARD RULE 1.
 
 ---

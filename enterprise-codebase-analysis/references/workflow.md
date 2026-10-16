@@ -126,6 +126,14 @@ written seam inventory. Shared code is not modified while a row sits at
 Root Cause: CONFIRMED | CANDIDATE | UNKNOWN
 Evidence:   file / code / config / DB / log / runtime behaviour
 ```
+
+**Escalate the depth** when the problem came from an E2E run that a user could
+notice, or involves data inconsistency, duplicate / lost / overwritten rows, a
+cross-system side effect or concurrency - and whenever the user asks for a deep
+root cause analysis: run `e2e-investigation.md`'s Phases 1-8 inside these steps and
+report on `templates/e2e-bug-report.md` instead of `templates/issue-analysis.md`
+(its §九 carries the change proposal). Same gates, same Approval Gate #1 before any
+fix. A green E2E signal is not a pass - the business result and the data decide.
 Never label a hypothesis `CONFIRMED`. Impact lists actual callers, shared
 services, other repositories, DB writes, cached values, indexed fields and jobs -
 not every theoretical consumer. In a multi-carrier domain say whether another
@@ -174,7 +182,7 @@ failure. A test needing a DB write goes through the DB Mutation Approval first.
 
 **Gate 4** is then a recompute, not a rewrite or a rescan: superseded conclusions are **deleted**, not annotated; every plan item traces to a level-1 requirement; every blocker really blocks; every MISSING meets Gate 3's threshold. Output a short `## Consistency Pass`. Runs for analysis-only requests too (`requirement-evidence-gates.md`).
 
-**The report** is assembled per `change-proposal.md` (shape, regression grade, Manager Summary, Approval Recommendation, Implementation Handoff) from `templates/issue-analysis.md` + `templates/change-proposal.md` appended into one document. A verdict recommends; it never self-approves.
+**The report** is assembled per `change-proposal.md` (shape, regression grade, Manager Summary, Approval Recommendation, Implementation Handoff) from `templates/issue-analysis.md` + `templates/change-proposal.md` appended into one document - except on the escalated E2E / root-cause path (§12-13), which reports on `templates/e2e-bug-report.md` instead, its §九 carrying the proposal. A verdict recommends; it never self-approves.
 
 **Approval Gate #1** happens only when a change was asked for. Present the analysis as the reply digest (`change-proposal.md` §10 - the file holds the full report), then `AWAITING USER APPROVAL TO IMPLEMENT`, plus `AWAITING USER PATTERN CHOICE` if step 14 produced a qualifying option (`development-convention.md` §3). "Looks good" is approval; silence is not; silence on the pattern choice means Option A. No branch before this gate. `NEEDS HUMAN DECISION` / `NOT RECOMMENDED` -> state what must be decided and stop; do not ask for implementation approval.
 
