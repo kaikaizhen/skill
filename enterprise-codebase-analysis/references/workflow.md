@@ -171,7 +171,7 @@ preconditions. **Optimization/Refactor**: this step *is* the mandatory Design &
 Implementation Strategy (§3a). Neither path adds a method, parameter or
 abstraction an existing seam already reaches (Gate 3's `Reuse`), nor a drive-by
 rename, upgrade or redesign outside the plan. Each finding is filed Required /
-Recommended refactor / Out of scope (`change-proposal.md` §3). Test plan minimum:
+Recommended refactor / Out of scope (`change-proposal.md` §3). A database structure change (`CREATE`/`ALTER TABLE`, column, type, key, index, constraint) also runs `table-design.md` and reports on `templates/table-review.md`. Test plan minimum:
 happy path, bug reproduction, regression, boundary - plus a case per
 non-`unchanged` Gate 5 row, each side effect firing once on success and not on
 failure. A test needing a DB write goes through the DB Mutation Approval first.

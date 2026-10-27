@@ -73,6 +73,19 @@ escalated depth**, not a new mode: `e2e-investigation.md` Phases 1-8, reported o
 deep root cause analysis. Investigation is read-only; implementing a fix still goes
 through Approval Gate #1.
 
+### Table design / table review (within Mode A)
+
+A task that actually involves a database structure change - `CREATE TABLE`,
+`ALTER TABLE`, adding / dropping / renaming a column, a type, length, NULL or DEFAULT,
+a primary key, unique key, index or constraint, a relation or Schema refactor, an
+unimplemented design draft, or "does this Schema change break existing behaviour" -
+applies `table-design.md` and emits the fixed-format review on
+`templates/table-review.md` (rules: `table-review.md`). Changing an existing table
+also traces dependencies, Before / After behaviour, side effects and deployment
+compatibility. Read-only: DDL / DML and code changes still need Approval Gate #1.
+SQL syntax questions, explaining a `SELECT` / `JOIN`, and reviewing ordinary
+application code never force that document.
+
 ## Mode R - Requested Code Review
 
 Trigger: the user asks for a review of code that **already exists** - an MR / PR,
@@ -203,6 +216,7 @@ These are never performed by the skill, in any circumstance.
 | Issue analysis | `<workspace>/issue/<RepoName>/<issue>.md` (e.g. `<workspace-root>/issue/<RepoName>/`) | Never (outside repository and skill) |
 | Acceptance test cases | `<workspace>/issue/<RepoName>/<issue>驗收標準.md` - only after the user confirms the feature works | Never |
 | Code review (Mode R) | `<workspace>/issue/<RepoName>/<branch-or-MR>-review.md` | Never |
+| Table review | `<workspace>/issue/<RepoName>/<table>-資料表Review.md` | Never |
 | E2E / root-cause investigation | `<workspace>/issue/<RepoName>/<issue>-調查報告.md` | Never |
 | Skill retrospective | `<workspace>/issue/<RepoName>/<issue>skill待優化項目.md` - only on explicit request | Never |
 | Memory | `<skill>/workspace/memory/**` (this installation) | Never (outside the repository) |
