@@ -80,18 +80,19 @@ If nothing is wrong, say so plainly - **never manufacture a problem to fill a ta
 三、欄位修改對照表          change comparison      <- only when altering a table
                             (plus the Before / After functional comparison)
 四、主鍵、索引及約束表      keys, indexes, constraints
-五、Review 問題清單         the one and only problem list
-六、待確認事項（主管決策）  open decisions
+五、DDL                     runnable DDL           <- always required
+六、Review 問題清單         the one and only problem list
+七、待確認事項（主管決策）  open decisions
 ```
 
 Layout: Traditional Chinese Markdown; fixed column names and order; concise enough to
 be reviewed directly; **never put a full call chain or a wall of SQL into the main
 tables** (put what is needed after the change-comparison table); do not force a large
 test matrix or a full deployment plan; expand technical detail only when the user asks
-for implementation or a material risk needs explaining. The column table, index table
-and problem list must be copyable straight into a ticket for a manager to read.
+for implementation or a material risk needs explaining. The column table, index table,
+DDL and problem list must be copyable straight into a ticket for a manager to read.
 
-## 4. Rules for the four fixed tables
+## 4. Rules for the fixed tables and the DDL
 
 **一、Basic information**: table name / change type (新增·修改) / requirement source /
 purpose / main consuming feature / blast radius / review status (已確認·待確認).
@@ -133,6 +134,39 @@ Anything not obtained is filled in as 待確認.
   follow the project's real design - never copy an example.
 - When the business unique key is unclear, give the candidate designs and their
   consequences in §6; **never pick one and present it as settled**.
+
+### 五、DDL (always required)
+
+A table cannot be approved from prose alone: a manager and a developer both need to
+see the statement that will actually run. Emit it as a SQL code block, in SQL Server
+syntax, after the index table.
+
+- **A new table**: the full `CREATE TABLE` followed by its indexes, in the order they
+  must execute. Label the block `建議設計（尚未實作）`.
+- **An altered table**: the `ALTER TABLE` / `CREATE INDEX` / `DROP` statements in
+  deployment order, each one labelled with the deployment phase it belongs to when
+  §8's analysis requires phases. Add the rollback statement for each where one
+  exists, and - when the table is small enough to be readable - the post-change full
+  `CREATE TABLE` underneath as a reference, clearly marked `變更後完整結構（參考）`.
+- **Every column carries an inline comment** giving its business meaning in
+  Traditional Chinese, and for a coded column the **values themselves**: an enum
+  lists every value (`0:Default, 1:Student, …`), a bitmask lists every bit plus what
+  `0` and `NULL` mean. This is what makes the DDL readable to someone who does not
+  know the schema, and it is not optional.
+- **Name every constraint explicitly** - `PK_<table>_<col>`, `DF_<table>_<col>`,
+  `UX_` / `IX_<table>_<cols>`, `CK_<table>_<rule>`, `FK_<table>_<ref>` - following
+  the project's existing naming convention, and **state `CLUSTERED` /
+  `NONCLUSTERED`** on the primary key and every index. An unnamed default constraint
+  cannot be dropped predictably later.
+- Keep it to the reviewed object: no `USE`, no `GO` batches that assume a tool, no
+  unrelated grants, no sample `INSERT`s.
+- **Anything not verified must be visible as such** - a `-- 未驗證：<what>` comment on
+  that line, or the whole block marked `建議設計`. Never present inferred types,
+  lengths or defaults as if they were read from the schema.
+- Sharded tables: say which databases the DDL must run against, and that **verifying
+  one shard proves one shard** (`table-design.md` §6).
+- The DDL is **for review, not for execution**: it is run only after the user
+  approves it (HARD RULE 2, Approval Gate #1), and this skill never executes it.
 
 ## 5. The problem list - the only place problems are collected
 

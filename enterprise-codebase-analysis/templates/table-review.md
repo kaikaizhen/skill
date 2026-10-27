@@ -47,7 +47,7 @@
 ### Before／After 功能對照
 
 <!-- 異動可能影響原有功能時必填（table-design.md §7）。
-     不得只寫「可能有影響，建議確認」。具體問題不寫在這裡，統一列到第五節。 -->
+     不得只寫「可能有影響，建議確認」。具體問題不寫在這裡，統一列到第六節。 -->
 
 | 功能／流程 | Before | After | 影響判定 | 建議調整 |
 |---|---|---|---|---|
@@ -64,9 +64,50 @@
 | | Primary Key / Unique Index / Nonclustered Index / Clustered Index / CHECK / FOREIGN KEY | | <對應的業務需求或查詢條件> | 現有 / 建議 / 待確認 |
 
 <!-- 必須標明 Clustered／Nonclustered；索引要說明依據的查詢條件。
-     業務唯一鍵不明確時，在第六節提出候選設計與差異，不得自行認定其中一個正確。 -->
+     業務唯一鍵不明確時，在第七節提出候選設計與差異，不得自行認定其中一個正確。 -->
 
-## 五、Review 問題清單
+## 五、DDL
+
+<!-- 必須輸出。SQL Server 語法，放在索引表之後（table-review.md §4「五、DDL」）。
+     新表 → 完整 CREATE TABLE ＋ 索引，標「建議設計（尚未實作）」。
+     改表 → 依部署順序列出 ALTER / CREATE INDEX / DROP，每句標所屬階段並附還原語句；
+            表不大時可在後面附「變更後完整結構（參考）」。
+     每個欄位都要有繁中註解；Enum 列出所有值、bitmask 列出每個 bit 與 0／NULL 的意義。
+     所有約束一律具名（PK_／DF_／UX_／IX_／CK_／FK_），PK 與索引必須標
+     CLUSTERED／NONCLUSTERED。
+     未驗證的部分加 `-- 未驗證：<原因>`，不得把推測寫成已讀到的 Schema。
+     不要放 USE／GO／授權／範例 INSERT。
+     **本區塊僅供審查，經核准後才由人執行（HARD RULE 2、Approval Gate #1）。** -->
+
+狀態：建議設計（尚未實作） / 依現有 Schema 驗證過
+執行對象：<資料庫或分庫清單；分庫須逐一確認，驗證一個分庫只能證明一個分庫>
+
+```sql
+CREATE TABLE [dbo].[<TableName>] (
+    [sNo]      INT IDENTITY(1,1) NOT NULL,
+    [talentNo] INT NOT NULL,                -- 會員編號
+    [feedback] TINYINT NOT NULL,            -- 1:適合, 0:不適合
+    [dateIn]   DATETIME NOT NULL CONSTRAINT [DF_<TableName>_dateIn] DEFAULT (GETDATE()),
+    CONSTRAINT [PK_<TableName>_sNo] PRIMARY KEY NONCLUSTERED ([sNo] ASC)
+);
+-- 索引
+CREATE UNIQUE CLUSTERED INDEX [UX_<TableName>_talentNo_eNo]
+    ON [dbo].[<TableName>] ([talentNo] ASC, [eNo] ASC);
+```
+
+<!-- 改表時改用下列形式，刪除上面的 CREATE 區塊： -->
+
+```sql
+-- 階段 1（先部署，與舊程式相容）
+ALTER TABLE [dbo].[<TableName>] ADD [<col>] INT NULL;   -- <業務意義>
+-- 還原：ALTER TABLE [dbo].[<TableName>] DROP COLUMN [<col>];
+
+-- 階段 2（程式改完、SP／View 更新後才執行）
+-- ALTER TABLE [dbo].[<TableName>] DROP CONSTRAINT [DF_<TableName>_<col>];
+-- ALTER TABLE [dbo].[<TableName>] DROP COLUMN [<col>];
+```
+
+## 六、Review 問題清單
 
 <!-- 所有問題的唯一彙整位置。嚴重度**只有三種**，不得新增其他分類
      （不得另立「本次引入」「既有問題」「原有功能喪失」「副作用」等區塊）。
@@ -85,7 +126,7 @@
 
 <!-- 無問題時：刪除空列，寫明「本次審查未發現問題」並說明已檢查的範圍與仍未驗證的部分。 -->
 
-## 六、待確認事項（主管決策）
+## 七、待確認事項（主管決策）
 
 | # | 待確認問題 | 目前狀況 | 建議方向 | 確認對象 |
 |---:|---|---|---|---|

@@ -8,7 +8,9 @@ shared and live there (§0). Nothing here is repeated by that file.
 requirement document happens to contain.** The ticket is the level-1 requirement
 authority (HARD RULE 12), but it guarantees nothing about types, uniqueness, indexes
 or compatibility. Every question below has an answer, or an explicit `❓ 待確認`,
-*before* the DDL is written.
+*before* the DDL is written. The review still **always ships runnable DDL** - that is
+how a manager and a developer read the result (`table-review.md` §4 -> 五、DDL); the
+rule is that the checks come first, not that the statement is withheld.
 
 Depth is proportional to blast radius (`code-quality-gates.md` §0.1): one new
 standalone table does not need a full dependency sweep; touching an existing table's
