@@ -8,13 +8,13 @@ below - rules live in their own reference, not repeated here.
 ```
 Ticket -> Repo (tentative) -> Parse Ticket
   -> Domain / Evidence / Auth Navigation -> Repository Memory      (Ticket Triage)
-  -> [GATE 1] Requirement Resolution -> Classify -> Blocking -> Scope
+  -> [GATE 1] Requirement Resolution -> Classify -> Blocking -> Scope (+ risk tier L1/L2/L3)
   -> [GATE 2] Active Carrier Confirmation (conditional)
   -> Scoped Scan -> Existing Flow
   -> [GATE 3] Capability Ownership + Reuse + Negative Evidence (conditional)
   -> Root Cause -> Impact -> Convention Baseline + Existing Test Coverage
   -> Behavior & Compatibility Pre-Check (quality dimensions 1, 2, 4)
-  -> Solution -> Pseudocode -> Plan -> Test Plan
+  -> [GATE 7] Codebase Consistency -> Solution -> Pseudocode -> Plan -> Test Plan
   -> [GATE 5 run 1] Contract Preservation -> [GATE 4] Final Consistency
   -> Change Proposal: manager summary, candidates, risk, validation, verdict
   == APPROVAL GATE #1 ==   (+ PATTERN CHOICE if one qualifies)
@@ -79,7 +79,7 @@ document (`requirement-evidence-gates.md`).
 
 ## 7-9. Classification, Blocking Check, Scope
 
-Classification decides scan depth (`scoped-scan.md`): **Bug** (root cause mandatory) / **Optimization / Refactor** (flow, bottleneck, dependency, impact, risk) / **Migration** (both sides, coexistence, rollback) / **Feature** (minimal integration scan).
+Classification decides scan depth (`scoped-scan.md`): **Bug** (root cause mandatory) / **Optimization / Refactor** (flow, bottleneck, dependency, impact, risk) / **Migration** (both sides, coexistence, rollback) / **Feature** (minimal integration scan). State the **risk tier** here too - `L1` / `L2` / `L3` by real risk and reach, never by diff size - because it governs how much of Gate 7 runs and when to stop searching (`risk-tiers.md`). A trigger found later escalates the tier explicitly, keeping the evidence already gathered.
 
 Blocking means "cannot safely continue without it": a contradictory requirement, a missing business rule the change depends on, an unknown critical data source, a needed product decision, a security risk.
 
@@ -143,24 +143,15 @@ enumerate callers, `UNKNOWN CALLERS` if it cannot prove there are none.
 
 ## 13.5 Convention Baseline + Existing Test Coverage
 
-Before designing the solution, record how this repository already writes this kind
-of code and what tests it: coding / error handling / logging / testing, each with
-its source file and level or `UNKNOWN`, plus which tests cover the flow and where
-you looked. Never infer a convention from the framework; cover only the convention
-governing this diff (`development-convention.md` §1, `verification.md` §2).
+Before designing the solution, record how this repository already writes this kind of code and what tests it: coding / error handling / logging / testing, each with its source file and level or `UNKNOWN`, plus which tests cover the flow and where you looked. Never infer a convention from the framework; cover only the convention governing this diff (`development-convention.md` §1, `verification.md` §2).
 
 ## 13.6 Behavior & Compatibility Pre-Check (before designing the solution)
 
-Quality dimensions 1, 2 and 4 are **design inputs**, not review findings: answering
-them after the diff exists is how a change that compiles ends up unreachable, or
-blocks an existing member's edit. Produce three short lines - reachability (chain,
-caller at `path:line`, the business condition reaching it) · compatibility (which
-data populations pass the rule today, which the change would start rejecting) ·
-layer parity (every layer computing the same rule, and whether they still agree).
-A change that would reject existing legal data, or tighten a rule the ticket never
-asked about, is never implemented quietly: it becomes an explicit decision in the
-proposal - migration / grace rule / compatibility path (HARD RULE 12,
-`code-quality-gates.md` §1, §2, §4).
+Quality dimensions 1, 2 and 4 are **design inputs**, not review findings: answering them after the diff exists is how a change that compiles ends up unreachable, or blocks an existing member's edit. Produce three short lines - reachability (chain, caller at `path:line`, the business condition reaching it) · compatibility (which data populations pass the rule today, which the change would start rejecting) · layer parity (every layer computing the same rule, and whether they still agree). A change that would reject existing legal data, or tighten a rule the ticket never asked about, is never implemented quietly: it becomes an explicit decision in the proposal - migration / grace rule / compatibility path (HARD RULE 12, `code-quality-gates.md` §1, §2, §4).
+
+## 13.7 GATE 7 - Codebase Consistency (before the solution)
+
+Understand the existing design before deciding a new one is needed. At the tier set in steps 7-9: find what already implements this (reuse only when meaning, lifecycle and use case match), confirm no field's meaning is being overloaded, run the identifier lifecycle checks if an ID / GUID / key / index / hash is involved, and trace meaning across the layer contract where the change reaches that far. Output is three lines at L1, four points at L2, the full block plus a verdict at L3 - `PASS` / `PASS WITH CONDITIONS` / `NEEDS HUMAN DECISION` / `BLOCKED`, which feeds §7's Approval Recommendation rather than replacing it (`consistency-gate.md`).
 
 ## 14-17. Solution, Pseudocode, Plan, Test Plan
 

@@ -202,7 +202,9 @@ cause, a bottleneck analysis, or a full data-flow map.
 
 Analysis cost must be proportional to problem complexity. A 10-file memory
 update and an architecture diagram for a one-line fix is a failure of this skill,
-not a success.
+not a success. The named tiers (`L1` / `L2` / `L3`), the outward search order, the
+early-exit test and the escalation triggers are in `risk-tiers.md`; set the tier at
+workflow steps 7-9 and let it decide how much of Gate 7 runs.
 
 ---
 

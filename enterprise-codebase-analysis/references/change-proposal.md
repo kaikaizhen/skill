@@ -77,6 +77,15 @@ not hide a genuine structural alternative behind a single recommendation.
 Where a qualifying SOLID/maintainability alternative exists, this section *is* the
 `PATTERN CHOICE` block (`development-convention.md` §3b) - one presentation, not two.
 
+**Gate 7 supplies the content of this section** (`consistency-gate.md`): what already
+implements this and whether it is reusable, whether any field's meaning would change,
+and the comparison aspects (correctness · consistency · semantic integrity ·
+reusability · compatibility · maintainability · risk · scope · validation). None of
+those aspects alone decides: fewest lines changed, "the frontend needs no change", an
+unchanged API shape, or passing tests quickly are not reasons to call an option best.
+Where the smaller option creates semantic confusion, name the technical debt; where a
+larger refactor is merely tidier, do not recommend it for that reason.
+
 ## 4b. Encoded values in the affected code
 
 When the touched path contains a literal carrying meaning the number does not show -
@@ -131,6 +140,9 @@ Agent Can Implement:       Yes | Yes after clarification | No
 
 Verdict criteria - **all** conditions must hold for `APPROVE`:
 
+- Gate 7 returned `PASS`, or `PASS WITH CONDITIONS` whose conditions are listed here
+  (a `NEEDS HUMAN DECISION` verdict forces that verdict; `BLOCKED` forces
+  `NOT RECOMMENDED`) - `consistency-gate.md` §6;
 - the requirement is clear (no Gate 1 row left `CLARIFICATION`);
 - the code flow is confirmed, not inferred, for the path being changed;
 - the change scope is bounded and named;

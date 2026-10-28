@@ -5,6 +5,77 @@
 > Rules: `change-proposal.md`. Mode A stops after this - no code, no branch,
 > no commit, no MR/PR, no DB change, no deployment.
 
+## Gate 7 - Codebase Consistency
+
+```
+Tier: L1 | L2 | L3        <!-- set at steps 7-9 by real risk and reach, not diff size -->
+Escalated: NO | L<x> -> L<y>: <trigger, path:line>
+Early exit: <stage n - why> | N/A
+```
+
+<!-- L1: three lines (follows existing practice? / any meaning changed? / obvious
+     compatibility problem?) and delete the rest of this block.
+     L2: the four points - similar implementations found, reusable or not, is the new
+     approach justified, does it create an unnecessary design difference.
+     L3: fill in everything below (consistency-gate.md §6). -->
+
+Existing Patterns:
+<!-- what already implements this, path:line, and whether it is reusable. Reuse only
+     when business meaning, data source/lifecycle and use case all match - finding
+     similar code is not a reason to reuse it. -->
+-
+
+Existing Data Strategy Comparison:
+<!-- Required when the change touches identification / update / delete / copy /
+     restructuring of data (data-strategy.md §1). Only the repositories and functions
+     actually affected - filled from code, never guessed. A column existing does not
+     mean the function depends on it; a batch-update method existing does not mean a
+     single-row feature can be removed. -->
+
+| Repository | 功能／API | 目前處理方式 | 是否依賴原識別碼 | 是否有替代的既有處理方式 | 證據 |
+|---|---|---|---|---|---|
+| | | 主鍵 / rowguid / 業務組合鍵 / 順序或 Index / 整批刪除後新增 / 其他 | 是 / 否 / 待確認 | 已有 / 無 / 待確認 | `path:line` |
+
+<!-- 若已有「整批刪除後重新新增」流程，先依 data-strategy.md §2 的八項前提評估沿用，
+     再考慮新增 GUID／Hash／Index。整批寫入 ≠ 單筆識別。
+     要新增識別機制前，先回答：為什麼現有策略不能滿足需求？ -->
+
+Semantic Consistency:
+<!-- one row per field / value touched. Same data type does NOT mean same semantics. -->
+
+| 欄位／值 | 修改前語意 | 修改後語意 | 誰產生 | 用於識別／排序／關聯／顯示 | 判定 |
+|---|---|---|---|---|---|
+| | | | | | 不變 / 明確變更（已說明） / **語意重載（禁止）** |
+
+Identifier Lifecycle:
+NOT APPLICABLE
+<!-- only when an ID / GUID / key / index / hash / sequence / token is involved; then
+     mandatory: what it identifies (row / entity / screen item), scope and lifetime,
+     delete-then-recreate, re-ordering, identical content, content edit, frontend ↔
+     backend ↔ external mapping, concurrency, and whether a mechanism already exists.
+     A hash is not uniqueness; a GUID shape is not meaning; an index is not durable. -->
+
+Cross-Layer Contract:
+NOT APPLICABLE
+<!-- produced -> stored -> queried -> transformed -> API output -> consumer -> next.
+     Unreachable consumer = UNKNOWN or NEEDS HUMAN CONFIRMATION, never silence.
+     Not finding a consumer is not proof there is none. -->
+
+Consistency Recommendation:
+<!-- which option best fits this project's design, and why. -->
+
+Open Questions:
+<!-- unconfirmed contract, risk or decision - each with the exact question to answer. -->
+- NONE
+
+```
+Gate 7 Verdict: PASS | PASS WITH CONDITIONS | NEEDS HUMAN DECISION | BLOCKED
+Conditions:     <none, or each one named>
+```
+<!-- PASS WITH CONDITIONS -> those become the conditions in Approval Recommendation.
+     NEEDS HUMAN DECISION -> Approval Recommendation cannot be APPROVE.
+     BLOCKED -> Approval Recommendation is NOT RECOMMENDED until resolved. -->
+
 ## Candidate Solutions
 
 <!-- Only when a real choice exists, minimal/existing-capability option first. Do NOT
