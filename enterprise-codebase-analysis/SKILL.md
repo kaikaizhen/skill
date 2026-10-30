@@ -27,7 +27,9 @@ repositories, architecture, business flow, current implementation, cross-reposit
 relationships or memory. Routing: `~/.claude/CLAUDE.md`; detail: `usage.md`.
 
 **Engine / workspace boundary.** `SKILL.md`, `references/` and `templates/` are the
-reusable engine and never depend on one organization's facts. Everything specific to
+reusable engine and never depend on one organization's facts; inside it,
+`references/thinking/` holds the transferable analysis principles (start at
+`thinking/README.md` when a problem is new) and `references/` this skill's procedure. Everything specific to
 this organization - architecture, repositories, domains, business rules,
 infrastructure, corrections, unknowns, organization-only tooling - lives under
 `workspace/`, replaced wholesale when the engine is pointed at another organization.
@@ -90,11 +92,11 @@ produces no diff.
 Full analysis is the agent's job; the reply's job is to be understood fast. These
 govern **presentation only** - they never shorten a scan, skip a gate, drop an
 evidence label or an approval line. Detail and per-task table shapes:
-`explanation-standard.md`.
+`thinking/explanation-standard.md`.
 
 - **Conclusion first** - line one answers the question, then cause -> concrete fix -> next step. No narrative before it.
 - **Size follows the question** - 1-3 sentences for a simple one; a review or analysis shows its 3-5 most important items, full detail only on request. Never widen an asked question into a research report.
-- **Tables first, not tables always** - status (✅ ❌ ❓), review findings (嚴重度 🔴 🟡 🟢 · 驗證 ✅ ❓ · 新舊 - three axes never merged), test plans and troubleshooting use `explanation-standard.md` §4's shapes; a short answer stays prose.
+- **Tables first, not tables always** - status (✅ ❌ ❓), review findings (嚴重度 🔴 🟡 🟢 · 驗證 ✅ ❓ · 新舊 - three axes never merged), test plans and troubleshooting use `thinking/explanation-standard.md` §4's shapes; a short answer stays prose.
 - **Concrete** - name the API, method, mechanism or `path:line`, never "improve the validation".
 - **Plans are rows, not reasoning** - | 需求 | 目標 | 修改位置 | 修改方式 | 可安全執行 |, no "because ..., therefore ..." prose; anything unconfirmed tells the user exactly what to run or open (command / SQL / file -> key).
 - **Every item stands alone** - no "see C-02 / finding #3 / Gate 5 row"; each row states its own problem, cause and fix.
@@ -104,11 +106,11 @@ evidence label or an approval line. Detail and per-task table shapes:
 ## Evidence & Scope Invariants
 
 `SCOPE FIRST / EVIDENCE ENOUGH / STOP WHEN SUFFICIENT`. Detail lives in
-`scoped-scan.md`, `capability-reuse.md` and `engineering-principles.md`.
+`thinking/scoped-scan.md`, `thinking/capability-reuse.md` and `thinking/engineering-principles.md`.
 
 - Scope this issue first, at a depth proportional to it, and stop scanning the moment you can implement safely. `Unknown != Blocking`.
 - **Negative evidence**: "I did not find it" is not "it is not there". `CONFIRMED MISSING` needs the active carrier, the capability owner and the authoritative mutation path all confirmed; short of that it is `NOT OBSERVED IN TRACED PATH` (Gate 3).
-- Use what exists before writing anything new; before touching code with more than one caller, prove in writing that no existing seam reaches the need (Gate 3). **Understand the existing design before deciding a new one is needed**, and never move a new concept into a field that means something else - same data type is not same meaning (Gate 7, `consistency-gate.md`).
+- Use what exists before writing anything new; before touching code with more than one caller, prove in writing that no existing seam reaches the need (Gate 3). **Understand the existing design before deciding a new one is needed**, and never move a new concept into a field that means something else - same data type is not same meaning (Gate 7, `thinking/consistency-gate.md`).
 - Same business domain is not the same execution path; a shared Service / DAO / table proves a dependency, not a shared flow (Gate 2).
 - "No `[Attribute]` anywhere" is not "unused" - global filters, startup wiring, DI and middleware are live registration paths.
 - An analysis states **one** version of the truth; superseded conclusions are deleted, not left beside the newer one (Gate 4).
@@ -119,8 +121,8 @@ evidence label or an approval line. Detail and per-task table shapes:
 **Compiling is not working, and an implemented method is not a working business
 flow.** Design inputs while the diff is written, confirmed once at **Gate 6**,
 applied to an existing diff in Mode R. Depth follows blast radius, never a
-repository sweep for a small fix. Seven dimensions in full: `code-quality-gates.md`;
-the six checks a review always runs: `code-review-checks.md`.
+repository sweep for a small fix. Seven dimensions in full: `thinking/code-quality-gates.md`;
+the six checks a review always runs: `thinking/code-review-checks.md`.
 
 - **Reachability** - name the real caller at `path:line` and the business condition reaching the new code; a return value nobody reads validates nothing.
 - **Backward compatibility** - compare behaviour per data population (new record, old member, historical / imported data, existing caller, partial update). A rule tightened with no requirement behind it is forbidden (HARD RULE 12); a needed break is proposed with a migration or grace path, never done silently.
@@ -185,22 +187,24 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 
 | Load when | Reference |
 |---|---|
+| **The problem is unfamiliar**, or which principle applies is unclear - the diagnostic order (what is true -> how deep -> the real path -> what it risks -> does it fit what exists -> what it would break) and which principle fires when. A symptom met before can be located faster in `problem-map.md`, whose **absence of a row means nothing** | `thinking/README.md` |
 | **Gate 1** Requirement Resolution (every ticket) · **Gate 2** Active Carrier (page / "比照 X" / multi-carrier) · **Gate 4** Final Consistency (before Approval #1) | `requirement-evidence-gates.md` |
-| **Gate 3** Capability Ownership - reuse, a MISSING claim, or any new method / parameter / abstraction / shared-code change | `capability-reuse.md` |
-| **Gate 5** Contract Preservation - any change to an existing flow; runs TWICE | `regression-validator.md` |
+| **Gate 3** Capability Ownership - reuse, a MISSING claim, or any new method / parameter / abstraction / shared-code change | `thinking/capability-reuse.md` |
+| **Gate 5** Contract Preservation - any change to an existing flow; runs TWICE | `thinking/regression-validator.md` |
 | An E2E run shows a user-visible anomaly, data inconsistency, duplicate / lost / overwritten data, a cross-system side effect, or the user asks for a deep root cause analysis | `e2e-investigation.md` (+ `templates/e2e-bug-report.md`) |
-| A table / Schema change is involved - `CREATE TABLE`, `ALTER TABLE`, a column, type, NULL, DEFAULT, PK / unique key / index / constraint, a relation or Schema refactor, a design draft, or "does this Schema change break existing behaviour" | `table-design.md` (design rules) + `table-review.md` (fixed review format) |
-| **Gate 7** Codebase Consistency - before the solution: existing implementation first, semantic integrity, identifier lifecycle, cross-layer meaning, solution comparison; verdict feeds the Approval Recommendation | `consistency-gate.md` |
-| Choosing analysis depth - the L1 / L2 / L3 tier, outward search order, early exit, escalation triggers, evidence labels, cost control | `risk-tiers.md` |
-| **Gate 6** Self-Review - every Mode A implementation, after Gate 5 run 2 - and the write-time quality rules used from analysis onward | `code-quality-gates.md` |
-| The user asks for a **review** of an existing MR / branch / diff / commit range (Mode R) - procedure, then the six checks every review runs by default | `code-review.md` + `code-review-checks.md` |
+| A table / Schema change is involved - `CREATE TABLE`, `ALTER TABLE`, a column, type, NULL, DEFAULT, PK / unique key / index / constraint, a relation or Schema refactor, a design draft, or "does this Schema change break existing behaviour" | `thinking/table-design.md` (design rules) + `table-review.md` (fixed review format) |
+| The change must stop the same request being processed twice, or a duplicate / half-written row was observed - layered lock + idempotent write + transaction, where to place the guard, how to verify under real concurrency | `thinking/duplicate-write-defence.md` |
+| **Gate 7** Codebase Consistency - before the solution: existing implementation first, semantic integrity, identifier lifecycle, cross-layer meaning, solution comparison; verdict feeds the Approval Recommendation | `thinking/consistency-gate.md` |
+| Choosing analysis depth - the L1 / L2 / L3 tier, outward search order, early exit, escalation triggers, evidence labels, cost control | `thinking/risk-tiers.md` |
+| **Gate 6** Self-Review - every Mode A implementation, after Gate 5 run 2 - and the write-time quality rules used from analysis onward | `thinking/code-quality-gates.md` |
+| The user asks for a **review** of an existing MR / branch / diff / commit range (Mode R) - procedure, then the six checks every review runs by default | `code-review.md` + `thinking/code-review-checks.md` |
 | Mode A starts - step order, both approval gates | `workflow.md` |
 | Assembling the Mode A report - proposal shape, regression grade, approval verdict, manager summary, implementation handoff | `change-proposal.md` |
-| The affected flow (or a change under review) contains encoded literals - status codes, bit flags/masks, thresholds, limits, legacy codes | `encoded-values.md` |
-| Writing any reply or report for a reader - shape, length, table formats, no cross-references, clarity rules | `explanation-standard.md` |
-| Scan depth, stop conditions, carrier / registration traps | `scoped-scan.md` |
+| The affected flow (or a change under review) contains encoded literals - status codes, bit flags/masks, thresholds, limits, legacy codes | `thinking/encoded-values.md` |
+| Writing any reply or report for a reader - shape, length, table formats, no cross-references, clarity rules | `thinking/explanation-standard.md` |
+| Scan depth, stop conditions, carrier / registration traps | `thinking/scoped-scan.md` |
 | Writing code after Approval #1 - convention order, refactor vs bug/feature strategy, error handling, logging | `development-convention.md` |
-| P1-P5 need depth, or a new rule is proposed for this skill | `engineering-principles.md` |
+| P1-P5 need depth, or a new rule is proposed for this skill | `thinking/engineering-principles.md` |
 | Build verification, which tests to run, **the Fix Loop** after a failure, 驗收標準 / retrospective documents | `verification.md` |
 | Context budget is tight, context is being trimmed / summarised, the model was switched mid-ticket, or the question is about provider / endpoint / retrieval / decision seams | `runtime-contract.md` |
 | Any git step beyond `status` / `diff` / `log`, or a branch / commit message | `git-safety.md` |
@@ -226,8 +230,7 @@ Trust (who wins on disagreement)
 - Memory is navigation and historical knowledge; **current evidence is
   authoritative for current behaviour**. Load the ticket's repository folder plus
   only the `shared/` + `global/` entries it touches - never every repository's.
-- Trust levels are `CONFIRMED` `INFERRED` `UNKNOWN` `OUTDATED` `CONFLICTING` -
-  these five only. "grep found nothing" is not one of them.
+- Trust levels are `CONFIRMED` `INFERRED` `UNKNOWN` `OUTDATED` `CONFLICTING` - these five only. "grep found nothing" is not one of them.
 - Trusted as navigation **without re-verifying every fact**; spot-check one only
   when it affects this change's correctness, current evidence contradicts it, it
   looks stale, or the ticket depends on it.

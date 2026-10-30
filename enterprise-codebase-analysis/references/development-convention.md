@@ -47,7 +47,7 @@ Minimum evidence: cite a file (path, and line/section when it is a rule file) fo
 each of the four, or write `UNKNOWN` for that one. Never infer a convention from
 the framework alone ("it's ASP.NET Core, so it must use ...").
 
-Scanning cost stays proportional (`scoped-scan.md`): the convention that matters
+Scanning cost stays proportional (`thinking/scoped-scan.md`): the convention that matters
 is the one governing the files in this ticket's diff, not the repository's entire
 style guide.
 
@@ -75,13 +75,13 @@ repository already writes this kind of code**:
 genuinely cannot carry the need, the concrete limitation is named first, the
 caller-side alternative is checked, and the extension is proposed with its impact
 on every other caller for the user to decide - `SHARED CAPABILITY EXTENSION
-APPROVAL REQUIRED` (`capability-reuse.md`, Gate 3). A defaulted
+APPROVAL REQUIRED` (`thinking/capability-reuse.md`, Gate 3). A defaulted
 optional parameter is still a shared-contract change, not a local edit.
 
 Scope authority is the ticket. A change that the ticket's acceptance criteria do
 not need does not belong in this diff.
 
-**Quality is written in, not reviewed in.** `code-quality-gates.md`'s seven dimensions
+**Quality is written in, not reviewed in.** `thinking/code-quality-gates.md`'s seven dimensions
 shape the diff as it is typed - §3 boundaries, §5 validation order on the native
 failure channel, §6 naming / duplication / magic values, §7 tests - and Gate 6 confirms all seven.
 
@@ -89,15 +89,15 @@ failure channel, §6 naming / duplication / magic values, §7 tests - and Gate 6
 
 ## 3. Design & implementation strategy - by ticket classification
 
-This is P5 in `engineering-principles.md`. The classification fixed at workflow
-steps 7-9 (`scoped-scan.md` -> Depth By Issue Type) decides which of the two
+This is P5 in `thinking/engineering-principles.md`. The classification fixed at workflow
+steps 7-9 (`thinking/scoped-scan.md` -> Depth By Issue Type) decides which of the two
 postures below applies. Neither is optional once the classification is set.
 
 ### 3a. Optimization / Refactor - strategy is mandatory, before writing a diff
 
 When the classification is Optimization or Refactor, the design decision **is**
 the ticket's scope, not scope creep. After the scoped scan
-(`scoped-scan.md` -> Optimization/Refactor depth) and before Pseudocode/Plan
+(`thinking/scoped-scan.md` -> Optimization/Refactor depth) and before Pseudocode/Plan
 (workflow steps 14-17), produce a short **Design & Implementation Strategy** in
 the analysis document:
 
@@ -120,7 +120,7 @@ the analysis document:
 This strategy is part of the plan presented at Approval Gate #1 - it is *not*
 the `PATTERN CHOICE` block in §3b (that block is for a structural improvement
 volunteered *inside* a ticket that is not itself a refactor). A refactor still
-owes the full P2 contract comparison (`engineering-principles.md`) -
+owes the full P2 contract comparison (`thinking/engineering-principles.md`) -
 behaviour-preserving refactors are exactly where contract loss hides.
 
 ### 3b. Bug / Feature / Migration - existing-pattern-first, no deliberate pattern
@@ -151,7 +151,7 @@ to the user, and only when **all four** preconditions hold:
 If any precondition fails, do not offer it: implement the existing pattern and
 record the idea as a one-line follow-up note in the analysis document. A refactor
 that *is* accepted still owes the full contract comparison in
-`regression-validator.md` - a behaviour-preserving refactor is exactly where a
+`thinking/regression-validator.md` - a behaviour-preserving refactor is exactly where a
 silent loss of a side effect, an audit record or an auth check hides.
 
 When all four hold, present both options - at Approval Gate #1 if it was already

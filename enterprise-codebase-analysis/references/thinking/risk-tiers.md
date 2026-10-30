@@ -32,7 +32,7 @@ L2 Standard      new or adjusted business logic · a service / repository /
                  business domain · helpers / services / components that could be
                  reused · the callers and data flow that actually matter
       output     compare the existing approach against the new one - keeping only
-                 the genuinely viable options (`change-proposal.md` §4)
+                 the genuinely viable options (`../change-proposal.md` §4)
 
 L3 Deep          a column removed or a structure changed · a change to an ID /
                  GUID / key / hash / index mechanism · an API contract or data
@@ -117,7 +117,7 @@ leads**; anything load-bearing is re-checked against current code before it is s
 
 `NOT FOUND IN SCOPE` and `NOT OBSERVED IN TRACED PATH` are **search outcomes**, not
 trust levels: the five memory trust levels stay exactly as they are
-(`memory-system.md` §5). Neither one ever becomes "it does not exist" or
+(`../memory-system.md` §5). Neither one ever becomes "it does not exist" or
 `CONFIRMED MISSING` without Gate 3's threshold.
 
 **Not finding a consumer is not proof there is none; not finding a caller does not

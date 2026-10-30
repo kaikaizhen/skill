@@ -83,6 +83,10 @@ adding a GUID, hash or index. Confirm all eight first:
 7. does it change an external API contract?
 8. is there a case where batch update cannot be used?
 
+Preconditions 5 and 6 are where this flow actually breaks - a failure between the
+delete and the insert, and two concurrent saves interleaving into duplicated rows.
+The layered defence for both is in `duplicate-write-defence.md`.
+
 **Delete-all-then-insert is a write strategy, not a single-row identity strategy.**
 Where a feature must map an external result back to one specific detail row, a
 suitable temporary or durable identity is still required - and **an index may not

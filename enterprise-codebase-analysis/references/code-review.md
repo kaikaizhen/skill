@@ -9,16 +9,16 @@ Approval Gate #1.
 **The full review is the default.** Every trigger - a local `git diff`, a branch
 comparison, a GitLab / GitHub merge request, a named commit range, a pasted diff -
 runs the call-path trace (§2.5) and all six check categories
-(`code-review-checks.md`) without being asked, and without waiting for the user to
+(`thinking/code-review-checks.md`) without being asked, and without waiting for the user to
 name a category. Reviewing only the correctness of the diff's own lines is not a
 review: **the question is what this change does to the real execution path and to
 the existing callers.**
 
 Mode R reuses, rather than re-inventing: the seven quality dimensions and the
-severity ladder come from `code-quality-gates.md`, the six mandatory check
-categories from `code-review-checks.md`, contract loss from
-`regression-validator.md`, reuse and negative evidence from `capability-reuse.md`,
-and reply shape, table format and prose rules from `explanation-standard.md`. No
+severity ladder come from `thinking/code-quality-gates.md`, the six mandatory check
+categories from `thinking/code-review-checks.md`, contract loss from
+`thinking/regression-validator.md`, reuse and negative evidence from `thinking/capability-reuse.md`,
+and reply shape, table format and prose rules from `thinking/explanation-standard.md`. No
 gate paperwork (Gates 1-5) and no branch, commit, build-to-complete or memory
 write are required.
 
@@ -26,7 +26,7 @@ write are required.
 
 | Owns | What |
 |---|---|
-| this skill | the **mandatory** checks every review runs (`code-review-checks.md`), the procedure, the evidence and uncertainty rules, the report shape |
+| this skill | the **mandatory** checks every review runs (`thinking/code-review-checks.md`), the procedure, the evidence and uncertainty rules, the report shape |
 | the target repository | its **project-specific** technical and business requirements - its own review chapter in `CLAUDE.md` / `AGENTS.md`, and its business rules under `.agents/rules/` (plus any synced `.claude/rules/` copy) |
 
 A repository's own rules win on anything they define, and may only make a check
@@ -126,7 +126,7 @@ change, and the review says plainly that the two decisions are separate.
 
 ## 4. What to look for, in priority order
 
-All six categories of `code-review-checks.md` run by default - correctness,
+All six categories of `thinking/code-review-checks.md` run by default - correctness,
 security, performance / I/O, asynchrony and transactions, exception handling and
 partial success, project convention. They are *reported* in impact order:
 
@@ -135,24 +135,24 @@ partial success, project convention. They are *reported* in impact order:
 | 1 | **Functional defect** | wrong logic, inverted condition, wrong operator or boundary, a result computed and discarded, an unreachable or no-op change |
 | 2 | **Business-rule mismatch** | the code does not do what the requirement or the repository's recorded business rules (`.agents/rules/` and the like) say, or two layers now disagree |
 | 3 | **Security** | injection, missing or bypassable authorization, IDOR, unencoded output, brute-forceable one-time code, hard-coded secret. Server-side enforcement is not a separate pass: a missing server-side check on a mutation, authorization or ownership decision is priority 1 (P1, HARD RULE 14) |
-| 4 | **Compatibility break** | existing data, old records, existing callers, partial updates, a response contract its consumers still depend on; contract loss on Gate 5's dimensions - especially a deleted side effect, audit record or auth check (`regression-validator.md`) |
+| 4 | **Compatibility break** | existing data, old records, existing callers, partial updates, a response contract its consumers still depend on; contract loss on Gate 5's dimensions - especially a deleted side effect, audit record or auth check (`thinking/regression-validator.md`) |
 | 5 | **Runtime failure** | `null`, parse, cast, index, overflow, date range, culture, unhandled failure branch, blocked async chain, lock held across external I/O |
 | 6 | **Partial success** | data committed but the caller told it failed, or a required follow-up step silently skipped |
-| 7 | Then error-handling detail, convention conformance, maintainability, duplication, magic values (`encoded-values.md`), test gaps |
+| 7 | Then error-handling detail, convention conformance, maintainability, duplication, magic values (`thinking/encoded-values.md`), test gaps |
 
 Stop pushing deeper once the remaining effort would only buy style points.
 
 ## 5. One finding, five facts
 
 Every finding carries all five facts, or it is not a finding. They map onto the
-review table of `explanation-standard.md` §4 - one row per finding, each row
+review table of `thinking/explanation-standard.md` §4 - one row per finding, each row
 complete on its own (no "same as #2", no "see above"):
 
 | 嚴重度 | 驗證 | 新舊 | 程式來源 | 原因／風險 | 建議修改方式 |
 |---|---|---|---|---|---|
 | 🔴 建議修正 | ✅ 已驗證 | 本次新增 | `path:line` | **Trigger**: the input / state / population that reaches it -> **Impact**: what the user or data experiences | the smallest fix in this repo's idiom, naming the API / method |
 
-- **Three axes, never merged** (defined in `explanation-standard.md` §4):
+- **Three axes, never merged** (defined in `thinking/explanation-standard.md` §4):
   嚴重度 🔴 建議修正 / 🟡 建議改善 / 🟢 小問題或備註 · 驗證 ✅ 已驗證 / ❓ 待確認 ·
   新舊 本次新增 / 既有 / 既有但本次擴大. 程式來源 carries `path:line` plus the
   evidence; unreachable proof -> ❓ with `UNVERIFIED - <what>`.
@@ -197,7 +197,7 @@ a shrug: it names what *would* settle it.
 
 ## 6. Output and verdict
 
-Two outputs, per `explanation-standard.md` §6:
+Two outputs, per `thinking/explanation-standard.md` §6:
 
 **The reply** (what the user reads):
 
@@ -214,8 +214,11 @@ Next: <one line>        File: <path to the review file>
 verdict · review scope and change summary · the traced path and affected
 components (§2.5) · findings 🔴 then 🟡 then 🟢 · high-risk pre-existing issues
 with the hotfix recommendation · 待確認事項 (§5.5) · tests and what remains
-unverified · the dimension pass · what was not reviewed. Every block appears even
-when its answer is `NONE` - an absent block reads as "not checked".
+unverified · the dimension pass · what was not reviewed · the one-line
+`Thinking Candidate` (default `NONE`; rule and admission criteria in
+`thinking/README.md`) - reviewing someone else's fix is where a reusable principle
+most often turns up. Every block appears even when its answer is `NONE` - an absent
+block reads as "not checked".
 
 Report only concrete, evidenced problems. **Do not manufacture a finding to fill a
 severity bucket**; when nothing was found, say which categories and paths were

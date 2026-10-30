@@ -57,7 +57,7 @@ tests · existing switch/case · bitwise operations · legacy documentation
 ```
 
 Label every row `CONFIRMED` / `INFERRED` / `UNKNOWN` (the five statuses in
-`memory-system.md` §5 apply unchanged).
+`../memory-system.md` §5 apply unchanged).
 
 **`UNKNOWN` is never filled in with a guess.** With `WHERE upload & 4 = 4` and no
 mapping found, the row says `Meaning: Unknown`, evidence `bit-mask behaviour only`.
@@ -152,7 +152,7 @@ shared across layers? · already has an enum/constant? A lone `Take(5)` next to 
 method named `TopFiveRecommendations` is `KEEP AS IS`.
 
 Extraction that is not required by the ticket is a **Recommended refactor**, filed as
-such (`change-proposal.md` §3) - never silently added to the diff.
+such (`../change-proposal.md` §3) - never silently added to the diff.
 
 ## 8. Reuse before defining (Gate 3)
 

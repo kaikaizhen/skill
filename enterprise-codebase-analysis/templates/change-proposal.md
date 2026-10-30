@@ -119,7 +119,7 @@ Why not the alternatives:
 
 <!-- WITH the reason; must agree with Gate 5's risk rows. `change-proposal.md` §5.
      Renaming a literal and changing its value are separate lines - a value change is
-     a behaviour change, not a cleanup (`encoded-values.md` §9). -->
+     a behaviour change, not a cleanup (`thinking/encoded-values.md` §9). -->
 Risk: Low / Medium / High
 Because:
 

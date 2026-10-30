@@ -1,11 +1,11 @@
 # Review Checks - the six categories a review always runs
 
-Loaded with `code-review.md` (Mode R), and usable at Gate 6 when a change touches
+Loaded with `../code-review.md` (Mode R), and usable at Gate 6 when a change touches
 the same ground. These are **default** checks: a review runs all six without being
 asked for them, and without waiting for the user to name a category.
 
 **Every item is a question, not a verdict.** A check that cannot be answered from
-the code in front of you produces a ❓ row (`code-review.md` §5.5), never an
+the code in front of you produces a ❓ row (`../code-review.md` §5.5), never an
 asserted defect. Depth per category follows the change's blast radius
 (`code-quality-gates.md` §0.1) - the questions are always asked, how far you trace
 to answer them is not.
@@ -104,7 +104,9 @@ columns, secret locations, business-rule files) live in the workspace, indexed f
   distributed transaction - and does it contain an external HTTP / mail call or
   other slow work that holds locks for the duration?
 - Is the transaction boundary wide enough to cover every write that must be atomic,
-  and no wider?
+  and no wider? For a delete-then-insert set, or any path reachable twice, check the
+  layered guard - lock, idempotent write, transaction - and which layers are actually
+  present (`duplicate-write-defence.md`).
 
 ## 5. Exception handling and partial success
 
@@ -122,7 +124,7 @@ columns, secret locations, business-rule files) live in the workspace, indexed f
 ## 6. Project convention conformance
 
 Checked against the repository's **own** rule document and surrounding code
-(`development-convention.md` §1), never against a generic style preference:
+(`../development-convention.md` §1), never against a generic style preference:
 
 - layering / dependency direction, and whether the change put logic in the right
   layer;

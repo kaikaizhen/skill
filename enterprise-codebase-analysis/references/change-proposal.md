@@ -77,7 +77,7 @@ not hide a genuine structural alternative behind a single recommendation.
 Where a qualifying SOLID/maintainability alternative exists, this section *is* the
 `PATTERN CHOICE` block (`development-convention.md` §3b) - one presentation, not two.
 
-**Gate 7 supplies the content of this section** (`consistency-gate.md`): what already
+**Gate 7 supplies the content of this section** (`thinking/consistency-gate.md`): what already
 implements this and whether it is reusable, whether any field's meaning would change,
 and the comparison aspects (correctness · consistency · semantic integrity ·
 reusability · compatibility · maintainability · risk · scope · validation). None of
@@ -91,7 +91,7 @@ larger refactor is merely tidier, do not recommend it for that reason.
 When the touched path contains a literal carrying meaning the number does not show -
 a status code, bit flag or mask, threshold, limit, legacy or protocol code - add
 `## Magic Numbers / Encoded Values` plus a short `### Quick Behavior Comparison`, per
-`encoded-values.md`. No finding -> the section is absent; never an empty table. It
+`thinking/encoded-values.md`. No finding -> the section is absent; never an empty table. It
 becomes a Candidate Solution only when the encoding actually drives the choice.
 Changing a numeric *value* is a behaviour change, never "removing a magic number".
 
@@ -114,7 +114,7 @@ corrected (Gate 4).
 ## 6. Validation plan - how we prove nothing broke
 
 Answers one question: *after the change, how do we show production behaviour is
-intact?* Rows of `測試案例 / 操作 / 預期結果` (`explanation-standard.md` §4) - the
+intact?* Rows of `測試案例 / 操作 / 預期結果` (`thinking/explanation-standard.md` §4) - the
 operation concrete enough to execute, the expected result observable - drawn from
 the Test Plan and
 `verification.md` §2 - build, existing tests (the related set, not the suite), new
@@ -142,7 +142,7 @@ Verdict criteria - **all** conditions must hold for `APPROVE`:
 
 - Gate 7 returned `PASS`, or `PASS WITH CONDITIONS` whose conditions are listed here
   (a `NEEDS HUMAN DECISION` verdict forces that verdict; `BLOCKED` forces
-  `NOT RECOMMENDED`) - `consistency-gate.md` §6;
+  `NOT RECOMMENDED`) - `thinking/consistency-gate.md` §6;
 - the requirement is clear (no Gate 1 row left `CLARIFICATION`);
 - the code flow is confirmed, not inferred, for the path being changed;
 - the change scope is bounded and named;
@@ -171,7 +171,7 @@ Five answers, no implementation detail, readable in under a minute:
 
 Plain language. No file-by-file walkthrough, no gate names, no evidence labels. If
 it cannot be said without jargon, the analysis is not finished. The whole report's
-prose follows `explanation-standard.md` - terms explained on first use, an actor for
+prose follows `thinking/explanation-standard.md` - terms explained on first use, an actor for
 every action, provenance for every value.
 
 ## 9. Implementation Handoff (only on APPROVE / APPROVE WITH CONDITIONS)
@@ -198,13 +198,13 @@ to hand off.
 ## 10. Length discipline - and what the reply shows
 
 The **file** is the full record (templates, proportional). The **reply** that
-presents it is a digest, conclusion first (`explanation-standard.md` §6):
+presents it is a digest, conclusion first (`thinking/explanation-standard.md` §6):
 
 ```
 1 Recommendation + one-line reason                       <- line one
 2 Manager Summary (§8) - five short answers, or a 4-row table
 3 Execution plan - | 需求 | 目標 | 修改位置 | 修改方式 | 可安全執行 |
-  (`explanation-standard.md` §4): one row per requirement, no justification prose
+  (`thinking/explanation-standard.md` §4): one row per requirement, no justification prose
 4 To confirm - for every ❓ / ❌ row: | 待確認項目 | 請你提供 | 查法 | with the
   exact command / SQL / file / config key; plus any HIGH risk, each row
   self-contained

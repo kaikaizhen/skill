@@ -33,7 +33,7 @@ Stop scanning as soon as **all** of these are true:
    cheap test that settles it.
 
 6. Every gate this ticket **triggered** has produced its required output
-   (`requirement-evidence-gates.md`): Gate 2's carrier identity cards when the
+   (`../requirement-evidence-gates.md`): Gate 2's carrier identity cards when the
    ticket targets a page / designates a baseline / lands in a multiple-carrier
    domain, and Gate 3's ownership rows when it reuses an existing capability or
    you are about to call something missing. A triggered gate without its output
@@ -80,7 +80,7 @@ The symmetric rule applies to the *negative* conclusion: having looked in the
 neighborhood and found nothing is `NOT OBSERVED IN TRACED PATH`, not
 `CONFIRMED MISSING`. The threshold for the stronger claim - and the ban on
 designing new persistence or architecture below it - is
-`requirement-evidence-gates.md` -> Gate 3.
+`../requirement-evidence-gates.md` -> Gate 3.
 
 ### Same Domain, Multiple Carriers
 
@@ -170,7 +170,7 @@ risk. The refactor stays inside the ticket's boundary; "while I am here" is not 
 reason to touch a file. A behaviour-preserving refactor still owes the full
 contract comparison (`regression-validator.md`). Once this scan is done, the next
 required step is the mandatory **Design & Implementation Strategy**
-(`development-convention.md` §3a) - written before Pseudocode/Plan, not after.
+(`../development-convention.md` §3a) - written before Pseudocode/Plan, not after.
 
 **Migration - scoped deep scan.** Both sides of the move, plus: source behaviour
 today, target behaviour, coexistence (do old and new run together, for how
@@ -223,7 +223,7 @@ workflow steps 7-9 and let it decide how much of Gate 7 runs.
   repository writes this kind of code (coding / error handling / logging /
   testing) and which tests already cover the target - only for the files in this
   ticket's diff, not the repository's whole style guide. Rules and order:
-  `development-convention.md` §1; output: `workflow.md` step 13.5.
+  `../development-convention.md` §1; output: `../workflow.md` step 13.5.
 
 ---
 

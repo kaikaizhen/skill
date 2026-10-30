@@ -79,7 +79,7 @@ document (`requirement-evidence-gates.md`).
 
 ## 7-9. Classification, Blocking Check, Scope
 
-Classification decides scan depth (`scoped-scan.md`): **Bug** (root cause mandatory) / **Optimization / Refactor** (flow, bottleneck, dependency, impact, risk) / **Migration** (both sides, coexistence, rollback) / **Feature** (minimal integration scan). State the **risk tier** here too - `L1` / `L2` / `L3` by real risk and reach, never by diff size - because it governs how much of Gate 7 runs and when to stop searching (`risk-tiers.md`). A trigger found later escalates the tier explicitly, keeping the evidence already gathered.
+Classification decides scan depth (`thinking/scoped-scan.md`): **Bug** (root cause mandatory) / **Optimization / Refactor** (flow, bottleneck, dependency, impact, risk) / **Migration** (both sides, coexistence, rollback) / **Feature** (minimal integration scan). State the **risk tier** here too - `L1` / `L2` / `L3` by real risk and reach, never by diff size - because it governs how much of Gate 7 runs and when to stop searching (`thinking/risk-tiers.md`). A trigger found later escalates the tier explicitly, keeping the evidence already gathered.
 
 Blocking means "cannot safely continue without it": a contradictory requirement, a missing business rule the change depends on, an unknown critical data source, a needed product decision, a security risk.
 
@@ -98,7 +98,7 @@ identity card per involved carrier (`requirement-evidence-gates.md`).
 
 ## 10-11. Scoped Scan and Existing Flow
 
-`scoped-scan.md`. Stop the moment "can I implement this safely?" is yes.
+`thinking/scoped-scan.md`. Stop the moment "can I implement this safely?" is yes.
 
 - A stack trace in the ticket **is** the scan: walk it frame by frame against
   current code; do not add a repository-wide architecture scan on top.
@@ -119,7 +119,7 @@ overload or abstraction, or modify shared code. Ask "does the ticket require it?
 **before** tracing the owner, then give each existing capability a `Reuse`
 verdict - `SUFFICIENT AS IS` / `CALLER-SIDE` / `EXTENSION NEEDED`, built from a
 written seam inventory. Shared code is not modified while a row sits at
-`EXTENSION NEEDED` without a user decision (`capability-reuse.md`).
+`EXTENSION NEEDED` without a user decision (`thinking/capability-reuse.md`).
 ## 12-13. Root Cause (bug only) and Impact Analysis
 
 ```
@@ -138,7 +138,7 @@ Never label a hypothesis `CONFIRMED`. Impact lists actual callers, shared
 services, other repositories, DB writes, cached values, indexed fields and jobs -
 not every theoretical consumer. In a multi-carrier domain say whether another
 active carrier needs a matching change, or why not, from Gate 2's identity cards
-rather than a shared Service. Shared code owes P3 (`engineering-principles.md`):
+rather than a shared Service. Shared code owes P3 (`thinking/engineering-principles.md`):
 enumerate callers, `UNKNOWN CALLERS` if it cannot prove there are none.
 
 ## 13.5 Convention Baseline + Existing Test Coverage
@@ -147,11 +147,11 @@ Before designing the solution, record how this repository already writes this ki
 
 ## 13.6 Behavior & Compatibility Pre-Check (before designing the solution)
 
-Quality dimensions 1, 2 and 4 are **design inputs**, not review findings: answering them after the diff exists is how a change that compiles ends up unreachable, or blocks an existing member's edit. Produce three short lines - reachability (chain, caller at `path:line`, the business condition reaching it) · compatibility (which data populations pass the rule today, which the change would start rejecting) · layer parity (every layer computing the same rule, and whether they still agree). A change that would reject existing legal data, or tighten a rule the ticket never asked about, is never implemented quietly: it becomes an explicit decision in the proposal - migration / grace rule / compatibility path (HARD RULE 12, `code-quality-gates.md` §1, §2, §4).
+Quality dimensions 1, 2 and 4 are **design inputs**, not review findings: answering them after the diff exists is how a change that compiles ends up unreachable, or blocks an existing member's edit. Produce three short lines - reachability (chain, caller at `path:line`, the business condition reaching it) · compatibility (which data populations pass the rule today, which the change would start rejecting) · layer parity (every layer computing the same rule, and whether they still agree). A change that would reject existing legal data, or tighten a rule the ticket never asked about, is never implemented quietly: it becomes an explicit decision in the proposal - migration / grace rule / compatibility path (HARD RULE 12, `thinking/code-quality-gates.md` §1, §2, §4).
 
 ## 13.7 GATE 7 - Codebase Consistency (before the solution)
 
-Understand the existing design before deciding a new one is needed. At the tier set in steps 7-9: find what already implements this (reuse only when meaning, lifecycle and use case match), confirm no field's meaning is being overloaded, run the identifier lifecycle checks if an ID / GUID / key / index / hash is involved, and trace meaning across the layer contract where the change reaches that far. Output is three lines at L1, four points at L2, the full block plus a verdict at L3 - `PASS` / `PASS WITH CONDITIONS` / `NEEDS HUMAN DECISION` / `BLOCKED`, which feeds §7's Approval Recommendation rather than replacing it (`consistency-gate.md`).
+Understand the existing design before deciding a new one is needed. At the tier set in steps 7-9: find what already implements this (reuse only when meaning, lifecycle and use case match), confirm no field's meaning is being overloaded, run the identifier lifecycle checks if an ID / GUID / key / index / hash is involved, and trace meaning across the layer contract where the change reaches that far. Output is three lines at L1, four points at L2, the full block plus a verdict at L3 - `PASS` / `PASS WITH CONDITIONS` / `NEEDS HUMAN DECISION` / `BLOCKED`, which feeds §7's Approval Recommendation rather than replacing it (`thinking/consistency-gate.md`).
 
 ## 14-17. Solution, Pseudocode, Plan, Test Plan
 
@@ -162,14 +162,14 @@ preconditions. **Optimization/Refactor**: this step *is* the mandatory Design &
 Implementation Strategy (§3a). Neither path adds a method, parameter or
 abstraction an existing seam already reaches (Gate 3's `Reuse`), nor a drive-by
 rename, upgrade or redesign outside the plan. Each finding is filed Required /
-Recommended refactor / Out of scope (`change-proposal.md` §3). A database structure change (`CREATE`/`ALTER TABLE`, column, type, key, index, constraint) also runs `table-design.md` and reports on `templates/table-review.md`. Test plan minimum:
+Recommended refactor / Out of scope (`change-proposal.md` §3). A database structure change (`CREATE`/`ALTER TABLE`, column, type, key, index, constraint) also runs `thinking/table-design.md` and reports on `templates/table-review.md`. Test plan minimum:
 happy path, bug reproduction, regression, boundary - plus a case per
 non-`unchanged` Gate 5 row, each side effect firing once on success and not on
 failure. A test needing a DB write goes through the DB Mutation Approval first.
 
 ## 17.4-18. GATE 5 run 1, GATE 4, then APPROVAL GATE #1
 
-**Gate 5 run 1** compares the **planned** change against the authoritative baseline (main / the authoritative branch as of the ticket's start - never the feature branch's previous commit) across the seven contract dimensions, after a Side-effect Discovery sweep of the mutation's success **and** failure paths. Every unintended delta is resolved in the plan, or carried to the approval gate as an explicit decision. Table, baseline rules, the six side-effect attributes and risk levels: `regression-validator.md`.
+**Gate 5 run 1** compares the **planned** change against the authoritative baseline (main / the authoritative branch as of the ticket's start - never the feature branch's previous commit) across the seven contract dimensions, after a Side-effect Discovery sweep of the mutation's success **and** failure paths. Every unintended delta is resolved in the plan, or carried to the approval gate as an explicit decision. Table, baseline rules, the six side-effect attributes and risk levels: `thinking/regression-validator.md`.
 
 **Gate 4** is then a recompute, not a rewrite or a rescan: superseded conclusions are **deleted**, not annotated; every plan item traces to a level-1 requirement; every blocker really blocks; every MISSING meets Gate 3's threshold. Output a short `## Consistency Pass`. Runs for analysis-only requests too (`requirement-evidence-gates.md`).
 
@@ -179,7 +179,7 @@ failure. A test needing a DB write goes through the DB Mutation Approval first.
 
 ## 19-20. Branch and Implement
 
-Branch name by the 5-level priority in `git-safety.md` (live repository rule file first, memory second); never branch off or commit onto `develop`/`main`/`master`. Implement existing-pattern-first per the Convention Baseline: smallest reasonable diff, the repository's native error-handling channel, its logger and placeholder rule, no new abstraction or package the ticket does not need (`development-convention.md` §2, §4, §5). Quality dimensions 3, 5, 6 and 7 are written in while typing, not reviewed in afterwards: boundaries and runtime safety, validation order on the native failure channel, naming and no duplicated rule, the tests the new rule needs (`code-quality-gates.md` §3, §5, §6, §7).
+Branch name by the 5-level priority in `git-safety.md` (live repository rule file first, memory second); never branch off or commit onto `develop`/`main`/`master`. Implement existing-pattern-first per the Convention Baseline: smallest reasonable diff, the repository's native error-handling channel, its logger and placeholder rule, no new abstraction or package the ticket does not need (`development-convention.md` §2, §4, §5). Quality dimensions 3, 5, 6 and 7 are written in while typing, not reviewed in afterwards: boundaries and runtime safety, validation order on the native failure channel, naming and no duplicated rule, the tests the new rule needs (`thinking/code-quality-gates.md` §3, §5, §6, §7).
 
 ```
 DB write needed?          -> DATABASE MUTATION APPROVAL REQUIRED, then wait
@@ -206,14 +206,14 @@ downgraded; other callers affected). **Calling the same method is not the same
 contract.** An unresolved HIGH security, server-side-enforcement, data-integrity,
 transaction-atomicity, audit-loss, lost-side-effect or changed-failure-semantics
 regression the user has not accepted **blocks Approval Gate #2**: report
-`REGRESSION RISK - HIGH - UNRESOLVED` and stop (`regression-validator.md`, HR 13).
+`REGRESSION RISK - HIGH - UNRESOLVED` and stop (`thinking/regression-validator.md`, HR 13).
 
 ## 21.6 GATE 6 - Self-Review on the real diff
 
 Every implementation, every time, after Gate 5 run 2: read your own diff as a
 reviewer would and answer the seven dimensions in one compact block, ending with
 the test label `EXECUTED AND PASSING` / `STATIC REVIEW ONLY` / `NOT VERIFIED`
-(`code-quality-gates.md` §8). Seven short lines on a one-line fix. A 🔴 建議修正 is
+(`thinking/code-quality-gates.md` §8). Seven short lines on a one-line fix. A 🔴 建議修正 is
 **fixed now** through the Fix Loop, inside the approved scope - not shipped as a
 known defect; if its fix needs unapproved scope, stop and ask (it blocks Approval
 Gate #2). 🟡 / 🟢 are listed for the user and a ❓ goes to 待確認事項. Gate 6 never
@@ -226,7 +226,8 @@ result. If something is admitted, report targeted `ADD` / `UPDATE` / `CORRECT` /
 `PROMOTE` / `DEMOTE` by file + section, never a regenerated file
 (`memory-operations.md` §10-§11). Report with `templates/implementation-result.md`
 - build status with its command, test counts, the test-preservation statement, the
-convention source, Gate 5 run 2 and the Gate 6 self-review block - ending
+convention source, Gate 5 run 2, the Gate 6 self-review block and the one-line
+`Thinking Candidate` (default `NONE`, `verification.md` §4) - ending
 `AWAITING USER APPROVAL TO LOCAL COMMIT`. Commit format follows the branch's
 5-level priority (`git-safety.md`). Then stop: push, MR, PR, merge are the user's.
 
@@ -236,5 +237,5 @@ Neither is automatic; both are local-only (HARD RULE 3, `verification.md` §4).
 `<Ticket>驗收標準.md` only after implementation + a passing build + the user
 **explicitly** confirming the feature works (a green build is not confirmation).
 `<Ticket>skill待優化項目.md` only when the user asks for a retrospective - and any
-rule it proposes goes through "Adding a rule" in `engineering-principles.md`
+rule it proposes goes through "Adding a rule" in `thinking/engineering-principles.md`
 before it is written into this skill.

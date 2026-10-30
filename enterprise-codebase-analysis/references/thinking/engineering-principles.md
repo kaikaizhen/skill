@@ -148,7 +148,7 @@ more than once.
 **Idempotency / duplicate submission.** A double-click, retry, resend, refresh or
 replayed request must not produce a second effect. Name the authoritative guard: a
 unique constraint, a conditional update, a token, a state check - not a disabled
-button, which is P1's client layer.
+button, which is P1's client layer. One guard rarely holds alone - the layered pattern is in `duplicate-write-defence.md`.
 
 **Concurrency.** Two requests for the same subject may interleave; `read -> check
 -> write` without a guard is a race. Name the guard (DB constraint, isolation
@@ -221,8 +221,8 @@ is set by its classification (`scoped-scan.md` -> Depth By Issue Type):
 
 | Classification | Pattern decision |
 |---|---|
-| Bug / Feature / Migration | "It would be more SOLID" is **never on its own a sufficient reason** to restructure legacy code. Offered only when all four preconditions in `development-convention.md` §3 hold (no business-behaviour change with evidence, confined to this ticket's code path, existing tests still express the same requirements, a nameable maintenance gain); anything wider is a one-line follow-up note, not this ticket's diff. |
-| Optimization / Refactor | The design decision **is** the ticket's scope, not scope creep. After the scoped scan and before implementing, plan it - readability, maintainability, testability, coupling, reuse/extensibility - naming a pattern only where it earns its place against a concrete, present need, never a hypothetical future one (`development-convention.md` §3). |
+| Bug / Feature / Migration | "It would be more SOLID" is **never on its own a sufficient reason** to restructure legacy code. Offered only when all four preconditions in `../development-convention.md` §3 hold (no business-behaviour change with evidence, confined to this ticket's code path, existing tests still express the same requirements, a nameable maintenance gain); anything wider is a one-line follow-up note, not this ticket's diff. |
+| Optimization / Refactor | The design decision **is** the ticket's scope, not scope creep. After the scoped scan and before implementing, plan it - readability, maintainability, testability, coupling, reuse/extensibility - naming a pattern only where it earns its place against a concrete, present need, never a hypothetical future one (`../development-convention.md` §3). |
 
 SOLID's diagnostic use is unchanged either way: naming why a change is risky
 (one class doing three jobs) and recognising a pattern the repo already uses.
@@ -239,7 +239,7 @@ Before a retrospective adds anything to this skill:
    rule? If so, sharpen that text - do not add a new rule or a new gate.
 2. **Generalise it.** A finding is written as the engineering concept, never as the
    ticket's method, endpoint, table or class name. Ticket specifics belong in
-   `<workspace>/issue/<Repo>/`, or as a worked example in `examples.md`.
+   `<workspace>/issue/<Repo>/`, or as a worked example in `../examples.md`.
 3. **Consolidate.** If two or more existing rules turn out to be the same concept,
    merge them and delete the duplicates. A shrinking rule set that catches more is
    the goal; a growing checklist is the failure mode.

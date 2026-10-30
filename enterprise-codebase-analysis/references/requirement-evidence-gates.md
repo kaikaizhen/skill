@@ -7,7 +7,7 @@ force no ordering and produce no checkable output. Each gate has a **trigger**, 
 **required output** and a **stop condition**.
 
 They answer *what to build and what the evidence supports*. **Gate 5 - what the
-change silently removes - is `regression-validator.md`**, running between the plan
+change silently removes - is `thinking/regression-validator.md`**, running between the plan
 and Gate 4, then again on the real diff. How a change is written once approved is
 `development-convention.md`; whether it is verified is `verification.md`. Mode A
 only: Mode B seeds memory, Mode C may borrow Gate 2's question without paperwork.
@@ -133,7 +133,7 @@ Status:                     ACTIVE | LEGACY / REFERENCE ONLY | UNKNOWN
 - If the deployed artifact cannot be confirmed, status is `UNKNOWN` plus what
   evidence would settle it. Do not promote the most convenient candidate.
 - Scope: enough to answer "which carrier is really used, what does it do, what can
-  be reused" - not a full scan of the baseline. This makes `scoped-scan.md` ->
+  be reused" - not a full scan of the baseline. This makes `thinking/scoped-scan.md` ->
   "Same Domain, Multiple Carriers" a **required output** rather than a reminder;
   the caller-chain technique and domain list stay there.
 
@@ -160,7 +160,7 @@ OBSERVED`; and no shared code is modified while a row sits at `EXTENSION NEEDED`
 without a user decision.
 
 Full rules, the negative-evidence threshold, the seam inventory and the
-`SHARED CAPABILITY EXTENSION APPROVAL REQUIRED` block: **`capability-reuse.md`**.
+`SHARED CAPABILITY EXTENSION APPROVAL REQUIRED` block: **`thinking/capability-reuse.md`**.
 
 ---
 

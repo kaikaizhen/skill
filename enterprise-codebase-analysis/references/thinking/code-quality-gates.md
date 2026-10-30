@@ -9,14 +9,14 @@ This file owns the seven quality dimensions, **when** each is checked, and
 **Gate 6 (Self-Review)**. It is a design input, not an after-the-fact checklist:
 every dimension below is answered while the diff is being written, then confirmed
 once at Gate 6. A user-requested review of an existing diff applies the same seven
-dimensions through `code-review.md`.
+dimensions through `../code-review.md`.
 
 ## 0. Two moments, one checklist
 
 | Moment | What happens | Where |
 |---|---|---|
-| During analysis (steps 13-17) | dimensions 1, 2 and 4 are **inputs to the solution** - the call chain is traced, the compatibility question is asked, the cross-layer rule is compared, before a line is written | `workflow.md` §13.6 |
-| While implementing (step 20) | dimensions 3, 5, 6, 7 shape the diff as it is typed - boundaries, validation order, naming, tests | `development-convention.md` §2.5 |
+| During analysis (steps 13-17) | dimensions 1, 2 and 4 are **inputs to the solution** - the call chain is traced, the compatibility question is asked, the cross-layer rule is compared, before a line is written | `../workflow.md` §13.6 |
+| While implementing (step 20) | dimensions 3, 5, 6, 7 shape the diff as it is typed - boundaries, validation order, naming, tests | `../development-convention.md` §2.5 |
 | After implementing (step 21.6) | **Gate 6** - one pass over the real diff confirming each dimension, before Approval Gate #2 | §8 below |
 
 **Modes.** This file governs **Mode A** (write-time + Gate 6) and **Mode R** (a
@@ -97,7 +97,7 @@ legal yesterday and is illegal today**.
   licence to fix it inside this ticket.
 - If the requirement genuinely needs a breaking change, it is not implemented
   silently: propose a migration, a grace rule or a compatibility path and carry
-  it to Approval Gate #1 as an explicit decision (`change-proposal.md` §5).
+  it to Approval Gate #1 as an explicit decision (`../change-proposal.md` §5).
 
 Contract-level deltas (the seven dimensions, risk grade, what blocks Gate #2) stay
 in `regression-validator.md`. This dimension adds the **data population** view.
@@ -144,7 +144,7 @@ copies disagree, not inside either one.
   Report the first, most specific, actionable failure; a format error raised
   before the missing-field error misleads the caller.
 - Keep those four kinds apart in the response, using the repository's native
-  failure channel and error codes (`development-convention.md` §4) - never a
+  failure channel and error codes (`../development-convention.md` §4) - never a
   second error-handling scheme beside it.
 - Confirm every validation's **return value is read** and short-circuits the flow
   (dimension 1), and that a later assignment cannot overwrite an earlier error
@@ -164,7 +164,7 @@ copies disagree, not inside either one.
   the next reader.
 - A large addition is a prompt to ask whether a split is warranted, decided by the
   repository's existing structure, not by a pattern catalogue
-  (`development-convention.md` §3, over-engineering guard).
+  (`../development-convention.md` §3, over-engineering guard).
 - Follow the existing architecture and idiom first.
 - **Refactoring never changes business behaviour.** Tidying inside a bug or
   feature ticket is out of scope unless §3b's four preconditions hold.
@@ -177,7 +177,7 @@ each business-condition branch · **old-data compatibility** · the API error
 response · regression of the previously working path.
 
 Which tests to run, test preservation and the no-relevant-tests path stay in
-`verification.md`. What this dimension adds is a reporting rule:
+`../verification.md`. What this dimension adds is a reporting rule:
 
 ```
 EXECUTED AND PASSING   - the command was run here; give it and the counts
@@ -222,7 +222,7 @@ Separately: **驗證狀態** ✅ 已驗證 / ❓ 待確認, and **新舊** 本�
 `explanation-standard.md` §4 - one self-contained row each, with a concrete fix.
 
 In Mode A, a 🔴 is **fixed before the report**, inside the approved scope, through
-the Fix Loop (`verification.md` §3.5) - not reported as a known defect. If fixing
+the Fix Loop (`../verification.md` §3.5) - not reported as a known defect. If fixing
 it needs scope the user has not approved, stop and ask; it blocks Approval Gate #2.
 🟡 and 🟢 are listed in the Gate #2 report for the user to decide; a ❓ goes to the
 待確認事項 block instead, and its severity is stated conditionally.

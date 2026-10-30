@@ -80,7 +80,7 @@ The related set is already written down by earlier steps - it is not a new judge
 
 Select them with the runner's own filter (test class, namespace, category, name pattern, file path) rather than by running the project and reading past the noise. State the filter used, so the scope is reviewable. Widen beyond that set only when the change is in shared code whose callers could not be enumerated (`UNKNOWN CALLERS`, P3) - and then say why.
 
-**A failure that also fails on the authoritative baseline is not this ticket's.** Before treating any failure as caused by this change, check the same test at the Gate 5 baseline (`regression-validator.md`). Report it as:
+**A failure that also fails on the authoritative baseline is not this ticket's.** Before treating any failure as caused by this change, check the same test at the Gate 5 baseline (`thinking/regression-validator.md`). Report it as:
 
 ```
 PRE-EXISTING FAILURE   <test>   fails at baseline <ref> too - not caused by this
@@ -122,15 +122,15 @@ as passing.
 
 `templates/implementation-result.md` carries `Build`, `Tests`, the test
 preservation statement, **Gate 5 run 2** and the **Gate 6** self-review block
-(`code-quality-gates.md` §8). Report what was actually executed, with the command
+(`thinking/code-quality-gates.md` §8). Report what was actually executed, with the command
 and its real output. An honest `FAILED` / `NOT RUN` is always better than a
 confident claim the user later disproves - every test claim therefore carries one
 of `EXECUTED AND PASSING` / `STATIC REVIEW ONLY` / `NOT VERIFIED`, and a test that
-was not run is never described as passing (`code-quality-gates.md` §7).
+was not run is never described as passing (`thinking/code-quality-gates.md` §7).
 
 Before the report is written, re-run the Contract Parity table against the actual
 `authoritative baseline -> final working tree` diff, not against the plan and not
-against the previous commit (`regression-validator.md`). A build that passes and
+against the previous commit (`thinking/regression-validator.md`). A build that passes and
 tests that pass do **not** clear a contract regression: a lost audit record, a
 side effect moved onto a background task, an exception now swallowed while the
 operation still reports success, or a dropped auth check all compile and pass the
@@ -181,7 +181,7 @@ Dropped: the full analysis document, source outside the failing path, superseded
 - Diagnose from the actual error lines. Fixing before the cause is named is guessing; two guesses in a row on the same failure means stop and report.
 - **Never** make the signal green by weakening it: no deleted / skipped / disabled test, no relaxed assertion, no suppressed warning-as-error, no commented-out lint rule (HARD RULE 11).
 - A `PRE-EXISTING FAILURE` (§2) is not a Fix Task - it is reported and left alone.
-- Each iteration re-runs the build and the related test set, plus Gate 5 run 2 if the diff changed (`regression-validator.md`). Earlier output is superseded and dropped.
+- Each iteration re-runs the build and the related test set, plus Gate 5 run 2 if the diff changed (`thinking/regression-validator.md`). Earlier output is superseded and dropped.
 - The loop is bounded by evidence, not attempts: when an iteration produces no new information about the cause, stop and report rather than cycling.
 
 ```
@@ -227,6 +227,10 @@ offer it instead.
   ticket never asked for. An item the ticket did not require is listed, if at
   all, under `參考 / 非本次驗收範圍`.
 
+### `Thinking Candidate` - one line, every ticket
+
+The Approval Gate #2 report carries one line asking **did this ticket teach a reusable principle?** - so a lesson is captured while the evidence is in hand instead of being lost unless someone asks for a retrospective. Default `NONE`; it proposes only. The rule and the admission criteria belong to `thinking/README.md` -> "Where candidates come from".
+
 ### `<Ticket>skill待優化項目.md` - skill retrospective
 
 - Produced **only when the user explicitly asks for it.** Never offered as a
@@ -235,7 +239,7 @@ offer it instead.
 - It reviews this skill's workflow (using the ticket only as a case study), not
   the repository's code.
 - Every finding is first classified against P1-P5 and the existing gates
-  (`engineering-principles.md` -> "Adding a rule"). A finding that already
+  (`thinking/engineering-principles.md` -> "Adding a rule"). A finding that already
   belongs to an existing concept sharpens that text; it does not become a new
   rule, and it is never written as the ticket's method, endpoint or table name.
 - It changes nothing by itself. Any resulting skill edit is a separate task with

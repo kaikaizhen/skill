@@ -1,7 +1,7 @@
 # Implementation Result
 
 > Approval Gate #2 record. Write it to the local issue file; the **reply** is the
-> digest below, then STOP (`explanation-standard.md` §6).
+> digest below, then STOP (`thinking/explanation-standard.md` §6).
 >
 > Reply digest - conclusion first, every row self-contained:
 >
@@ -118,6 +118,20 @@ Findings for the user: NONE
      Judged by real impact; do not inflate improvements into 🔴. A ❓ goes to a
      待確認事項 line with the exact question. A pre-existing defect merely noticed
      is reported, not fixed (HARD RULE 12). -->
+
+Thinking Candidate:
+NONE
+<!-- One line, every ticket, default NONE. Did this ticket teach a *reusable*
+     principle - something that would still be true at another company, with
+     another stack? If yes, state it as the engineering concept in one sentence,
+     never as this ticket's method / endpoint / table name.
+     This line only PROPOSES. It writes nothing: adding it to
+     references/thinking/ is a separate task that must pass that folder's six
+     admission criteria (thinking/README.md) and "Adding a rule"
+     (thinking/engineering-principles.md). Most tickets are honestly NONE -
+     do not invent one to fill the field.
+     NOT NONE -> it must also appear in the chat reply with an explicit ask.
+     NONE -> say nothing about it in the reply at all. -->
 
 Diff Summary:
 <!-- the important hunks, not the whole diff -->

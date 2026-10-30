@@ -6,7 +6,7 @@
 > First half of ONE report; the decision layer continues in
 > `templates/change-proposal.md` and is appended to the same file.
 > Rules: `change-proposal.md` · `requirement-evidence-gates.md` ·
-> `capability-reuse.md` · `regression-validator.md` · `development-convention.md`.
+> `thinking/capability-reuse.md` · `thinking/regression-validator.md` · `development-convention.md`.
 
 ## Manager Summary
 
@@ -108,7 +108,7 @@ Shared dependencies: -
 <!-- ONLY if the affected path contains a literal carrying meaning the number does
      not show (status code, bit flag/mask, threshold, limit, legacy/protocol code).
      Nothing found -> DELETE this section; never an empty table. Meaning needs
-     evidence; UNKNOWN is never guessed or renamed. `encoded-values.md` -->
+     evidence; UNKNOWN is never guessed or renamed. `thinking/encoded-values.md` -->
 
 | Value | Location / Expression | Meaning | Encoding / Behavior | Evidence | Confidence | Recommendation |
 |---|---|---|---|---|---|---|
@@ -129,7 +129,7 @@ Semantic view:
 
 <!-- GATE 3 - reuse, a MISSING claim, or any new method/parameter/abstraction or
      shared-code change. Delete otherwise. "Ticket requires?" BEFORE tracing the
-     owner. `capability-reuse.md` -->
+     owner. `thinking/capability-reuse.md` -->
 
 | Capability | Ticket requires? | Active owner (layer + file) | Authoritative state | Mutation point | Evidence | Result | Reuse |
 |---|---|---|---|---|---|---|---|

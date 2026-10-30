@@ -1,15 +1,15 @@
 # Table Review Standard
 
 This file defines **how to review a table change and how to present the result**. The
-design rules are owned by `table-design.md` and are never restated here. Output
+design rules are owned by `thinking/table-design.md` and are never restated here. Output
 skeleton: `templates/table-review.md`.
 
 This is not a new mode: it is **Mode A's fixed output format when a database structure
 changes**. Everything else runs as before - scoped scan, the gates, Approval Gate #1
 and #2, memory, git and DB safety. Application-code review still uses Mode R and
-`code-review-checks.md`; this file does not replace it.
+`thinking/code-review-checks.md`; this file does not replace it.
 
-## 0. Trigger conditions (shared with `table-design.md`)
+## 0. Trigger conditions (shared with `thinking/table-design.md`)
 
 While analysing a requirement document, ticket, SQL or code, **once it is established**
 that the work involves any of the following, the design checks and the review run by
@@ -122,7 +122,7 @@ Anything not obtained is filled in as 待確認.
   table** (`功能／流程 · Before · After · 影響判定 · 建議調整`): whether the original
   feature survives, intended versus unintended behaviour changes, new errors and
   indirect side effects, and the pre-existing problems related to this change.
-  **"可能有影響，建議確認" is not an acceptable entry** (source: `table-design.md` §7).
+  **"可能有影響，建議確認" is not an acceptable entry** (source: `thinking/table-design.md` §7).
 - This table shows the difference only; **the problems themselves still go to §5**.
 
 **四、Keys, indexes and constraints** (`名稱 · 類型 · 欄位 · 用途 · 審查結果`)
@@ -164,7 +164,7 @@ syntax, after the index table.
   that line, or the whole block marked `建議設計`. Never present inferred types,
   lengths or defaults as if they were read from the schema.
 - Sharded tables: say which databases the DDL must run against, and that **verifying
-  one shard proves one shard** (`table-design.md` §6).
+  one shard proves one shard** (`thinking/table-design.md` §6).
 - The DDL is **for review, not for execution**: it is run only after the user
   approves it (HARD RULE 2, Approval Gate #1), and this skill never executes it.
 
@@ -173,7 +173,7 @@ syntax, after the index table.
 Four fixed columns: `等級 · 問題 · 原因／影響 · 建議調整`.
 
 **Exactly three severities** (the same ladder the whole skill uses, defined in
-`explanation-standard.md` §4):
+`thinking/explanation-standard.md` §4):
 
 | 等級 | When |
 |---|---|
@@ -221,12 +221,12 @@ Fixed columns: `# · 待確認問題 · 目前狀況 · 建議方向 · 確認�
 
 | Topic | Owner |
 |---|---|
-| table design rules (types, NULL, indexes, unique keys, dependencies, Before/After, deployment compatibility) | `table-design.md` |
-| the three severities and table presentation rules | `explanation-standard.md` §4 |
+| table design rules (types, NULL, indexes, unique keys, dependencies, Before/After, deployment compatibility) | `thinking/table-design.md` |
+| the three severities and table presentation rules | `thinking/explanation-standard.md` §4 |
 | database access, read-only default, DDL / DML approval | `database-safety.md` |
-| the seven contract dimensions and regression grading | `regression-validator.md` (Gate 5) |
-| compatibility across existing data populations | `code-quality-gates.md` §2 |
-| parameterised SQL, IDOR, N+1, transactions, concurrency | `code-review-checks.md` |
-| bit flag / mask presentation | `encoded-values.md` §5 |
+| the seven contract dimensions and regression grading | `thinking/regression-validator.md` (Gate 5) |
+| compatibility across existing data populations | `thinking/code-quality-gates.md` §2 |
+| parameterised SQL, IDOR, N+1, transactions, concurrency | `thinking/code-review-checks.md` |
+| bit flag / mask presentation | `thinking/encoded-values.md` §5 |
 | schema fact vs code inference, one shard proves one shard, DBA SQL when access is missing | `e2e-investigation.md` Phase 2 |
-| reuse judgement for an existing capability | `capability-reuse.md` (Gate 3) |
+| reuse judgement for an existing capability | `thinking/capability-reuse.md` (Gate 3) |

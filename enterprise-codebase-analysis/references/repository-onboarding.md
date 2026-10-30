@@ -106,7 +106,7 @@ Business meaning   what it does for whom / what condition it is verifying (not
                     "Controller calls Service" / not "sends a POST request").
                     The reader is new here: explain each project term, abbreviation
                     and field on first use, and name the actor of every action
-                    (`explanation-standard.md`)
+                    (`thinking/explanation-standard.md`)
 Technical flow      Service: entry -> service -> repository -> DB / cache /
                     search / external. Caller/tooling: how the request body is
                     built (data source, randomisation, ratios) -> target
@@ -146,7 +146,7 @@ summary** in the reply. "先掃 <repo>" already means the user wants to see the
 result - do not finish with only the memory seed and a one-line note.
 
 The inline summary is a digest the user can take in at a glance
-(`explanation-standard.md`), in this order:
+(`thinking/explanation-standard.md`), in this order:
 
 ```
 1 What the project is - 1-2 sentences: purpose, stack, version

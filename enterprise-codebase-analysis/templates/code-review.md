@@ -139,6 +139,21 @@ Verification this review could NOT complete:
      procedure or configuration that could not be read. Never implied as clear. -->
 -
 
+## Thinking Candidate
+
+<!-- One line, every review, default NONE. Did this diff teach a *reusable*
+     principle - true at another company, another stack? Reviewing someone else's
+     fix is where one most often turns up. Write it as the engineering concept, not
+     as this diff's method / endpoint / table. Proposes only: it reaches
+     references/thinking/ solely through that folder's six admission criteria
+     (thinking/README.md). Most reviews are honestly NONE - do not invent one.
+     NOT NONE -> it must also appear in the chat reply with an explicit ask; the
+     review file alone is not enough, since it may never be opened.
+     NONE -> say nothing about it in the reply at all. -->
+```
+Thinking Candidate: NONE | <the reusable principle, one sentence>
+```
+
 ## Next Step
 
 <!-- The fixes are NOT applied here. If the user wants them, that is a new Mode A

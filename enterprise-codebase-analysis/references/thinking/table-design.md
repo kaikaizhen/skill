@@ -1,7 +1,7 @@
 # Table Design Standard (SQL Server)
 
 This file defines **how a table should be designed**. The review procedure, document
-format and problem-list rules belong to `table-review.md`; the trigger conditions are
+format and problem-list rules belong to `../table-review.md`; the trigger conditions are
 shared and live there (§0). Nothing here is repeated by that file.
 
 **Top rule: never emit `CREATE TABLE` / `ALTER TABLE` straight from the column list a
@@ -9,14 +9,14 @@ requirement document happens to contain.** The ticket is the level-1 requirement
 authority (HARD RULE 12), but it guarantees nothing about types, uniqueness, indexes
 or compatibility. Every question below has an answer, or an explicit `❓ 待確認`,
 *before* the DDL is written. The review still **always ships runnable DDL** - that is
-how a manager and a developer read the result (`table-review.md` §4 -> 五、DDL); the
+how a manager and a developer read the result (`../table-review.md` §4 -> 五、DDL); the
 rule is that the checks come first, not that the statement is withheld.
 
 Depth is proportional to blast radius (`code-quality-gates.md` §0.1): one new
 standalone table does not need a full dependency sweep; touching an existing table's
 columns, types, constraints or relations runs §6-§8 in full.
 
-Database access follows `database-safety.md`: **read-only by default, every DDL / DML
+Database access follows `../database-safety.md`: **read-only by default, every DDL / DML
 needs explicit approval.** This standard produces a design and a review - it never
 executes `CREATE`, `ALTER` or a data conversion itself.
 
@@ -39,7 +39,7 @@ executes `CREATE`, `ALTER` or a data conversion itself.
   the unique key.
 - When the unique key is a business decision, **do not assume**: give the candidate
   combinations, their differences and consequences, and put it in the review's open
-  decisions (`table-review.md` §6).
+  decisions (`../table-review.md` §6).
 
 ## 2. Consistency with the existing system
 
@@ -120,10 +120,11 @@ it is wrong, propose the alternative type and the reason.
 - **UPSERT** needs concurrency, race conditions, unique-key violations and transaction
   handling considered: two requests can both conclude "it does not exist" and each
   insert, and the unique index is the last line of defence
-  (`code-review-checks.md` §4).
+  (`code-review-checks.md` §4, and `duplicate-write-defence.md` for the layered
+  guard when no constraint exists yet).
 - When recommending an index, **name the columns, their order, whether it is unique,
   clustered or not, and the query it serves**. "Optimise the index" is not a
-  recommendation (`table-review.md` §5).
+  recommendation (`../table-review.md` §5).
 
 ## 5. Data integrity and security
 
@@ -173,7 +174,7 @@ Tell these cases apart - they are all "related" but their impact differs:
 find the column name** (negative evidence: short of the threshold it is
 `NOT OBSERVED IN TRACED PATH`, not `CONFIRMED MISSING`). Keep schema-proven facts
 apart from code inference, and remember that **verifying one shard proves one shard**
-(`e2e-investigation.md` Phase 2). Without database access, write the read-only SQL a
+(`../e2e-investigation.md` Phase 2). Without database access, write the read-only SQL a
 DBA can run and keep the item `❓` - an unrun query's expected output is never a
 finding.
 
@@ -200,7 +201,7 @@ already - SQL injection, a missing required transaction, incomplete backup, dupl
 queries or N+1, incomplete error handling, weak authorization checks, existing logic
 that can corrupt data. Include them in the review **by their real impact** - but
 **never give them their own category or section**: they use the same three severities,
-with "此問題在修改前即存在" stated in the cause/impact column (`table-review.md` §5).
+with "此問題在修改前即存在" stated in the cause/impact column (`../table-review.md` §5).
 If one is worth fixing here, give the concrete change plus the extra regression scope.
 If it is high risk but does not belong to this requirement, recommend a separate
 ticket and say why - **never widen the change on your own** (HARD RULE 12).

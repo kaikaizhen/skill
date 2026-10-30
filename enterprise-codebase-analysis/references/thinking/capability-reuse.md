@@ -1,12 +1,12 @@
 # Gate 3 - Capability Ownership, Reuse & Negative Evidence
 
-The third of the gates in `requirement-evidence-gates.md`, given its own file
+The third of the gates in `../requirement-evidence-gates.md`, given its own file
 because it carries two questions: *does this capability exist, and who owns it*
 (negative evidence), and *can what already exists carry this ticket as it stands*
 (Existing Capability First, P5 in `engineering-principles.md`).
 
 Mode A only. Proportionality, the five categories and the other gates stay in
-`requirement-evidence-gates.md`.
+`../requirement-evidence-gates.md`.
 
 ---
 

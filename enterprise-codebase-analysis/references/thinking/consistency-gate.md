@@ -5,7 +5,7 @@
 Runs inside Mode A's solution step (workflow §14-17), **before** the candidate
 solutions are written - its findings are what those candidates are built from. It
 feeds the existing decision flow and adds no parallel approval: the recommendation
-lands in `change-proposal.md` §4 (candidates) and §7 (Approval Recommendation).
+lands in `../change-proposal.md` §4 (candidates) and §7 (Approval Recommendation).
 
 Depth follows the tier set by `risk-tiers.md`:
 
@@ -164,7 +164,7 @@ dropping support, or returning a default value.
 Compare only real options - typically: reuse the existing design · extend the existing
 capability · add a separate, semantically explicit mechanism · change the API or data
 contract · another necessary alternative. **No fixed number of options is required**
-and a manufactured alternative is a defect (`change-proposal.md` §4).
+and a manufactured alternative is a defect (`../change-proposal.md` §4).
 
 Weigh them on:
 

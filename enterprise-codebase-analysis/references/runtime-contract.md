@@ -135,7 +135,7 @@ a Mode A ticket never loads an onboarding corpus.
 
 **Never evicted, never compressed:** priority items 1-4, and the current failure
 evidence. If those alone do not fit, the scope is wrong - re-scope per
-`scoped-scan.md`; do not trim a rule to make room.
+`thinking/scoped-scan.md`; do not trim a rule to make room.
 
 ---
 

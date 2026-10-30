@@ -13,7 +13,7 @@ After reading, the user knows: current state -> where the problem is
 
 This file governs **presentation only**. It never lowers scan depth, skips a gate,
 drops an evidence label or a HARD RULE line. Gate records still live in the local
-issue file (`usage.md` -> Output Locations); the reply shows the digest.
+issue file (`../usage.md` -> Output Locations); the reply shows the digest.
 
 ---
 
@@ -160,7 +160,7 @@ only where the reader would otherwise get stuck.
 - **Localise before blaming**: name the first layer where two runs diverge, not
   "the new API is broken".
 - **Evidence labels stay**: load-bearing statements carry `CONFIRMED` / `INFERRED`
-  / `UNKNOWN` (definitions: `memory-system.md` §5). In a table, a ✅ / ❓ cell or a
+  / `UNKNOWN` (definitions: `../memory-system.md` §5). In a table, a ✅ / ❓ cell or a
   short tag is enough; never present an inference as fact.
 
 Concise is fine; vague is not. Never drop a causal link to save space.
@@ -172,6 +172,7 @@ Concise is fine; vague is not. Never drop a causal link to save space.
 | Purpose | the user understands and decides now | audit record of the gates and evidence |
 | Content | digest: conclusion, top items, decision / next step, required approval line | the template, proportional - sections that do not apply are deleted |
 | Gate names, dimension blocks, parity tables | only a row that is ❌ / ❓ / HIGH, stated in plain words | full |
+| `Thinking Candidate` | **only when it is not `NONE`** - one line plus the explicit ask (`README.md` -> Where candidates come from); `NONE` is never mentioned | always, including `NONE` |
 
 The reply ends with the file path when one was written, never with the file pasted.
 

@@ -79,7 +79,7 @@ A task that actually involves a database structure change - `CREATE TABLE`,
 `ALTER TABLE`, adding / dropping / renaming a column, a type, length, NULL or DEFAULT,
 a primary key, unique key, index or constraint, a relation or Schema refactor, an
 unimplemented design draft, or "does this Schema change break existing behaviour" -
-applies `table-design.md` and emits the fixed-format review on
+applies `thinking/table-design.md` and emits the fixed-format review on
 `templates/table-review.md` (rules: `table-review.md`). Changing an existing table
 also traces dependencies, Before / After behaviour, side effects and deployment
 compatibility. Read-only: DDL / DML and code changes still need Approval Gate #1.
