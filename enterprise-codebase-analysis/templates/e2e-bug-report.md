@@ -1,7 +1,7 @@
 # [問題編號／簡稱] - E2E 問題調查報告
 
 <!-- Mode A, bug path, escalated depth (references/e2e-investigation.md).
-     Written to <workspace>/issue/<RepoName>/, never inside the repository
+     Written to <workspace>/issue/<RepoName>/<Ticket>/, never inside the repository
      (HARD RULE 3). 繁體中文撰寫；程式識別名稱、資料表名稱、欄位名稱保留原文。
      先講使用者看到什麼，再講技術原因 - 不要一開始就丟程式碼。
      每個專有名詞與縮寫首次出現時解釋中文意義與在本系統中的角色。

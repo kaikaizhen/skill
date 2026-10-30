@@ -1,7 +1,7 @@
 # [Ticket] 驗收標準
 
-> Save as `<workspace>/issue/<RepoName>/<Ticket>驗收標準.md` - the same directory as
-> `<Ticket>.md` (e.g. `<workspace-root>/issue/<Repo>/<Ticket>驗收標準.md`).
+> Save as `<workspace>/issue/<RepoName>/<Ticket>/<Ticket>驗收標準.md` - the same directory as
+> `<Ticket>.md` (the same per-ticket folder).
 > LOCAL ONLY - never inside the repository, never staged, never committed.
 > Create this file only after: implementation done + build passed + **使用者明確確認功能成功**.
 > Source: ticket acceptance criteria -> final implementation -> regression requirements.

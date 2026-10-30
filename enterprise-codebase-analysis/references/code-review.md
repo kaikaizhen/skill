@@ -244,4 +244,4 @@ Say explicitly what was **not** reviewed: files skipped, a layer not opened, a r
 - Database read-only, and only when the diff makes a schema question material
   (`database-safety.md`, HARD RULE 2).
 - Memory: a review is task output, not reusable knowledge. Usually `Memory Delta: NONE`; anything admitted goes through `memory-admission.md`.
-- The review document is local-only, never written inside the repository, and a repository that has no review chapter or rules file does not get one authored for it (HARD RULE 3).
+- The review document is local-only, never written inside the repository, and a repository that has no review chapter or rules file does not get one authored for it (HARD RULE 3). It goes in that ticket's folder, `<workspace>/issue/<RepoName>/<Ticket>/` - created before the file (`usage.md` -> Output Locations).

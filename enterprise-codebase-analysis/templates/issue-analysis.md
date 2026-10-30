@@ -1,6 +1,6 @@
 # [Issue Number] - Issue Analysis & Change Proposal
 
-> Save as `<workspace>/issue/<RepoName>/<issue-number>.md`. LOCAL ONLY.
+> Save as `<workspace>/issue/<RepoName>/<Ticket>/<Ticket>.md` (folder first). LOCAL ONLY.
 > Decision-oriented, not a repository dump: cite `file:line`, never paste source.
 > Proportional - delete every section that does not apply.
 > First half of ONE report; the decision layer continues in

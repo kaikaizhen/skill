@@ -54,8 +54,9 @@ through Mode R / Gate 6's table, Schema through this file's fixed tables, and
 
 The review itself is read-only analysis: **no DDL or DML, no change to application
 code, nothing touched in a production environment** (HARD RULE 2,
-`database-safety.md`). The document goes to `<workspace>/issue/<RepoName>/`, never
-inside the repository (HARD RULE 3).
+`database-safety.md`). The document goes to that ticket's folder,
+`<workspace>/issue/<RepoName>/<Ticket>/` - created before the first file - never
+inside the repository (HARD RULE 3, `usage.md` -> Output Locations).
 
 ## 2. Evidence requirements
 

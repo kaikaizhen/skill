@@ -37,7 +37,9 @@ the Change Proposal still happen, but no approval to implement is requested.
 ## 0-2. Bootstrap, Repository (tentative), Parse Ticket
 
 On the first ticket in a repository, create its memory folder from
-`templates/workspace/memory/repositories/_REPO_TEMPLATE/` and `<workspace>/issue/<Repo>/`.
+`templates/workspace/memory/repositories/_REPO_TEMPLATE/`. Then create this ticket's
+own output folder `<workspace>/issue/<Repo>/<Ticket>/` **before writing any file** -
+never a loose file directly under `<Repo>/` (`usage.md` -> Output Locations).
 Never create `.company-skill/` or touch `.gitignore` / `.git/info/exclude`.
 
 ```

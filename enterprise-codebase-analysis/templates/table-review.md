@@ -1,7 +1,7 @@
 # [資料表名稱] 資料表 Review
 
 <!-- Mode A 的資料庫結構異動輸出。規則：references/table-review.md；設計原則：
-     references/table-design.md。寫到 <workspace>/issue/<RepoName>/，不寫進
+     references/table-design.md。寫到 <workspace>/issue/<RepoName>/<Ticket>/，不寫進
      repository（HARD RULE 3）。六節順序固定，不得打亂。
      繁體中文；資料表名稱、欄位名稱、型別、程式識別名稱保留原文。
      取不到的資訊填「待確認」或「未驗證」，不得自行補造。

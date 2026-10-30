@@ -197,6 +197,8 @@ state must be correct.**
   to production code, schema or deployment configuration.
 - Fault injection, concurrency stress and data-destruction tests only in an
   environment the user has said may be used that way.
+- The report goes in that ticket's folder, `<workspace>/issue/<RepoName>/<Ticket>/`,
+  created before the first file (`usage.md` -> Output Locations).
 - Mask personal data, cookies, tokens and connection secrets in the report; record
   a key's **name**, never its value (HARD RULE 3).
 - Never carry one project's database names, table names, topology or implementation

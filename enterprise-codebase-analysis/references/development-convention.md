@@ -244,7 +244,7 @@ mandatory are level-1/2/3 questions, per repository. What must happen to
 
 | Where | What |
 |---|---|
-| `<workspace>/issue/<RepoName>/<Ticket>.md` | `## Convention Baseline`; `## Design & Implementation Strategy` on a Refactor/Optimization ticket (§3a); `## Pattern Choice` when §3b applied |
+| `<workspace>/issue/<RepoName>/<Ticket>/<Ticket>.md` | `## Convention Baseline`; `## Design & Implementation Strategy` on a Refactor/Optimization ticket (§3a); `## Pattern Choice` when §3b applied |
 | Approval Gate #1 | the strategy (§3a) or the pattern choice block (§3b), whichever applied |
 | Approval Gate #2 report | `Convention Source` |
 | `workspace/memory/repositories/<Repo>/patterns.md` | any newly confirmed, reusable repository convention (memory delta rules apply) |

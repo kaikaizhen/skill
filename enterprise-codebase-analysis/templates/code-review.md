@@ -1,7 +1,8 @@
 # [Branch / MR] - Code Review
 
 > Mode R output. Read-only: this review changes no file. Local only, never written
-> inside the repository (HARD RULE 3). Rules: `references/code-review.md`.
+> inside the repository (HARD RULE 3); it lives in that ticket's folder,
+> `<workspace>/issue/<RepoName>/<Ticket>/`. Rules: `references/code-review.md`.
 
 ## Verdict
 

@@ -202,7 +202,7 @@ The loop ends in exactly one of: verification passes and the ticket continues to
 Both are skill-generated documents: **LOCAL ONLY**, outside the target
 repository, never staged, never committed (HARD RULE 3).
 
-### `<Ticket>驗收標準.md` - acceptance test cases
+### `<workspace>/issue/<Repo>/<Ticket>/<Ticket>驗收標準.md` - acceptance test cases
 
 Created only when **all three** hold:
 
@@ -214,7 +214,7 @@ A green build is not user confirmation. Without (3), do not create the file -
 offer it instead.
 
 - Location: the same directory as the analysis document -
-  `<workspace>/issue/<RepoName>/<Ticket>驗收標準.md`.
+  `<workspace>/issue/<RepoName>/<Ticket>/<Ticket>驗收標準.md`.
 - Template: `templates/acceptance-criteria.md`.
 - Built from three sources, in this order:
   1. the ticket's own acceptance criteria,

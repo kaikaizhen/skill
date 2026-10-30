@@ -95,7 +95,7 @@ a branch, a commit range, a pasted diff ("幫我 review 這個 MR", "這段改�
 The user is asked for the **two ends of the diff** if they are not already clear -
 source branch and target branch - because a review of the wrong range is worse
 than none; a branch name is never assumed. Procedure: `code-review.md`. Output:
-`templates/code-review.md`, written to `<workspace>/issue/<RepoName>/`; the reply
+`templates/code-review.md`, written to `<workspace>/issue/<RepoName>/<Ticket>/`; the reply
 is the verdict plus the top findings table (`code-review.md` §6).
 
 Wanting the findings fixed is a **new Mode A ticket** with its own Approval Gate #1.
@@ -211,17 +211,40 @@ These are never performed by the skill, in any circumstance.
 
 ## Output Locations
 
-| Output | Location | Committed? |
+**Every file goes in a per-ticket folder.** Create
+`<workspace>/issue/<RepoName>/<Ticket>/` **first**, then write inside it - never a
+loose file directly under `<RepoName>/`. One flat directory holding several tickets'
+analyses, plans, SQL, screenshots and review notes becomes unusable within weeks.
+
+```
+<workspace>/issue/<RepoName>/<Ticket>/      <- create this before the first file
+    <Ticket>.md                             the analysis
+    <Ticket>執行計畫.md  <Ticket>測試教學.md  ... anything else for this ticket
+    temp/                                   scratch notes
+```
+
+- `<Ticket>` is the id exactly as the tracking system writes it (`7398`, `T12876`) -
+  no prefix invented, no description appended to the folder name.
+- **No ticket id yet?** Ask for one. If the user says there is none, use a short
+  kebab-case topic folder (`resume-status-fn/`) and say in the reply that it should
+  be renamed once a ticket exists.
+- Material that outlives any single ticket - a schema reference, a field table, a
+  shared function's notes - goes in `<RepoName>/_reference/`, not in a ticket folder
+  and not loose at the top.
+- Never reorganise or move a user's existing files unless they ask.
+
+| Output | Location (inside `<workspace>/issue/<RepoName>/<Ticket>/`) | Committed? |
 |---|---|---|
-| Issue analysis | `<workspace>/issue/<RepoName>/<issue>.md` (e.g. `<workspace-root>/issue/<RepoName>/`) | Never (outside repository and skill) |
-| Acceptance test cases | `<workspace>/issue/<RepoName>/<issue>驗收標準.md` - only after the user confirms the feature works | Never |
-| Code review (Mode R) | `<workspace>/issue/<RepoName>/<branch-or-MR>-review.md` | Never |
-| Table review | `<workspace>/issue/<RepoName>/<table>-資料表Review.md` | Never |
-| E2E / root-cause investigation | `<workspace>/issue/<RepoName>/<issue>-調查報告.md` | Never |
-| Skill retrospective | `<workspace>/issue/<RepoName>/<issue>skill待優化項目.md` - only on explicit request | Never |
+| Issue analysis | `<Ticket>.md` | Never (outside repository and skill) |
+| Acceptance test cases | `<Ticket>驗收標準.md` - only after the user confirms the feature works | Never |
+| Code review (Mode R) | `<branch-or-MR>-review.md` | Never |
+| Table review | `<table>-資料表Review.md` | Never |
+| E2E / root-cause investigation | `<Ticket>-調查報告.md` | Never |
+| Skill retrospective | `<Ticket>skill待優化項目.md` - only on explicit request | Never |
+| Scratch notes | `temp/` | Never |
+| Cross-ticket reference material | `../_reference/<topic>.md` | Never |
 | Memory | `<skill>/workspace/memory/**` (this installation) | Never (outside the repository) |
 | Unknowns / corrections | `<skill>/workspace/memory/unknowns.md`, `corrections.md` | Never |
 | Onboarding summary (Mode B) | inline in the reply, always | - |
 | `PROJECT-QUICK-GUIDE.md` (Mode B) | only if the user asks for a file, at the requested location | Never |
-| Scratch notes | `<workspace>/issue/<RepoName>/temp/` | Never |
 | Code changes | the repository itself | Yes, after Approval #2 |

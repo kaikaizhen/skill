@@ -140,7 +140,7 @@ the six checks a review always runs: `thinking/code-review-checks.md`.
 3. **SKILL DOCUMENTS ARE LOCAL ONLY, NEVER INSIDE THE REPOSITORY** - zero repository
    diff: no `.company-skill/`, no `.gitignore` edit, and no rule / review document
    authored into a repository. Reusable knowledge -> `<skill>/workspace/memory/**`,
-   per-ticket and review output -> `<workspace>/issue/<RepoName>/`, code changes
+   per-ticket and review output -> `<workspace>/issue/<RepoName>/<Ticket>/`, created **before** the first file (never loose at the repo level), code changes
    only in the target repository. **Never store credentials, hosts or
    connection-string values in memory** (key *names* are fine). Locations:
    `usage.md` -> Output Locations.
