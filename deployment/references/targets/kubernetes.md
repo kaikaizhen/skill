@@ -127,6 +127,38 @@ kubectl rollout status deployment/<name> -n <ns> --timeout=300s
 Non-zero exit fails the job. CronJobs and Deployments in the same unit get the same
 image tag in the same job. CI never deletes Pods or Deployments to force an update.
 
+### 5.1 Rollout failure diagnostics
+
+A bare `rollout status` timeout tells the developer nothing. Wrap it so a failed
+rollout prints the evidence **and still exits non-zero** (diagnostics never swallow the
+failure):
+
+```bash
+set +e
+kubectl rollout status deployment/<name> -n <ns> --timeout="${ROLLOUT_TIMEOUT:-300s}"
+rc=$?
+set -e
+if [ "$rc" -ne 0 ]; then
+  kubectl get events -n <ns> --field-selector involvedObject.name=<name>,involvedObject.kind=Deployment
+  selector=$(kubectl get deployment <name> -n <ns> -o jsonpath='{.spec.selector.matchLabels}' \
+    | jq -r 'to_entries | map("\(.key)=\(.value)") | join(",")')
+  for pod in $(kubectl get pods -l "$selector" -n <ns> -o name); do
+    ready=$(kubectl get "$pod" -n <ns> -o jsonpath='{.status.containerStatuses[0].ready}')
+    [ "$ready" = "true" ] && continue
+    kubectl get events -n <ns> --field-selector involvedObject.name="${pod#pod/}",involvedObject.kind=Pod
+    kubectl logs "$pod" -n <ns> --tail=20 --all-containers --ignore-errors
+  done
+  exit "$rc"
+fi
+```
+
+- Only read-only `get` / `logs` calls; they run in the pipeline, not in Validate.
+- Print only unhealthy Pods and a short log tail (`--tail=20`) so healthy Pods do not
+  flood the job log; logs may contain sensitive data, so keep the tail short.
+- The rollout timeout and the "wait for rollout" switch are job inputs; default is
+  **wait = on**. Skipping the wait is a deliberate choice recorded in the Report.
+- Needs `jq` and `kubectl` in the deploy image (a combined kubectl image is fine).
+
 ## 6. CronJob
 
 ```yaml
@@ -149,6 +181,29 @@ spec:
 
 A CronJob that starts the whole Web API to call its own localhost endpoint is recorded
 as a Finding (prefer a worker / command entry point) but kept if it already exists.
+
+## 6.1 Graceful shutdown behind a gateway
+
+When traffic reaches the Pod through a gateway / load balancer that stops routing a
+terminating Pod only after a delay, add a `preStop` sleep (a few seconds) before the
+process stops accepting connections, and keep `terminationGracePeriodSeconds` larger
+than the sleep plus the host's shutdown timeout. Sidecars (metrics exporters) get a
+memory limit. Both are `INFERRED` generic defaults; an existing value always wins.
+
+## 6.2 Human and CI identities (RBAC)
+
+Mirror the existing tiers; do not invent new ones. A typical namespace-scoped set:
+
+| Role | Rules |
+|---|---|
+| readonly | `get/list/watch` on workloads |
+| deployment-editable | readonly + `patch/update` on `deployments` only |
+| admin | namespace-scoped `*` - humans who own the namespace, never the CI identity |
+
+The pipeline's identity (GitLab agent / kubeconfig) gets the narrowest tier that lets
+`apply` and `rollout status` work. Wildcard `*` roles bound to CI are a Finding.
+Cluster-wide reads (nodes, CRDs, a named namespace via `resourceNames`) are separate
+ClusterRoles.
 
 ## 7. Rollback
 

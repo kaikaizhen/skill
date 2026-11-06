@@ -197,6 +197,16 @@ state must be correct.**
   to production code, schema or deployment configuration.
 - Fault injection, concurrency stress and data-destruction tests only in an
   environment the user has said may be used that way.
+- **Never disguise the client when probing a running system.** Do not forge a
+  browser `User-Agent` on a CLI call, paste a browser's "copy as cURL" into a
+  terminal, run a headless browser against a site, or send headers that contradict
+  each other (a UA that disagrees with the client hints, an `Accept` that disagrees
+  with the URL being an API or a page). Bot protection reads exactly these as
+  spoofing, and the block is usually scoped to the **whole office IP**, not to you -
+  it also tends to return 200 with plausible-looking fake content rather than an
+  error, which costs hours of debugging a bug that does not exist. Use the real
+  client, or an API client the operator sanctions; a bypass credential comes from
+  the user, never from the agent (HARD RULE 3).
 - The report goes in that ticket's folder, `<workspace>/issue/<RepoName>/<Ticket>/`,
   created before the first file (`usage.md` -> Output Locations).
 - Mask personal data, cookies, tokens and connection secrets in the report; record

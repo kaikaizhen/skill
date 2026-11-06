@@ -15,6 +15,53 @@ principles: `delivery-strategy.md`. Build commands: the stack reference.
   the file already uses them).
 - Keep job order and comments; do not reformat untouched parts.
 
+### 1.1 Reading a shared component (`spec: inputs:`)
+
+Typical shape of a GitLab CI/CD component or template that owns build, package and
+deploy for many repositories. Recognise it so inputs are passed correctly:
+
+| Convention | Meaning for the consumer |
+|---|---|
+| `inputs:` `env`, `job_suffix`, `stage_suffix` | Job names are built from them (`deploy-<kind><suffix>-<env>`). Including the same component twice (two projects, two envs) needs distinct `env` / suffix values, or the job names collide |
+| `manual_deploy` (boolean) | Switches the deploy job to `when: manual`. Use it for every protected environment instead of editing rules |
+| `wait_for_rollout` (+ timeout) | Keep **on** for Kubernetes (§ `targets/kubernetes.md` 5.1) |
+| `before_*_script` / `after_*_script` | The sanctioned extension points. Use them instead of copying the component's script |
+| rules keyed on a variable (e.g. `$action =~ /build|package|deploy/`) | Pipeline behaviour is chosen by a variable on the pipeline (branch rules, schedule, web trigger). Set it in the consumer's `workflow:` / trigger, do not fork the component |
+| `dependencies: []` on deploy jobs | Deploy does not download build artifacts; it uses the image already in the registry (build once, promote many) |
+| Shared scripts fetched at job start (`git clone --branch <tag>`) | Version is a tag. Upgrading is a one-line input/tag change in the consumer, not a copy of the scripts |
+
+Review points for such a component (Findings, not fixes - the component belongs to
+another repository): the script repository is pinned to an immutable tag; the clone does
+not disable TLS verification; job images are pinned (not `latest`); registry mirrors are
+reached over TLS or an explicitly trusted internal path.
+
+### 1.2 Configuration repositories (manifests / proxy config, one folder per environment)
+
+A repository that only holds deployable configuration (nginx image, gateway routes,
+manifests) is delivered with the same component, one `include:` per environment/unit:
+
+- Each include has `rules:` with two entries: automatic on push/MR **with
+  `changes:` limited to that unit's folder** (so only the touched unit deploys), and a
+  manual `web` pipeline selected by `env` / `service` variables.
+- Declare those variables with `options:` and a description so the "Run pipeline" form
+  is a dropdown; the default for destructive scopes is not "all".
+- When every include is rule-gated, a pipeline can end up with no jobs and fail. Keep
+  a never-running placeholder job (`stage: .pre`, `rules: - when: never`) - a known
+  GitLab workaround, with the issue link in a comment.
+- Production includes pass `manual_deploy: true`; lower environments deploy
+  automatically. A `changes:` path must match the folder the include actually deploys
+  (copy-paste mismatches between unit and path are the common defect - check each).
+- Image tag for these pipelines: `<branch>-<short sha>`, never starting with `-`.
+
+### 1.3 Runner facts to record (do not provision)
+
+Record as `INFERRED` / Manual setup when found: Docker executor with `privileged`
+(DinD), `concurrent` limit, a self-signed registry CA mounted into the runner
+(`/etc/docker/certs.d`, CA bundle), a pull-through registry mirror, `extra_hosts`
+for the host gateway, and a scheduled `docker image prune`. These explain why the
+component's build jobs work; they are runner configuration, owned outside the
+repository being delivered.
+
 ## 2. New file layout
 
 ```yaml

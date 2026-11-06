@@ -57,16 +57,18 @@ REVIEW SCOPE  head: <branch/commit>  base: <branch/commit>  files: <n> (+i/-d)
 - `git fetch` only if the user asks: review what is local and say the base may be
   stale, rather than mutating the repository's remote state (`git-safety.md`).
 
-**No GitLab / GitHub API access.** This skill has no MR / PR API credential, so a
-merge request is reviewed through one of three local substitutes: the local branch
-comparison, a commit range, or the diff the user pastes. That is allowed - but
-**never describe it as having reviewed the merge request itself**. State which
-substitute was used and what it therefore cannot see: commits pushed after your
-local copy, the MR's description and discussion, its approval state and CI result,
-and any file outside the diff you were given. The call-path trace (§2.5) and the
-six default checks still run in full - a missing API is a scope caveat, never a
-reason to shrink the review to the diff's own lines.
+**MR / PR API access is optional - check, do not assume either way.** If the
+installation declares a forge CLI (`workspace/PROFILE.md` -> Organization-Specific
+Procedures), use it **read-only** to resolve the MR's real source and target branch
+and its file list, then read the content with local `git`; the Review Scope then says
+the range came from the MR, not from a guess. **Creating, approving, merging or
+commenting is still the user's** (HARD RULE 1).
 
+With no such access - or when it cannot reach the server - the MR is reviewed through
+one of three local substitutes: the local branch comparison, a commit range, or the
+diff the user pastes. That is allowed, but **never describe it as having reviewed the
+merge request itself**: state which substitute was used and what it cannot see -
+commits pushed after your local copy, the MR's description and discussion, its approval state and CI result, any file outside the diff you were given. Either way the call-path trace (§2.5) and the six default checks run in full - a missing API is a scope caveat, never a reason to shrink the review to the diff's own lines.
 ## 2. Diff first, then only the context the diff demands
 
 The MR diff is the review scope. Reading beyond it is allowed only to answer a

@@ -69,6 +69,31 @@ Docker + compose plugin on the host; `/opt/<app>/` owned by the deploy user; dep
 user in the `docker` group (note: equivalent to root on that host); registry pull
 login; `.env` and `secrets.env` created; CI variables from `ci/<provider>.md` §5.
 
+## 4.1 Stateful clusters on Compose (Elasticsearch-style) - review points
+
+When the repository already runs a stateful multi-node service in Compose:
+
+- A one-shot `setup` service creates CA / certs / passwords; the nodes use
+  `depends_on: { setup: { condition: service_healthy } }` with a file-exists
+  healthcheck on the setup service. Mirror it; do not re-order.
+- Version comes from `${STACK_VERSION}` in `.env`, and **plugin / dictionary versions
+  must match it exactly** (plugin zip name carries the version). A version bump is a
+  plugin bump.
+- Manual steps run inside containers after every recreate (plugin install, `docker cp`
+  of a dictionary, restart) are lost on `up -d`. Finding (Medium): bake them into a
+  custom image or a mounted volume, or at minimum list them in the Report as a
+  post-deploy runbook with the container names.
+- Heap `-Xms`=`-Xmx` and `mem_limit` follow `observability.md` §3; `ulimits.memlock`
+  unlimited with `bootstrap.memory_lock=true`.
+- Security flags: HTTP TLS off + transport TLS on is a recorded trade-off; a published
+  port with HTTP TLS off needs a network boundary stated.
+- Healthcheck can legitimately assert "missing authentication credentials" (the
+  secured endpoint answers 401) - it proves the node is up without needing a password.
+- Deploying by `scp` of compose + `.env` then a remote `docker compose up -d` is a
+  manual deployment: no pipeline, no recorded version, no rollback. Finding (Medium);
+  recommend the SSH deploy job above. `.env` with passwords is copied from a developer
+  machine - it must not be tracked (`secrets.md` §3.1).
+
 ## 5. Rollback
 
 ```bash

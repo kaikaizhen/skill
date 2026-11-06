@@ -37,6 +37,27 @@ another repository.
 | Shared CI component / template | inputs only (`ci/gitlab.md` §1, `ci/github-actions.md` §1) |
 | Cloud PaaS | the existing deploy step with the new artifact version; no new cloud resources |
 
+### 2.1 Cluster add-ons kept as per-component setup scripts
+
+Pattern: `<component>/<env>-server/<component>-setup.sh` + `values.yaml` (Helm) or
+plain manifests, one folder per cluster. They are applied by an operator once, not by
+CI. Treat them as **Manual setup** in the Report, never as pipeline jobs.
+
+| Add-on seen | What to check when extending |
+|---|---|
+| Argo Rollouts (+ Gateway API traffic-router plugin) | Release URL pinned to a version; plugin binary URL pinned; the plugin needs a ClusterRole to `get/list/update/patch` the route kinds it shifts; canary weights then live on the `HTTPRoute`. Rolling back = abort/undo the Rollout, not `kubectl rollout undo` |
+| cert-manager | Install manifest pinned; `cmctl check api` after install |
+| Secret replication (kubernetes-replicator) | Cross-namespace copies by annotation (`replicate-to`); a CA Secret created once and replicated to every namespace that needs it |
+| Vault via secrets-webhook (Helm) | `values.yaml` per environment holds only `VAULT_ADDR`, path and CA mount; auth mount per cluster (`secrets.md` §2.1) |
+| Operators (ECK, Postgres operator, Keycloak operator) | CRDs and operator installed from pinned versions; workloads are custom resources applied like manifests |
+| Storage (Longhorn) | replica count and backup target are explicit values; backup credentials by Secret name |
+| Ingress controller (Helm values) | see `edge-protection.md` §6 |
+| Metrics server | installed by Helm with a values file |
+
+Findings for add-on scripts: install from an unpinned URL or `latest`; `brew install`
+on a developer laptop as the only install path for a CLI the runbook needs; an add-on
+without its upgrade/rollback command written down.
+
 ## 3. Rollback
 
 Use the platform's own mechanism and document it: Azure / Jenkins - re-run the previous

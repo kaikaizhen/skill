@@ -21,6 +21,43 @@ goes to normal configuration (ConfigMap, env file, appsettings).
 | systemd | `EnvironmentFile=/etc/<app>/<app>.env` on the host, `root:root 0600` (readable by systemd, injected into the service) | the unit file referencing it |
 | Existing Vault / cloud secret manager | that store | whatever reference style the repository already uses |
 
+### 2.1 Vault already in use
+
+Extend, never introduce (`existing-platform.md`). Mirror the existing pattern:
+
+- One **policy + Kubernetes-auth role per application and namespace**
+  (`<auth-mount>/<namespace>/<app>`), bound to one ServiceAccount (`<app>-sa`) in one
+  namespace; least-privilege policy, short TTL. A new environment copies the nearest
+  role and changes the namespace.
+- Role and policy creation is an **operator / bootstrap task**, not a pipeline step.
+  List it under Manual setup with the names; do not run it.
+- `vault operator init` prints unseal keys and the initial root token. That output must
+  never go through CI logs, scripts that `echo` it, or tracked files; treat any script
+  that prints it as a Finding (High), and recommend revoking the root token after
+  bootstrap.
+- Passwords handed to `vault write ... password=` on a command line are logged by shell
+  history and process lists - prefer `password=-` / a file or stdin.
+
+### 2.2 Bootstrap secrets created by setup scripts
+
+Setup scripts may create secrets from files that live outside the repository
+(`kubectl create secret generic <name> --from-file=ca.crt=<path>`). That is acceptable
+as an operator step; the script holds the secret **name** and the source **path**, never
+a value. Seen patterns worth mirroring:
+
+- A CA certificate Secret created once and replicated to the namespaces that need it by
+  annotation (replicator), instead of copied by hand.
+- A Vault token-reviewer ServiceAccount bound to `system:auth-delegator`, with a
+  `kubernetes.io/service-account-token` Secret, used once to configure the Kubernetes
+  auth mount (`vault auth enable --path=<cluster> kubernetes`; `token_reviewer_jwt`,
+  host, CA read from the cluster at setup time). The long-lived token is a standing
+  credential: list it in Manual setup and as a Low Finding with the rotation owner.
+- Merging several `.env` files into one Vault KV entry (`vault kv put <path> K=V ...`,
+  later file wins on duplicate keys, comments and blank lines skipped). The script reads
+  values from developer-held files at run time; the files themselves must not be tracked
+  and the script must not echo the merged values (`vault kv get -format=table` prints
+  them - Finding Medium when run in CI).
+
 Never generate a Kubernetes `Secret` manifest with `data` / `stringData` values, and
 never base64 a value into a file - base64 is not encryption.
 
