@@ -214,6 +214,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Evidence conflict, demotion, correction, promotion, delta reporting - only when that situation occurs | `memory-operations.md` |
 | Mode B - phases, repository kind, memory seeding | `repository-onboarding.md` |
 | The task needs an organization-only tool, ticket system or companion knowledge source | `workspace/PROFILE.md` -> Organization-Specific Procedures |
+| **Background capability** - the operator's own knowledge base: consult before answering, propose durable knowledge to its review queue once stable. **Silently inactive without a token** | `rag-notes.md` |
 | Unsure whether to invoke, what the user is asked, where output goes | `usage.md` |
 | A worked end-to-end example is genuinely needed | `examples.md` |
 
@@ -243,8 +244,7 @@ Trust (who wins on disagreement)
 - Which repositories are onboarded, which domain lives where, and any
   organization-only tooling or companion source are in `workspace/PROFILE.md`.
   Entering a repository, read its `overview.md` first.
-- A domain split across several units has a hub file routing to exactly one of
-  them; enter at the hub rather than loading the family.
+- A domain split across several units has a hub file routing to exactly one of them; enter at the hub, not the family.
 - A companion knowledge source declared in the workspace is **candidate evidence**
   only - never an extra memory tier, and never enough on its own to set scope,
   carrier, root cause or a design.

@@ -8,6 +8,14 @@
 # ---------------------------------------------------------------------------
 enterprise-codebase-analysis/workspace/
 
+# Belt and braces: machine-local secrets never leave this machine, even if the
+# workspace rule above is ever relaxed. Values are DPAPI-encrypted; the directory
+# itself is never tracked.
+**/.secrets/
+!**/.secrets/.gitkeep
+*.secret
+
+
 # Per-ticket output never belongs in the engine repo either
 issue/
 temp/
