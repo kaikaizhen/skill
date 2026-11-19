@@ -62,6 +62,7 @@ Then write it down for a reader who has never seen the system:
 | `capability-reuse.md` | reusing a capability, claiming something is missing, or touching shared code (Gate 3) |
 | `duplicate-write-defence.md` | the same request can be processed twice, or a duplicate / half-written row was observed |
 | `table-design.md` | a table or column is created or changed |
+| `design-review-lens.md` | judging a requirement or a design draft before code: can the ticket be done as written against the external contract, where each piece of state lives, shared module vs caller responsibility, why two sound designs differ |
 | `code-review-checks.md` | reviewing a diff - the six mandatory check categories |
 | `encoded-values.md` | status codes, bit flags / masks, thresholds, limits, legacy codes |
 | `explanation-standard.md` | writing any reply or report - shape, tables, clarity |
