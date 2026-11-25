@@ -27,3 +27,6 @@ Thumbs.db
 *~
 .idea/
 .vscode/
+
+# netPath: machine-local CLI path and test-header mapping
+netPath/workspace/config.yaml

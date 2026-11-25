@@ -1,0 +1,13 @@
+# Copy to config.yaml (git-ignored) and fill in for this machine.
+
+# Path to the NetPath CLI. Fallbacks when empty: $NETPATH_BIN, then `netpath` on PATH.
+binary: ""
+
+# Optional: expected SHA256 of the binary (from dist/*.sha256). Empty = not checked.
+sha256: ""
+
+# Hosts that MUST be probed with test headers (e.g. a staging captcha-gate bypass).
+# file: Name=Value;Name=Value, kept under workspace/.secrets/ (git-ignored).
+test_headers: []
+#  - host_suffix: "-stg.example.com"
+#    file: ".secrets/stg-test-headers.txt"

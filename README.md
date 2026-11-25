@@ -20,6 +20,7 @@ This README is a map for people. The behaviour an agent follows lives in each sk
 | [harness-engineering](./harness-engineering/SKILL.md) | Builds **trustworthy upstream knowledge before coding starts**: source extraction -> requirements and open questions -> project context -> human-owned architecture decisions (ADRs). Every artifact must pass an independent evaluation gate | Starting a new project on a reliable footing, turning a spec / brief into validated requirements and context for a coding agent, running an architecture decision workflow | Writes knowledge artifacts (requirements, context, ADRs, evaluations); does not write application code |
 | [harness-engineering-fast](./harness-engineering-fast/SKILL.md) | Delivers a **small, verified task inside a hard time budget** (60-180 min, default 90) with one execution contract, minimum architecture, early implementation and reserved verification time | Timed coding challenges, take-home exercises, MVP spikes, prototypes, small bounded features - when no human may be available mid-task | Yes - code plus one execution contract |
 | [harness-engineering-rapid-hitl](./harness-engineering-rapid-hitl/SKILL.md) | Delivers a small task fast **with a live human in the loop**: understands just enough, asks only genuinely blocking questions, builds vertical slices, verifies with real evidence, re-understands as it learns | The same kind of 60-180 min work - including features inside an existing project - when someone can answer short questions during implementation | Yes - code plus one thin, mutable contract |
+| [netpath](./netPath/SKILL.md) | **Runs the local NetPath CLI once** against one URL and explains the network path from this machine: DNS, TCP peer, TLS, one HTTP HEAD, device clues and one ICMP route round, separating observed / suspected / unknown | "Which devices sit between this machine and that URL?", proxy / CDN / WAF questions, testing a staging URL from here | No - read-only; sends one bounded probe round. Never elevates, never supplements with tracert / curl |
 | [ssh-publish](./ssh-publish/SKILL.md) | **Executes** a deployment of a local project to the user's SSH-reachable Docker host (e.g. a NAS): local build, image transfer over SSH, compose up, Nginx config, backup-first update, health check, verified rollback | Explicit requests to publish or update a project **on the NAS** | Changes the remote host; Git is read-only |
 
 ## How to choose a skill
@@ -38,6 +39,9 @@ Actually PUBLISH a project to the NAS now
 New project: establish validated requirements, context and architecture decisions
 before anyone codes
   -> harness-engineering
+
+What sits between THIS machine and one URL (proxy / CDN / WAF / route)
+  -> netpath               (runs the NetPath CLI once; explains, never supplements)
 
 Small task, 60-180 minutes:
   a human can answer quick questions while you work -> harness-engineering-rapid-hitl
@@ -133,6 +137,7 @@ skill/
 ├── harness-engineering/
 ├── harness-engineering-fast/
 ├── harness-engineering-rapid-hitl/
+├── netPath/
 ├── ssh-publish/
 ├── .gitignore
 └── README.md
@@ -156,7 +161,8 @@ ln -s "<clone>/<skill-name>" ~/.claude/skills/<skill-name>
 
 Skills with a `workspace/` need it filled in from the committed example files
 (`enterprise-codebase-analysis/workspace/PROFILE.example.md`,
-`ssh-publish/workspace/deploy.example.yaml`) before first use.
+`ssh-publish/workspace/deploy.example.yaml`,
+`netPath/workspace/config.example.yaml`) before first use.
 
 ## Shared design principles
 
