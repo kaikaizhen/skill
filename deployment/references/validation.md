@@ -55,7 +55,7 @@ deployment, which the skill does not perform.
 | Kubernetes | `kubectl rollout status deployment/<name> -n <ns> --timeout=<t>`; non-zero fails the job |
 | Compose | container `running` (and `healthy` if a healthcheck is defined), then the smoke test |
 | systemd | `systemctl is-active <unit>`, then the smoke test with retries |
-| All runtime targets | **readiness**: health endpoint returns 200; **smoke test**: one cheap request that proves the app serves (`curl -fsS <url><health path>` minimum; a real read-only endpoint if the repository has an obvious one) |
+| All runtime targets | **readiness**: health endpoint returns 200; **smoke test**: one cheap request that proves the app serves (`curl -fsS <url><health path>` minimum; a real read-only endpoint if the repository has an obvious one). Against a site behind a bot gate, a `200` can be a decoy - see `edge-protection.md` §7 |
 
 ## 4. Reporting
 

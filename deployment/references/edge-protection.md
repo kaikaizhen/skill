@@ -125,7 +125,46 @@ replica count, log format with upstream/service names and trace id.
 - Management paths (`/_hc`, `/metrics`, admin) are not routed through the public
   gateway or are limited by `allow <CIDR>` (§4).
 
-## 7. What this reference does not do
+## 7. What the two detectors are, and what they mean for a pipeline
+
+Two different mechanisms; a site may run either, both, or neither, **per environment**
+(record which in the Assessment - never assume prod and staging match).
+
+| | captcha gate (decision service) | CrowdSec (detector) |
+|---|---|---|
+| Sees | each request: headers, TLS fingerprint, client hints, behaviour | access logs, after the fact |
+| Reaction | decoy (`403` -> fake `200`), harder / more frequent challenge | IP ban decision, answered as `403`, expires |
+| Counts | per request, plus a trust score | per IP, **accumulated**, decays with time |
+| Typical trip | mismatching headers (UA vs client hints, `Accept` vs endpoint kind), headless fingerprint, missing front-end companion calls | the same signals counted over time: a missing companion request, a wrong referer, a non-canonical URL (e.g. no trailing `/`) |
+
+Consequences for delivery work (CI jobs, smoke tests, post-deploy checks, load tests):
+
+- **The ban unit is the source IP, and CI runners and test environments usually share
+  one.** One job that trips a rule blocks every job, every developer and every
+  monitor behind that address, for the ban duration. Treat a pipeline's egress IP as
+  shared infrastructure.
+- **A decoy looks healthy.** Status `200`, valid shape, wrong content (a handful of
+  test records, inflated body size). A smoke test that only checks `200` or a JSON
+  shape passes against a flagged client. Assert something only real data can satisfy
+  (a known id, a count above a floor), and when it fails, rule out "flagged" - the
+  access-log honeypot field of §2 - before debugging the application.
+- **Never disguise the client to get past a gate.** No forged browser User-Agent, no
+  pasted "copy as cURL", no headless browser against a protected site: contradictory
+  headers are exactly what the gate scores. Use a plain client with an honest
+  User-Agent, the real client for that API, or a health path that bypasses the gate.
+- **Prefer the sanctioned bypass.** Where the operators provide a test-bypass header,
+  it is a secret: held in the CI variable store (`secrets.md`), masked, sent only to
+  the environment it was issued for, never printed, committed or written to a report.
+  Where none exists, probe a path allowlisted before the decision call (§2) or run the
+  check from inside the cluster against the Service, not through the edge.
+- **Keep canonical URLs in checks.** An accumulated rule can count a wrong referer or a
+  missing trailing slash; copy the URL form the front end uses.
+- **Load tests need the owner's approval first** (a window, an allowlist or a bypass);
+  otherwise the test measures the decoy, and may ban the office.
+- A pipeline step that **adds** an allowlist entry, a bypass or a scenario change is an
+  edge change: out of v1 scope (§8) - report it as a recommendation.
+
+## 8. What this reference does not do
 
 No new detection rules, WAF policies, block lists or honeypot endpoints are generated.
 Recommendations are written in the Report; Extend is limited to copying an existing
