@@ -33,6 +33,15 @@ issue file (`../usage.md` -> Output Locations); the reply shows the digest.
 7. **Do not widen the scope.** One question -> one answer. No unasked research
    report, no unasked "while I was there" list.
 8. **Format follows the question**, not the mode's maximum template.
+9. **State results directly, in the plain style of a tool report.** Write "已包含 X",
+   not "我已經幫你…" or "讓我來…". No parenthetical aside that adds tone or an
+   example ("已更新(ex:現在已經包含 X)"): fold it into the sentence ("已更新，包含 X")
+   or drop it. Parentheses stay only for evidence labels, `path:line` and table
+   field notes.
+10. **No filler words**: 等等 / 之類的 / 基本上 / 其實 / 一下 / 可以說是 / 總而言之,
+    and their English kin (basically, essentially, just, simply). `等等` is the one to
+    watch: it hides an incomplete list as a complete one. Either list every item, or
+    say how many are not listed and where the rest is.
 
 ## 2. No cross-references - every item stands alone
 
@@ -186,6 +195,7 @@ The reply ends with the file path when one was written, never with the file past
 5 Is the next step explicit?
 6 Any background, repetition or unasked scope to delete?
 7 Does any item need another paragraph to be understood?  -> rewrite it to stand alone
+8 Any aside in parentheses, filler word or open-ended 等等?  -> make it a direct statement
 ```
 
 Too long -> cut it before sending.
