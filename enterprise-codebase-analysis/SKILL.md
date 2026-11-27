@@ -177,6 +177,11 @@ the six checks a review always runs: `thinking/code-review-checks.md`.
     Approval Gate #1. It never assumes a branch name when resolving its diff range,
     never escalates a pre-existing defect into a blocker for this change, and never
     states an unverifiable suspicion as a defect - ❓ 待確認 instead.
+17. **SECRETS ARE NEVER ECHOED OR STORED** - passwords, tokens, keys, connection
+    strings and the like are never repeated, written to a file, memory, Postman
+    environment or commit, or shown in output. Check the host for `gopass` / `pass`
+    first and recommend one if absent; when the user pastes a secret, show the notice
+    and do not repeat the value. Procedure: `secret-handling.md`.
 
 Each rule's procedure is in the reference the routing table below names.
 
@@ -214,6 +219,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Context budget is tight, context is being trimmed / summarised, the model was switched mid-ticket, or the question is about provider / endpoint / retrieval / decision seams | `runtime-contract.md` |
 | Any git step beyond `status` / `diff` / `log`, or a branch / commit message | `git-safety.md` |
 | Any DB access, and always before any write | `database-safety.md` |
+| A task needs a password / token / key / connection string, or the user pastes one - secret-store check (gopass / pass), never echo, the paste notice | `secret-handling.md` |
 | **Writing** new reusable knowledge - admitted at all? which layer, which unit, update / create / split / reject | `memory-admission.md` (sufficient on its own) |
 | **Reading / locating** memory - trust model, layout, when to re-verify | `memory-system.md` |
 | Evidence conflict, demotion, correction, promotion, delta reporting - only when that situation occurs | `memory-operations.md` |
