@@ -41,6 +41,7 @@ Ask              who decides (planner / front-end / APP / DBA / owner) + the que
 If unanswered    the default I will implement, and whether work can proceed
 ```
 
+- **Questions to the planner** use the organization's fixed format (`workspace/PROFILE.md` -> Organization-Specific Procedures -> planner question format), not the row above.
 - **Only confirmed doubts.** A suspicion is traced to evidence or dropped. No generic
   caveats, no restating the ticket, no list of lines that were fine - one line "ticket
   matches current state" when nothing failed.
