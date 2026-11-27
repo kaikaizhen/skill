@@ -32,6 +32,10 @@ columns, secret locations, business-rule files) live in the workspace, indexed f
   state different rules for the same field - and the service must still guard even
   when the validator exists, because the validator is not the only caller's path
   (P1: the outer layer is not a security boundary).
+- **Environment chosen by matching a host-name substring** (`name.Contains("test")`)
+  is fragile: a fragment can appear inside an unrelated production host name and
+  silently route it to the wrong target. Read the environment from configuration;
+  where a match must stay, compare the whole name or a configured list.
 - Was existing behaviour changed unintentionally? That is Gate 5's table
   (`regression-validator.md`), referenced here, not repeated.
 

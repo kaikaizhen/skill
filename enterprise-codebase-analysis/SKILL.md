@@ -216,7 +216,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Any git step beyond `status` / `diff` / `log`, or a branch / commit message | `git-safety.md` |
 | Any DB access, and always before any write | `database-safety.md` |
 | A task needs a password / token / key / connection string, or the user pastes one - secret-store check (gopass / pass), never echo, the paste notice | `secret-handling.md` |
-| **Creating or editing anything in `SKILL.md` / `references/` / `templates/` / `scripts/`**, moving content between engine and workspace, adding a principle or example - organization fact or neutral knowledge? run the scan | `boundary.md` + `scripts/boundary-scan.sh` |
+| **Creating or editing anything in `SKILL.md` / `references/` / `templates/` / `scripts/`**, moving content between engine and workspace, adding a principle or example - organization fact or neutral knowledge? run the scan; also a general principle found in the workspace -> promote | `boundary.md` + `scripts/boundary-scan.sh` |
 | **Writing** new reusable knowledge - admitted at all? which layer, which unit, update / create / split / reject | `memory-admission.md` (sufficient on its own) |
 | **Reading / locating** memory - trust model, layout, when to re-verify | `memory-system.md` |
 | Evidence conflict, demotion, correction, promotion, delta reporting - only when that situation occurs | `memory-operations.md` |

@@ -127,6 +127,11 @@ kubectl rollout status deployment/<name> -n <ns> --timeout=300s
 Non-zero exit fails the job. CronJobs and Deployments in the same unit get the same
 image tag in the same job. CI never deletes Pods or Deployments to force an update.
 
+A process reads its environment variables once, at start. Re-applying a ConfigMap or
+Secret does not change running Pods: roll them (`kubectl rollout restart`, or a
+changed pod template) and confirm with `rollout status`. When judging live behaviour,
+check when the Pod started against when the configuration changed.
+
 ### 5.1 Rollout failure diagnostics
 
 A bare `rollout status` timeout tells the developer nothing. Wrap it so a failed
