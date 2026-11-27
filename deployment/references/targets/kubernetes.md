@@ -222,4 +222,7 @@ kubectl rollout status deployment/<name> -n <ns>
 Preferred: re-run the previous good commit's deploy job, so manifests, ConfigMap and
 image return together. `rollout undo` reverts only the Pod template - note that a
 ConfigMap changed in the same deploy is not reverted by it. CronJobs have no undo:
-re-apply with the previous image tag.
+re-apply with the previous image tag. To go back to a known build rather than a
+revision number, find the revision whose image tag carries that build's hash and
+`rollout undo --to-revision=<n>` it; print the target image first (`--dry-run=client`)
+and ask for confirmation before the real undo.

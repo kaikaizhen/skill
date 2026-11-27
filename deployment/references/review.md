@@ -67,7 +67,7 @@ Check only what applies to the repository's actual setup.
   removal condition. Low. Image prune must exclude images kept for rollback (label such
   as `keep=true`).
 
-**Observability stack**: see `observability.md` §4.
+**Observability stack**: see `observability.md` §6 (findings), §4 (alerting, deploy verification).
 
 **Configuration repositories**
 - Environment folders hold near-identical copies of the same file (drift risk).

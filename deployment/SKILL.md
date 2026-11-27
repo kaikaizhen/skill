@@ -178,7 +178,8 @@ Each status cites evidence labelled `CONFIRMED` (a file / config / user statemen
 | Target VM-Docker Compose | `references/targets/docker-compose.md` |
 | Target VM-systemd | `references/targets/systemd.md` |
 | Azure Pipelines, Jenkins, Helm, GitOps, cloud PaaS, shared CI components already in use | `references/existing-platform.md` |
-| Repository already holds logging / metrics / tracing config (Filebeat, Logstash, Elasticsearch, Prometheus, Grafana, Tempo, Alloy) | `references/observability.md` |
+| Repository already holds logging / metrics / tracing config (Filebeat, Logstash, Elasticsearch, Prometheus, Grafana, Tempo, Alloy); alerting; which signals verify a deploy; CI-runner / host monitoring | `references/observability.md` |
+| Delivery changes state a redeploy cannot restore (Secrets, database, volumes) - backup, retention, restore path (assess / review / extend by copying) | `references/backup-restore.md` |
 | Repository already holds nginx / Gateway / Ingress / bot-detection / captcha-gate / honeypot configuration (assess, review, extend by copying) | `references/edge-protection.md` |
 
 `examples.md` shows the behaviour on typical repositories. It illustrates the rules;

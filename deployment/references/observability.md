@@ -43,7 +43,51 @@ size and replica count (a storage class with replica count 1 plus a backup targe
 conscious trade-off to state); Logstash memory limit. All are `Unknown` unless the
 repository or user states them (`decision-rules.md` §9).
 
-## 4. Findings
+## 4. Metrics, alerting and deploy verification
+
+- **Scrape model**: Prometheus scrapes targets on an interval (15 s is typical);
+  exporters cover what the app cannot (host: node exporter, run with the host root
+  mounted **read-only** and `--path.rootfs`; data stores: a Redis / database exporter
+  per instance, with an `alias` label relabelled to `instance` so graphs name the
+  service, not an address). A new exporter is a scrape job copied from a sibling.
+- **Receivers**: a remote-write receiver (`web.enable-remote-write-receiver`) lets a
+  collector push metrics; exemplar storage links a metric point to a trace id. Both
+  are explicit server arguments - check they are on before relying on them.
+- **Retention**: set both time and size (`retention`, `retentionSize`); the volume must
+  hold the size value with headroom (§3).
+- **Alerting is a separate layer.** A stack with Prometheus and Grafana but no rule
+  files, no alert manager and no notification channel **detects nothing by itself**;
+  someone has to be looking. State which of the three exists. Minimum worth proposing
+  (never creating, `existing-platform.md` §1): target down, Pod restart count rising,
+  error-rate ratio, p95 latency, disk / volume nearly full, certificate expiry,
+  backup age (`backup-restore.md`).
+- **Deploy verification reads these signals**, in this order, after `rollout status`:
+  Pod restarts and readiness -> 5xx ratio vs the previous hour -> latency -> one
+  traced request end to end (the trace id from the access log opens the trace) ->
+  the log store for new error signatures. Record which of them the repository can
+  actually answer; a missing one is a gap in the verification, not a pass.
+- **Dashboards and notification setup are state**: dashboards created by clicking
+  live only in Grafana's volume (back it up, `backup-restore.md`) unless provisioned
+  from files; SMTP / webhook channels are config values, credentials by Secret.
+  Open edit rights for viewers (`viewers_can_edit`) let anyone change a shared panel.
+
+## 5. Host and build-runner monitoring
+
+CI runners and plain VM targets are not covered by Pod metrics. Seen patterns:
+
+- Host metrics via a node exporter container with host network / PID namespace and a
+  read-only root mount; pin the image tag (not `latest`).
+- **Event log to the system journal** with a tag (a small service that logs container
+  start / die events of CI job containers; query with `journalctl -t <tag> --since`).
+  It turns "the runner was slow at 14:00" into a timeline.
+- **Periodic resource guard** (cron, minutes): log a one-line sample (RSS, mount count,
+  unit count, running job ids) to the journal; above a limit, **dump diagnostic state
+  first** (status, maps, stack samples, container list) and only then take the
+  corrective action. Calls that can hang (`systemctl`, `docker`) run under `timeout`.
+- Every such host script states the symptom that justified it and the condition for
+  removing it (`review.md`, host workarounds); otherwise it outlives its cause.
+
+## 6. Findings
 
 | Severity | Finding |
 |---|---|
@@ -56,6 +100,10 @@ repository or user states them (`decision-rules.md` §9).
 | Low | Host-name -> IP pinned with `hostAliases` instead of DNS (breaks silently when the IP moves) |
 | Low | Collector / DaemonSet runs as root with `hostPath` mounts - acceptable for log collection; record why |
 | Low | Index fallback receives unclassified logs with no alert on volume |
+| Medium | Metrics and dashboards exist but **no alert rules / alert manager / channel**: failures are found only by a person looking |
+| Medium | Deploy verification names a signal (latency, 5xx) the stack cannot answer |
+| Low | Exporter / monitoring image on `latest`; dashboards click-made and not backed up or provisioned |
+| Low | Host guard script with no stated symptom or removal condition |
 
 Also list what is good (explicit retention, memory limits on sidecars, correlation ids in
 the log format).
