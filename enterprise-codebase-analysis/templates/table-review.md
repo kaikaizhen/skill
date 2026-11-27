@@ -85,14 +85,14 @@
 ```sql
 CREATE TABLE [dbo].[<TableName>] (
     [sNo]      INT IDENTITY(1,1) NOT NULL,
-    [talentNo] INT NOT NULL,                -- 會員編號
+    [customerNo] INT NOT NULL,              -- 客戶編號
     [feedback] TINYINT NOT NULL,            -- 1:適合, 0:不適合
     [dateIn]   DATETIME NOT NULL CONSTRAINT [DF_<TableName>_dateIn] DEFAULT (GETDATE()),
     CONSTRAINT [PK_<TableName>_sNo] PRIMARY KEY NONCLUSTERED ([sNo] ASC)
 );
 -- 索引
-CREATE UNIQUE CLUSTERED INDEX [UX_<TableName>_talentNo_eNo]
-    ON [dbo].[<TableName>] ([talentNo] ASC, [eNo] ASC);
+CREATE UNIQUE CLUSTERED INDEX [UX_<TableName>_customerNo_eNo]
+    ON [dbo].[<TableName>] ([customerNo] ASC, [eNo] ASC);
 ```
 
 <!-- 改表時改用下列形式，刪除上面的 CREATE 區塊： -->
@@ -130,7 +130,7 @@ ALTER TABLE [dbo].[<TableName>] ADD [<col>] INT NULL;   -- <業務意義>
 
 | # | 待確認問題 | 目前狀況 | 建議方向 | 確認對象 |
 |---:|---|---|---|---|
-| 1 | | <已查證到的事實> | <具體候選方案與差異，不得只寫「請確認」> | 企劃 / 後端 / 架構組 / DBA / APP 團隊 |
+| 1 | | <已查證到的事實> | <具體候選方案與差異，不得只寫「請確認」> | PM / 後端 / 架構 / DBA / client 團隊 |
 
 是否阻礙實作或上線：
 <!-- 逐項說明：阻礙實作 / 阻礙上線 / 不阻礙。重大未確認事項必須指出。 -->

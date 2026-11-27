@@ -21,8 +21,8 @@ company"** - only the repositories and functions actually affected by this chang
 
 When the requirement touches how data is **identified, updated, deleted, copied or
 restructured**, establish what each affected repository already does for the *same
-business function* - **before** designing any new mechanism. Removing `rowguid` is
-not a cue to invent a composite GUID, a hash, an index or a new identity column; it
+business function* - **before** designing any new mechanism. Removing an
+identifier column is not a cue to invent a composite GUID, a hash, an index or a new identity column; it
 is a cue to go and read how the live projects already save that data.
 
 Tell these strategies apart, and keep **read**, **write** and **externally exposed**
@@ -67,7 +67,7 @@ If an affected project already does *"delete every detail row of this parent, th
 insert the complete set again"*, that flow is a **first-class candidate**:
 
 ```
-today      find one row by rowguid -> single UPDATE / DELETE
+today      find one row by its GUID column -> single UPDATE / DELETE
 existing   read the whole set -> change it -> DELETE the old set -> INSERT the new set
 ```
 

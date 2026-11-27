@@ -163,7 +163,7 @@ NONE / APPROVED (<date, operation>)
 Memory Delta:
 NONE
 <!-- or targeted edits:
-UPDATE   repositories/ServiceA/routing.md   (ShardedDb shard section)
+UPDATE   repositories/ServiceA/routing.md   (PartitionedDb shard section)
 PROMOTE  shared/shard-routing.md             INFERRED -> CONFIRMED
 -->
 
@@ -180,7 +180,7 @@ Proposed Commit Message:
 ```
 <format from the repository convention; fallback below>
 [type] [ticket] short title or main change
-Bundle: <planning ticket>
+<optional footer line(s) per the organization convention>
 ```
 
 Commit Convention Source:

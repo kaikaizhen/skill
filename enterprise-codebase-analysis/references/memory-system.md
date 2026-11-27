@@ -41,7 +41,7 @@ memory/
 **This is the central rule.** Memory means *"this is what was observed before"*,
 never *"this is still true now"*.
 
-- Memory says `PrimaryDb -> ShardedDb`? That does not let you ignore a direct ShardedDb write
+- Memory says `PrimaryDb -> PartitionedDb`? That does not let you ignore a direct PartitionedDb write
   in the code you are reading right now.
 - Memory says `ServiceB uses Redis`? That does not mean this flow touches Redis.
 
@@ -66,8 +66,8 @@ depends on that behaviour.
 
 | Memory | Ticket | Re-verify? |
 |---|---|---|
-| `userId % 10 -> ShardedDb` | Rename a DTO field | No - does not affect this change |
-| `userId % 10 -> ShardedDb` | "ShardedDb reads the wrong shard" | Yes - it is the core logic |
+| `userId % 10 -> PartitionedDb` | Rename a DTO field | No - does not affect this change |
+| `userId % 10 -> PartitionedDb` | "PartitionedDb reads the wrong shard" | Yes - it is the core logic |
 | `ServiceB uses Redis` | Change a validation message | No |
 | `ServiceB uses Redis` | "Stale data after update" | Yes - cache is a candidate cause |
 
@@ -157,12 +157,12 @@ trust current evidence
     -> update memory locally (targeted edit)
 ```
 
-Memory: `CONFIRMED - ServiceA writes talent data to PrimaryDb.`
-Current code: `FooRepository` writes ShardedDb directly. Correct update:
+Memory: `CONFIRMED - ServiceA writes customer data to PrimaryDb.`
+Current code: `FooRepository` writes PartitionedDb directly. Correct update:
 
 ```
-General Flow:  PrimaryDb -> Sync -> ShardedDb
-Exception:     FooRepository writes ShardedDb directly.
+General Flow:  PrimaryDb -> Sync -> PartitionedDb
+Exception:     FooRepository writes PartitionedDb directly.
 ```
 
 Wrong update: ignoring `FooRepository` because it does not match the memory.
@@ -229,7 +229,7 @@ unless evidence proves the behaviour is shared.
 ```
 
 Forbidden cross-repository inference: repo A has a pattern -> assume repo B has
-it; repo A uses Redis -> assume repo B does; repo A writes ShardedDb directly ->
+it; repo A uses Redis -> assume repo B does; repo A writes PartitionedDb directly ->
 assume every system does. Promotion criteria: `memory-operations.md` §8.
 
 Never store credentials, hosts or connection-string values in memory. Key

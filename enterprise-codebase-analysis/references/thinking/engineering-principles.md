@@ -237,7 +237,7 @@ Before a retrospective adds anything to this skill:
 
 1. **Classify it.** Does it belong to P1-P5, an existing gate, or an existing hard
    rule? If so, sharpen that text - do not add a new rule or a new gate.
-2. **Generalise it.** A finding is written as the engineering concept, never as the
+2. **Generalise it** (`../boundary.md`: classify, neutralise, scan). A finding is written as the engineering concept, never as the
    ticket's method, endpoint, table or class name. Ticket specifics belong in
    `<workspace>/issue/<Repo>/`, or as a worked example in `../examples.md`.
 3. **Consolidate.** If two or more existing rules turn out to be the same concept,

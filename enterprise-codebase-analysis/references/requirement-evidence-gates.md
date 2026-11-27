@@ -57,7 +57,7 @@ Requirement Classification and Scope Definition (workflow step 6.5).
 **Requirement source order** (the scope authority, HARD RULE 12):
 
 ```
-1. Ticket / UA explicit requirement and acceptance criteria
+1. Ticket / task-card explicit requirement and acceptance criteria
 2. The baseline the ticket explicitly designates ("比照 X", "跟 X 一樣")
 3. That baseline's CURRENT ACTIVE behaviour  (Gate 2 confirms which carrier that is)
 4. Reference documents - HackMD, old specs, historical design docs

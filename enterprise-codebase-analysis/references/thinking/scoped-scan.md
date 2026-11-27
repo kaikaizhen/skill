@@ -107,11 +107,10 @@ lands in one of the domains below, this is not optional guidance: it becomes
 any downstream trace. A shared Service / DAO / table between two carriers proves
 a dependency and never that they are the same flow.
 
-**Known multiple-carrier domains (confirmed 2026-09-21, this company's five
-scanned repositories)**: 履歷、企業通知、收藏職缺、職缺搜尋/推薦、應徵/主投、面試/邀約、
-E-chat. The current carrier list per domain lives in
-`workspace/memory/shared/domain-entrypoints.md` - read it before assuming a domain has
-only one implementation. For a ticket in one of these domains:
+**Multiple-carrier domains**: the organization's list of domains that have more than
+one live implementation, and the carriers per domain, live in the workspace
+(`workspace/references/thinking/company-supplements.md` §1) - read it before assuming
+a domain has only one implementation. For a ticket in one of those domains:
 
 1. Use the ticket's surface / endpoint / stack trace to identify the actual
    carrier being hit - not "which repo has a similarly-named Service".

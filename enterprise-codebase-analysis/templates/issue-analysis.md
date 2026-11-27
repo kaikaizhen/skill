@@ -25,7 +25,7 @@
 
 ## Repository Scope
 
-<!-- e.g. ServiceA  |  Frontend -> ServiceB -> ServiceA -> ShardedDb -->
+<!-- e.g. ServiceA  |  Frontend -> ServiceB -> ServiceA -> PartitionedDb -->
 
 ## Issue Goal
 

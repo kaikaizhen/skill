@@ -67,7 +67,7 @@ Explaining the *mechanics* is still correct and useful:
 4 = binary 0100 -> tests whether bit 2 is set
 ```
 
-Inventing `EmailVerified` / `ResumeUploaded` / `MobileVerified` without repository
+Inventing `EmailVerified` / `DocumentUploaded` / `MobileVerified` without repository
 evidence is forbidden, and so is renaming such a value in a proposal
 (`Recommendation: do not rename until the meaning is confirmed`).
 

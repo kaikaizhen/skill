@@ -1,7 +1,7 @@
 # Ticket Fit Check - does the ticket match today's reality, before any code
 
 Runs **unasked, at the start of every Mode A ticket** (inside Gate 1, before the
-plan), and again whenever new facts arrive mid-work. The ticket (UA card, issue,
+plan), and again whenever new facts arrive mid-work. The ticket (task card, issue,
 acceptance criteria, planner copy) is the scope authority, but it is written from
 memory of how the system behaves. The user must not be the one who discovers, halfway
 through, that a line of the ticket contradicts the code, another line, another

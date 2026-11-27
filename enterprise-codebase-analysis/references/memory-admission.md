@@ -73,6 +73,9 @@ pattern file as if settled.
 
 ### 3 - Scope
 
+Engine vs workspace is decided first, by `boundary.md`; this gate only places a fact
+*inside* the workspace.
+
 | Layer | Admit only if | Counter-example |
 |---|---|---|
 | `global/` | genuinely cross-repository **and** stable **and** company-level **and** used by several domains | "this is important" - importance is not the test |

@@ -21,10 +21,10 @@ Invoke when a ticket / issue arrives against an existing company repository:
 Example phrasings that should trigger it:
 
 ```
-T12345 talent profile returns not found for some ids
-幫我看這張單 T12800
+T1001 customer profile returns not found for some ids
+幫我看這張單 T1002
 Add an endpoint to ServiceA that returns ...
-ServiceB resume update is slow, please investigate
+ServiceB profile update is slow, please investigate
 ```
 
 ## Mode B - Repository Onboarding
@@ -223,10 +223,10 @@ analyses, plans, SQL, screenshots and review notes becomes unusable within weeks
     temp/                                   scratch notes
 ```
 
-- `<Ticket>` is the id exactly as the tracking system writes it (`7398`, `T12876`) -
+- `<Ticket>` is the id exactly as the tracking system writes it (`1042`, `T1001`) -
   no prefix invented, no description appended to the folder name.
 - **No ticket id yet?** Ask for one. If the user says there is none, use a short
-  kebab-case topic folder (`resume-status-fn/`) and say in the reply that it should
+  kebab-case topic folder (`profile-status-fn/`) and say in the reply that it should
   be renamed once a ticket exists.
 - Material that outlives any single ticket - a schema reference, a field table, a
   shared function's notes - goes in `<RepoName>/_reference/`, not in a ticket folder

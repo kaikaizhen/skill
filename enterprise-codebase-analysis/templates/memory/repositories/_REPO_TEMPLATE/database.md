@@ -25,7 +25,7 @@ YYYY-MM-DD
 ## Write Path
 
 Fact:
-<!-- e.g. PrimaryDb -> Sync -> ShardedDb -->
+<!-- e.g. PrimaryDb -> Sync -> PartitionedDb -->
 
 Status:
 
@@ -33,7 +33,7 @@ Evidence:
 -
 
 Exceptions:
-- <e.g. FooLogRepository writes ShardedDb directly - Evidence: path/to/file.cs:NN>
+- <e.g. FooLogRepository writes PartitionedDb directly - Evidence: path/to/file.cs:NN>
 
 ## Read Path
 

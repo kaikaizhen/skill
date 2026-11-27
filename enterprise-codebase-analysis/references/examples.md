@@ -6,7 +6,7 @@ Four tickets at four depths. Note how much analysis each one does **not** do.
 
 ## Example 1 - Bug Ticket (single repository, scoped deep scan)
 
-> **T12345** - Talent profile page sometimes returns "not found" for valid
+> **T1001** - Customer profile page sometimes returns "not found" for valid
 > userId values ending in 5-9.
 
 ### What the skill does
@@ -16,7 +16,7 @@ Repository Scope: ServiceA        Type: Bug
 ```
 
 **Memory loaded** (advisory only): `ServiceA/database.md`, `routing.md`,
-`shared/shard-routing.md`. Memory says ShardedDb routing is `INFERRED: userId last
+`shared/partition-routing.md`. Memory says PartitionedDb routing is `INFERRED: userId last
 digit may determine shard`.
 
 **Blocking check:** `STATUS: READY FOR ANALYSIS`. Redis topology is `UNKNOWN` in
@@ -25,31 +25,31 @@ memory - this flow does not touch Redis, so it is not investigated.
 **Scope:** the read path only. Write path, sync mechanism and OpenSearch are
 explicitly out of scope.
 
-**Scoped scan:** controller -> `TalentService` -> `TalentRepository` ->
+**Scoped scan:** controller -> `CustomerService` -> `CustomerRepository` ->
 `DbConnectionFactory`. Four files. Stop - that is enough.
 
 **Existing flow** (no Mermaid needed - single service, single read):
 
 ```
-GET /talent/{userId} -> TalentController -> TalentService -> TalentRepository
-  -> DbConnectionFactory.GetShardedDbConnection(shard) -> ShardedDb{n}
+GET /customer/{userId} -> CustomerController -> CustomerService -> CustomerRepository
+  -> DbConnectionFactory.GetPartitionedDbConnection(shard) -> PartitionedDb{n}
 ```
 **Root cause:**
 
 ```
 Root Cause: CONFIRMED
-DbConnectionFactory maps shards 0-9 onto server SQL10 only.
-Shards 5-9 live on SQL11, so those lookups hit an empty shard.
+DbConnectionFactory maps shards 0-9 onto server DB-A only.
+Shards 5-9 live on DB-B, so those lookups hit an empty shard.
 Evidence: ServiceA/src/Data/DbConnectionFactory.cs:48
 ```
 
-**Solution:** map shard -> server as `shard <= 4 ? SQL10 : SQL11`, using the
+**Solution:** map shard -> server as `shard <= 4 ? DB-A : DB-B`, using the
 existing connection-string configuration. No refactor of the factory.
 
 ```
 function GetShardConnection(userId):
     shard  = userId % 10
-    server = shard <= 4 ? SQL10 : SQL11
+    server = shard <= 4 ? DB-A : DB-B
     return connections[server][shard]
 ```
 
@@ -64,51 +64,50 @@ is a mapping correction inside it, not a new parameter for callers to pass.
 
 **Approval Gate #1** -> `AWAITING USER APPROVAL TO IMPLEMENT`. After approval:
 branch by convention priority (no repository convention or history here ->
-fallback `feature/T12345`), one-file change, build, tests, diff.
+fallback `feature/T1001`), one-file change, build, tests, diff.
 
-**Memory Delta:** `UPDATE repositories/ServiceA/routing.md` - ShardedDb shard section
-`INFERRED -> CONFIRMED` (`userId % 10`), plus the server split SQL10 = 0-4 /
-SQL11 = 5-9 with Evidence + Last Verified. No promotion to `shared/` yet: the
+**Memory Delta:** `UPDATE repositories/ServiceA/routing.md` - PartitionedDb shard section
+`INFERRED -> CONFIRMED` (`userId % 10`), plus the server split DB-A = 0-4 /
+DB-B = 5-9 with Evidence + Last Verified. No promotion to `shared/` yet: the
 evidence exists in one repository only.
 
 **Approval Gate #2** -> `AWAITING USER APPROVAL TO LOCAL COMMIT`.
 ```
-[fix] [T12345] ShardedDb shard 5-9 routes to SQL11
-Bundle: T12000
+[fix] [T1001] PartitionedDb shard 5-9 routes to DB-B
 ```
 
 ### What the skill deliberately did NOT do
 
-Read the sync mechanism; scan ServiceB; document Redis; diagram the full talent
+Read the sync mechanism; scan ServiceB; document Redis; diagram the full customer
 architecture; refactor `DbConnectionFactory`.
 
 ---
 
 ## Example 2 - Feature Ticket (minimal integration scan)
 
-> **T12800** - Add an endpoint returning a talent's last 10 viewed companies.
+> **T1002** - Add an endpoint returning a customer's last 10 viewed stores.
 
 ```
 Repository Scope: ServiceA        Type: Feature
 ```
 
 **Memory loaded:** `repositories/ServiceA/patterns.md`, `database.md`. Memory
-notes `empViewedLog` may shard on the **last two digits** - `INFERRED`, so it
+notes `viewedLog` may shard on the **last two digits** - `INFERRED`, so it
 must be verified in code, not assumed.
 
-**Blocking check:** the ticket does not say whether "viewed" means company page
-views or job views. Two readings produce different tables -> `STATUS: BLOCKED`,
+**Blocking check:** the ticket does not say whether "viewed" means store page
+views or product views. Two readings produce different tables -> `STATUS: BLOCKED`,
 one question asked, then resumed once answered.
 
 **Minimal integration scan** - only what is needed to integrate:
 
 ```
-Auth:            existing [Authorize] talent token filter
-API convention:  /api/talent/{userId}/...  returning ApiResult<T>
-Similar feature: TalentAppliedJobsController  <- copy this shape
-Service pattern: ITalentViewService + DI registration in Startup
+Auth:            existing [Authorize] customer token filter
+API convention:  /api/customer/{userId}/...  returning ApiResult<T>
+Similar feature: CustomerOrdersController  <- copy this shape
+Service pattern: ICustomerViewService + DI registration in Startup
 Repo pattern:    Dapper + DbConnectionFactory
-DB:              empViewedLog{nn} - verified in code: userId % 100
+DB:              viewedLog{nn} - verified in code: userId % 100
 Logging:         ILogger injected, existing error-handling middleware
 ```
 
@@ -123,18 +122,18 @@ existing factory. `SUFFICIENT AS IS` - the new method calls them. No new helper,
 second way to compute a table name would have been the regression.
 
 ```
-function GetRecentViewedCompanies(userId, take = 10):
-    table = "empViewedLog" + pad2(userId % 100)
+function GetRecentViewedStores(userId, take = 10):
+    table = "viewedLog" + pad2(userId % 100)
     rows  = repository.queryTop(table, userId, take)
-    return map(rows -> CompanyViewDto)
+    return map(rows -> StoreViewDto)
 ```
 
 **Plan:** controller, service, repository method, DI registration, unit test for
 table-name selection, integration test for the endpoint. **Test plan:** happy
-path; userId ending `07` (two-digit padding boundary); talent with no history
+path; userId ending `07` (two-digit padding boundary); customer with no history
 (empty list, not 404); unauthorised request.
 
-**Memory Delta:** `UPDATE repositories/ServiceA/database.md` - empViewedLog
+**Memory Delta:** `UPDATE repositories/ServiceA/database.md` - viewedLog
 sharding `INFERRED -> CONFIRMED` (`userId % 100`, zero padded). Evidence:
 `ServiceA/src/Data/ViewedLogRepository.cs:31`.
 
@@ -142,30 +141,30 @@ sharding `INFERRED -> CONFIRMED` (`userId % 100`, zero padded). Evidence:
 
 ## Example 3 - Cross-Repository Ticket
 
-> **T13100** - Resume updates made on the site do not appear in search results
+> **T1003** - Profile updates made on the site do not appear in search results
 > for up to an hour.
 
 ```
-Repository Scope: Frontend -> ServiceB -> ServiceA -> PrimaryDb -> ShardedDb -> OpenSearch
+Repository Scope: Frontend -> ServiceB -> ServiceA -> PrimaryDb -> PartitionedDb -> OpenSearch
 Type: Bug
 ```
 **Memory loaded - only the repos in this flow:** `Frontend/overview.md`,
-`ServiceB/overview.md`, `ServiceA/database.md`, `shared/shard-routing.md`,
+`ServiceB/overview.md`, `ServiceA/database.md`, `shared/partition-routing.md`,
 `shared/search/opensearch-query.md`, `global/database.md`. Not loaded: `ServiceD`,
 `shared/redis.md`, or any other repository - they are not in this flow.
 
 **This ticket earns a diagram** (multiple services, sync, search index):
 ```mermaid
 flowchart LR
-    UI[Vue] --> API[ServiceB]
-    API --> SVC[ServiceA Resume Service]
+    UI[Frontend] --> API[ServiceB]
+    API --> SVC[ServiceA Profile Service]
     SVC --> PrimaryDb[(PrimaryDb)]
-    PrimaryDb -->|Sync| ShardedDb[(ShardedDb3)]
-    ShardedDb -->|Index| OS[(OpenSearch)]
+    PrimaryDb -->|Sync| PartitionedDb[(PartitionedDb3)]
+    PartitionedDb -->|Index| OS[(OpenSearch)]
 ```
 
 **Where memory and evidence disagree:** memory says `CONFIRMED - ServiceA writes
-talent data to PrimaryDb`, but the code shows `ResumeSummaryRepository` writing ShardedDb
+customer data to PrimaryDb`, but the code shows `ProfileSummaryRepository` writing PartitionedDb
 directly for one field. **Current evidence wins**; the exception is recorded, the
 general rule kept.
 
@@ -173,10 +172,10 @@ general rule kept.
 
 ```
 Root Cause: CANDIDATE
-The resume write reaches PrimaryDb correctly, but the OpenSearch indexer subscribes
-to ShardedDb, so the visible delay equals the PrimaryDb -> ShardedDb sync interval.
-Evidence: indexer config points at ShardedDb; sync job interval is scheduled.
-What would confirm it: compare row timestamps in PrimaryDb vs ShardedDb3 for one userId
+The profile write reaches PrimaryDb correctly, but the OpenSearch indexer subscribes
+to PartitionedDb, so the visible delay equals the PrimaryDb -> PartitionedDb sync interval.
+Evidence: indexer config points at PartitionedDb; sync job interval is scheduled.
+What would confirm it: compare row timestamps in PrimaryDb vs PartitionedDb3 for one userId
 (read-only SELECT - no mutation needed).
 ```
 
@@ -190,10 +189,10 @@ needs the user's decision (Gate 3, `EXTENSION NEEDED`), not a unilateral edit.
 
 ```
 CORRECT repositories/ServiceA/database.md
-        Fact: most standard talent writes use PrimaryDb as source before ShardedDb sync.
-        Exceptions: ResumeSummaryRepository writes ShardedDb directly for <field>.
+        Fact: most standard customer writes use PrimaryDb as source before PartitionedDb sync.
+        Exceptions: ProfileSummaryRepository writes PartitionedDb directly for <field>.
 ADD     shared/search/opensearch-query.md
-        Indexer subscribes to ShardedDb, not PrimaryDb.  Status: CONFIRMED.
+        Indexer subscribes to PartitionedDb, not PrimaryDb.  Status: CONFIRMED.
 + append to corrections.md
 ```
 
@@ -204,7 +203,7 @@ entry keeps both behaviours rather than picking one.
 
 ## Example 4 - Re-pointing a page at an existing backend flow (Gate 5)
 
-> **T14200** - Page B's contact-change entry must be replaced by a verification
+> **T1004** - Page B's contact-change entry must be replaced by a verification
 > modal, reusing the verification endpoints Page A already calls.
 
 A UI ticket whose diff is mostly a view file - exactly the shape that hides

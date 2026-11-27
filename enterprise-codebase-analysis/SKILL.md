@@ -27,24 +27,22 @@ repositories, architecture, business flow, current implementation, cross-reposit
 relationships or memory. Routing: `~/.claude/CLAUDE.md`; detail: `usage.md`.
 
 **Engine / workspace boundary.** `SKILL.md`, `references/` and `templates/` are the
-reusable engine and never depend on one organization's facts; inside it,
-`references/thinking/` holds the transferable analysis principles (start at
-`thinking/README.md` when a problem is new) and `references/` this skill's procedure. Everything specific to
-this organization - architecture, repositories, domains, business rules,
-infrastructure, corrections, unknowns, organization-only tooling - lives under
-`workspace/`, replaced wholesale when the engine is pointed at another organization.
-Start at `workspace/PROFILE.md` when you need that map; skip it when routing already
-names the target.
+reusable engine and never depend on one organization's facts (classify before writing:
+`boundary.md`); `references/thinking/`
+holds the transferable analysis principles (start at `thinking/README.md` when a
+problem is new), `references/` this skill's procedure. Everything specific to this
+organization - architecture, repositories, domains, business rules, infrastructure,
+corrections, unknowns, tooling - lives under `workspace/`, replaced wholesale for
+another organization. Start at `workspace/PROFILE.md` for that map; skip it when
+routing already names the target.
 
-**Runtime / model boundary.** A model-agnostic methodology, not a model
-integration: it never selects, names, configures or calls a model - the host's own
-picker is the mechanism, and no provider framework is built beside it. No provider,
-model, endpoint, host, port or token count appears in `SKILL.md` / `references/` /
+**Runtime / model boundary.** A model-agnostic methodology: it never selects, names,
+configures or calls a model - the host's picker is the mechanism. No provider, model,
+endpoint, host, port or token count appears in `SKILL.md` / `references/` /
 `templates/` (HARD RULE 15); the engine assumes only a declared `context_limit` and
-`capabilities`, and derives its context budget from those. Switching model
-mid-ticket replaces the reasoner and nothing else - state, evidence, diff and passed
-gates survive. Detail: `runtime-contract.md`; declared runtime:
-`workspace/references/runtime.yaml`.
+`capabilities`. Switching model mid-ticket replaces the reasoner and nothing else -
+state, evidence, diff and passed gates survive. Detail: `runtime-contract.md`;
+declared runtime: `workspace/references/runtime.yaml`.
 
 **Repository-local rules win** - a repository's own `CLAUDE.md`, `AGENTS.md` or
 `.claude/skills/*` outranks this skill on what it defines (branch naming, commit
@@ -94,14 +92,12 @@ govern **presentation only** - they never shorten a scan, skip a gate, drop an
 evidence label or an approval line. Detail and per-task table shapes:
 `thinking/explanation-standard.md`.
 
-- **Conclusion first** - line one answers the question, then cause -> concrete fix -> next step. No narrative before it.
-- **Size follows the question** - 1-3 sentences for a simple one; a review or analysis shows its 3-5 most important items, full detail only on request. Never widen an asked question into a research report.
-- **Tables first, not tables always** - status (✅ ❌ ❓), review findings (嚴重度 🔴 🟡 🟢 · 驗證 ✅ ❓ · 新舊 - three axes never merged), test plans and troubleshooting use `thinking/explanation-standard.md` §4's shapes; a short answer stays prose.
-- **Concrete** - name the API, method, mechanism or `path:line`, never "improve the validation".
-- **Plans are rows, not reasoning** - | 需求 | 目標 | 修改位置 | 修改方式 | 可安全執行 |, no "because ..., therefore ..." prose; anything unconfirmed tells the user exactly what to run or open (command / SQL / file -> key).
+- **Conclusion first** - line one answers the question, then cause -> concrete fix -> next step. Size follows the question: 1-3 sentences for a simple one; a review shows its 3-5 most important items. Never widen it into a research report.
+- **Direct and concrete** - state results plainly (no filler, no aside in parentheses, no open-ended 等等); name the API, method or `path:line`, never "improve the validation".
+- **Tables first, not tables always** - status (✅ ❌ ❓), review findings (嚴重度 🔴 🟡 🟢 · 驗證 ✅ ❓ · 新舊 - three axes never merged), plans (| 需求 | 目標 | 修改位置 | 修改方式 | 可安全執行 |, rows not reasoning), test plans and troubleshooting use `thinking/explanation-standard.md` §4's shapes; a short answer stays prose. Anything unconfirmed tells the user exactly what to run or open.
 - **Every item stands alone** - no "see C-02 / finding #3 / Gate 5 row"; each row states its own problem, cause and fix.
 - **Reply is the digest, the file is the record** - templates and gate blocks go to the local issue / review file; the reply carries what the user must understand and decide, the file path, and any required `AWAITING ...` line.
-- **No chasing** - one short gloss per project-specific term on first use, every action names its actor and a value its provenance, only where the reader would otherwise get stuck.
+- **No chasing** - one short gloss per project-specific term on first use, every action names its actor, a value its provenance.
 
 ## Evidence & Scope Invariants
 
@@ -111,7 +107,7 @@ evidence label or an approval line. Detail and per-task table shapes:
 - Scope this issue first, at a depth proportional to it, and stop scanning the moment you can implement safely. `Unknown != Blocking`.
 - **Negative evidence**: "I did not find it" is not "it is not there". `CONFIRMED MISSING` needs the active carrier, the capability owner and the authoritative mutation path all confirmed; short of that it is `NOT OBSERVED IN TRACED PATH` (Gate 3).
 - Use what exists before writing anything new; before touching code with more than one caller, prove in writing that no existing seam reaches the need (Gate 3). **Understand the existing design before deciding a new one is needed**, and never move a new concept into a field that means something else - same data type is not same meaning (Gate 7, `thinking/consistency-gate.md`).
-- **Ticket fit, unasked** - at the start of every Mode A ticket compare the ticket / UA card with current code, its own lines, other screens / clients and its copy; raise each confirmed doubt as an owner-addressed question with a default, before planning (`thinking/ticket-fit-check.md`). The user is never the detector.
+- **Ticket fit, unasked** - at the start of every Mode A ticket compare the ticket / task card with current code, its own lines, other screens / clients and its copy; raise each confirmed doubt as an owner-addressed question with a default, before planning (`thinking/ticket-fit-check.md`). The user is never the detector.
 - Same business domain is not the same execution path; a shared Service / DAO / table proves a dependency, not a shared flow (Gate 2).
 - "No `[Attribute]` anywhere" is not "unused" - global filters, startup wiring, DI and middleware are live registration paths.
 - An analysis states **one** version of the truth; superseded conclusions are deleted, not left beside the newer one (Gate 4).
@@ -195,7 +191,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Load when | Reference |
 |---|---|
 | **The problem is unfamiliar**, or which principle applies is unclear - the diagnostic order (what is true -> how deep -> the real path -> what it risks -> does it fit what exists -> what it would break) and which principle fires when. A symptom met before can be located faster in `problem-map.md`, whose **absence of a row means nothing** | `thinking/README.md` |
-| **Every Mode A ticket, at the start** - does the ticket / UA card match today's code, itself, other screens and clients, and its copy? Undefined cases, missing values, contradictions, wording problems raised as questions with an owner, unasked | `thinking/ticket-fit-check.md` |
+| **Every Mode A ticket, at the start** - does the ticket / task card match today's code, itself, other screens and clients, and its copy? Undefined cases, missing values, contradictions, wording problems raised as questions with an owner, unasked | `thinking/ticket-fit-check.md` |
 | **Gate 1** Requirement Resolution (every ticket) · **Gate 2** Active Carrier (page / "比照 X" / multi-carrier) · **Gate 4** Final Consistency (before Approval #1) | `requirement-evidence-gates.md` |
 | **Gate 3** Capability Ownership - reuse, a MISSING claim, or any new method / parameter / abstraction / shared-code change | `thinking/capability-reuse.md` |
 | **Gate 5** Contract Preservation - any change to an existing flow; runs TWICE | `thinking/regression-validator.md` |
@@ -220,6 +216,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Any git step beyond `status` / `diff` / `log`, or a branch / commit message | `git-safety.md` |
 | Any DB access, and always before any write | `database-safety.md` |
 | A task needs a password / token / key / connection string, or the user pastes one - secret-store check (gopass / pass), never echo, the paste notice | `secret-handling.md` |
+| **Creating or editing anything in `SKILL.md` / `references/` / `templates/` / `scripts/`**, moving content between engine and workspace, adding a principle or example - organization fact or neutral knowledge? run the scan | `boundary.md` + `scripts/boundary-scan.sh` |
 | **Writing** new reusable knowledge - admitted at all? which layer, which unit, update / create / split / reject | `memory-admission.md` (sufficient on its own) |
 | **Reading / locating** memory - trust model, layout, when to re-verify | `memory-system.md` |
 | Evidence conflict, demotion, correction, promotion, delta reporting - only when that situation occurs | `memory-operations.md` |
@@ -239,23 +236,15 @@ Trust (who wins on disagreement)
    > repository CONFIRMED > shared CONFIRMED > global CONFIRMED > inferred > unknown
 ```
 
-- Memory is navigation and historical knowledge; **current evidence is
-  authoritative for current behaviour**. Load the ticket's repository folder plus
-  only the `shared/` + `global/` entries it touches - never every repository's.
+- Memory is navigation; **current evidence is authoritative for current behaviour**. Load the ticket's repository folder plus only the `shared/` + `global/` entries it touches - never every repository's.
 - Trust levels are `CONFIRMED` `INFERRED` `UNKNOWN` `OUTDATED` `CONFLICTING` - these five only. "grep found nothing" is not one of them.
-- Trusted as navigation **without re-verifying every fact**; spot-check one only
-  when it affects this change's correctness, current evidence contradicts it, it
-  looks stale, or the ticket depends on it.
+- Trusted as navigation **without re-verifying every fact**; spot-check one only when it affects this change's correctness, evidence contradicts it, it looks stale, or the ticket depends on it.
 - **Do not automatically persist task findings** - `Memory Delta: NONE` is a normal
   result. Before writing, run the admission gate (`memory-admission.md`):
   reusability -> evidence -> scope -> owner -> duplication -> cohesion. Update the
   canonical owner where one exists; create a unit only for a clear independent
   retrieval trigger. One canonical owner per fact - reference, never copy.
   Non-blocking gaps -> `workspace/memory/unknowns.md`, `Blocking Now: NO`.
-- Which repositories are onboarded, which domain lives where, and any
-  organization-only tooling or companion source are in `workspace/PROFILE.md`.
-  Entering a repository, read its `overview.md` first.
+- Onboarded repositories, which domain lives where, and organization-only tooling or companion sources are in `workspace/PROFILE.md`. Entering a repository, read its `overview.md` first.
 - A domain split across several units has a hub file routing to exactly one of them; enter at the hub, not the family.
-- A companion knowledge source declared in the workspace is **candidate evidence**
-  only - never an extra memory tier, and never enough on its own to set scope,
-  carrier, root cause or a design.
+- A companion knowledge source declared in the workspace is **candidate evidence** only - never an extra memory tier, never enough alone to set scope, carrier, root cause or a design.

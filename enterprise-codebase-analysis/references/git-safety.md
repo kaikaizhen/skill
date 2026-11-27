@@ -120,7 +120,7 @@ in memory. See "Repository Convention Files" below for the parts that stay forbi
 Example with no repository convention and no usable history:
 
 ```
-git checkout -b feature/T12345
+git checkout -b feature/T1001
 ```
 
 Never work directly on `develop`, `main` or `master`.
@@ -147,19 +147,19 @@ Fallback format:
 
 ```
 [type] [ticket] short title or main change
-Bundle: <planning ticket>
+<optional footer line(s) per the organization convention>
 ```
 
 Example:
 
 ```
-[fix] [T12345] talent shard selection uses userId last digit
-Bundle: T12000
+[fix] [T1001] customer shard selection uses userId last digit
 ```
 
 `type` follows the organization's vocabulary (`fix`, `feat`, `refactor`, `perf`,
-`migration`, ...). Omit the `Bundle:` line only when the ticket has no planning
-ticket.
+`migration`, ...). The footer line (for example a parent / planning ticket) and its
+rules are organization facts: see `workspace/PROFILE.md` -> Organization-Specific
+Procedures (`workspace/references/commit-format.md`).
 
 ---
 

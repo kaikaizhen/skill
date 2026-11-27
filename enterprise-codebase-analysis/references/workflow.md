@@ -43,7 +43,7 @@ never a loose file directly under `<Repo>/` (`usage.md` -> Output Locations).
 Never create `.company-skill/` or touch `.gitignore` / `.git/info/exclude`.
 
 ```
-Repository Scope: ServiceA          |  Frontend -> ServiceB -> ServiceA -> ShardedDb
+Repository Scope: ServiceA          |  Frontend -> ServiceB -> ServiceA -> PartitionedDb
 ```
 A first guess; step 3 may confirm, narrow or replace it. Load only this flow's
 repositories and only the `shared/` + `global/` entries it touches. When the

@@ -109,6 +109,7 @@ Thinking Candidate: NONE | <the reusable principle, one sentence>
    adding a near-duplicate, and cite instead of copying;
 3. it must have a firing trigger, listed in the table above and routed from
    `../../SKILL.md`;
-4. it must be organization-neutral and stack-neutral in wording;
+4. it must be organization-neutral and stack-neutral in wording - classify with
+   `../boundary.md` and run `scripts/boundary-scan.sh` before it lands;
 5. it must stay inside the 250-line budget (`engineering-principles.md` §5);
 6. where a real case motivated it, generalise the lesson and leave the case out.

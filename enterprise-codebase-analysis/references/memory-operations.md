@@ -19,7 +19,7 @@ Only genuinely company-level concepts belong in `global/`. Promotion keeps the
 evidence that justified it:
 
 ```
-## ShardedDb Routing
+## PartitionedDb Routing
 Status: CONFIRMED
 Scope:  SHARED
 Promoted From: repositories/ServiceA/routing.md, repositories/ServiceB/routing.md
@@ -59,17 +59,17 @@ A whole-file rewrite is allowed only if the file itself is corrupted.
 Targeted edit - before:
 
 ```
-## ShardedDb Routing
+## PartitionedDb Routing
 Status: INFERRED
-userId last digit may determine ShardedDb.
+userId last digit may determine PartitionedDb.
 ```
 
 After (every other section unchanged):
 
 ```
-## ShardedDb Routing
+## PartitionedDb Routing
 Status: CONFIRMED
-userId % 10 determines the ShardedDb shard.
+userId % 10 determines the PartitionedDb shard.
 Evidence: ServiceA/src/.../DbConnectionFactory.cs
 Last Verified: 2026-09-15
 ```
@@ -132,13 +132,13 @@ to `<skill>/workspace/memory/corrections.md`:
 Status: CURRENT
 Superseded by: -
 Current Rule Location: workspace/memory/repositories/ServiceA/database.md (Write Path)
-Repository: ServiceA          Issue: T12345
+Repository: ServiceA          Issue: T1001
 
 Previous Understanding (OUTDATED - do not apply):
-All talent writes go to PrimaryDb.
+All customer writes go to PrimaryDb.
 
 New Understanding:
-FooLogRepository is an exception and writes ShardedDb directly.
+FooLogRepository is an exception and writes PartitionedDb directly.
 
 Evidence: ServiceA/src/.../FooLogRepository.cs
 Impact:   Read-after-write for FooLog data does not depend on sync latency.
@@ -148,8 +148,8 @@ And in the memory file itself, keep the general rule with the exception attached
 rather than replacing it:
 
 ```
-Fact:       Most standard talent writes use PrimaryDb as the source before ShardedDb sync.
-Exceptions: - FooLogRepository writes ShardedDb directly.
+Fact:       Most standard customer writes use PrimaryDb as the source before PartitionedDb sync.
+Exceptions: - FooLogRepository writes PartitionedDb directly.
 Status:     CONFIRMED
 ```
 
@@ -175,8 +175,8 @@ one with the other and do not force a single rule:
 ```
 shared/shard-routing.md            PrimaryDb commonly acts as the source. CONFIRMED
                                    (general), see repository exceptions.
-repositories/ServiceA/database.md PrimaryDb -> Sync -> ShardedDb.          CONFIRMED
-repositories/ServiceC/database.md direct ShardedDb write for Foo.      CONFIRMED
+repositories/ServiceA/database.md PrimaryDb -> Sync -> PartitionedDb.          CONFIRMED
+repositories/ServiceC/database.md direct PartitionedDb write for Foo.      CONFIRMED
 ```
 
 If the conflict cannot be resolved with available evidence, mark the shared entry

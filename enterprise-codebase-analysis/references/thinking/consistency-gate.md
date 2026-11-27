@@ -35,7 +35,7 @@ just to a method signature (`capability-reuse.md`, P5 in `engineering-principles
 
 When the requirement touches how data is **identified, updated, deleted, copied or
 restructured**, first establish what each affected repository already does for the
-*same business function*. Removing `rowguid` is not a cue to invent a composite GUID,
+*same business function*. Removing an identifier column is not a cue to invent a composite GUID,
 a hash, an index or a new identity column - it is a cue to read how the live projects
 already save that data. Where a project already does *delete the whole set, then
 insert it again*, that flow is a first-class candidate and is evaluated **before** any
