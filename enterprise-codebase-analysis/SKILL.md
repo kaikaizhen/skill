@@ -111,6 +111,7 @@ evidence label or an approval line. Detail and per-task table shapes:
 - Scope this issue first, at a depth proportional to it, and stop scanning the moment you can implement safely. `Unknown != Blocking`.
 - **Negative evidence**: "I did not find it" is not "it is not there". `CONFIRMED MISSING` needs the active carrier, the capability owner and the authoritative mutation path all confirmed; short of that it is `NOT OBSERVED IN TRACED PATH` (Gate 3).
 - Use what exists before writing anything new; before touching code with more than one caller, prove in writing that no existing seam reaches the need (Gate 3). **Understand the existing design before deciding a new one is needed**, and never move a new concept into a field that means something else - same data type is not same meaning (Gate 7, `thinking/consistency-gate.md`).
+- **Ticket fit, unasked** - at the start of every Mode A ticket compare the ticket / UA card with current code, its own lines, other screens / clients and its copy; raise each confirmed doubt as an owner-addressed question with a default, before planning (`thinking/ticket-fit-check.md`). The user is never the detector.
 - Same business domain is not the same execution path; a shared Service / DAO / table proves a dependency, not a shared flow (Gate 2).
 - "No `[Attribute]` anywhere" is not "unused" - global filters, startup wiring, DI and middleware are live registration paths.
 - An analysis states **one** version of the truth; superseded conclusions are deleted, not left beside the newer one (Gate 4).
@@ -128,6 +129,7 @@ the six checks a review always runs: `thinking/code-review-checks.md`.
 - **Backward compatibility** - compare behaviour per data population (new record, old member, historical / imported data, existing caller, partial update). A rule tightened with no requirement behind it is forbidden (HARD RULE 12); a needed break is proposed with a migration or grace path, never done silently.
 - **Boundaries** - `null`, empty, whitespace, format, extremes, overflow; a date against the range its type *and* its column allow.
 - **One rule, one condition** - the same business rule must not disagree between frontend, backend, DB, preview and status calculation without a requirement.
+- **Trunk comparison, unasked** - after editing or porting a page, diff the trunk's ids / handlers / visibility classes / validation keys against the current file and report only what was *lost* (`thinking/ui-visibility-and-port.md` §0). The user is never the detector.
 - **Verification honesty** - every test claim is `EXECUTED AND PASSING`, `STATIC REVIEW ONLY` or `NOT VERIFIED`; never the first without the command.
 
 ## HARD RULES (never weakened, never overridden)
@@ -188,6 +190,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | Load when | Reference |
 |---|---|
 | **The problem is unfamiliar**, or which principle applies is unclear - the diagnostic order (what is true -> how deep -> the real path -> what it risks -> does it fit what exists -> what it would break) and which principle fires when. A symptom met before can be located faster in `problem-map.md`, whose **absence of a row means nothing** | `thinking/README.md` |
+| **Every Mode A ticket, at the start** - does the ticket / UA card match today's code, itself, other screens and clients, and its copy? Undefined cases, missing values, contradictions, wording problems raised as questions with an owner, unasked | `thinking/ticket-fit-check.md` |
 | **Gate 1** Requirement Resolution (every ticket) · **Gate 2** Active Carrier (page / "比照 X" / multi-carrier) · **Gate 4** Final Consistency (before Approval #1) | `requirement-evidence-gates.md` |
 | **Gate 3** Capability Ownership - reuse, a MISSING claim, or any new method / parameter / abstraction / shared-code change | `thinking/capability-reuse.md` |
 | **Gate 5** Contract Preservation - any change to an existing flow; runs TWICE | `thinking/regression-validator.md` |
@@ -197,6 +200,7 @@ condition. Proportionality decides a gate's *length*, never whether it runs, and
 | The change must stop the same request being processed twice, or a duplicate / half-written row was observed - layered lock + idempotent write + transaction, where to place the guard, how to verify under real concurrency | `thinking/duplicate-write-defence.md` |
 | **Gate 7** Codebase Consistency - before the solution: existing implementation first, semantic integrity, identifier lifecycle, cross-layer meaning, solution comparison; verdict feeds the Approval Recommendation | `thinking/consistency-gate.md` |
 | Choosing analysis depth - the L1 / L2 / L3 tier, outward search order, early exit, escalation triggers, evidence labels, cost control | `thinking/risk-tiers.md` |
+| A change touches a **server-rendered page with client-side show / hide** - porting UI / logic onto a different base ("比照 X", "邏輯照舊、UI 照新"), adding or moving a form field, restyling controls, a page with several entry paths (normal / redirect / post-back) | `thinking/ui-visibility-and-port.md` |
 | **Gate 6** Self-Review - every Mode A implementation, after Gate 5 run 2 - and the write-time quality rules used from analysis onward | `thinking/code-quality-gates.md` |
 | The user asks for a **review** of an existing MR / branch / diff / commit range (Mode R) - procedure, then the six checks every review runs by default | `code-review.md` + `thinking/code-review-checks.md` |
 | Mode A starts - step order, both approval gates | `workflow.md` |

@@ -55,6 +55,8 @@ Then write it down for a reader who has never seen the system:
 | `risk-tiers.md` | choosing depth; deciding whether to widen or stop; labelling evidence; escalating mid-analysis |
 | `scoped-scan.md` | deciding what to read; a search found nothing; "is this attribute / handler / caller really unused?" |
 | `engineering-principles.md` | P1 server-side authority · P2 contract parity · P3 blast radius · P4 state safety · P5 existing capability first - the risk lens behind everything else |
+| `ticket-fit-check.md` | the start of every Mode A ticket: ticket vs current state, its own lines, other screens / clients, copy; confirmed doubts become owner-addressed questions |
+| `ui-visibility-and-port.md` | a page field that may never show: visibility matrix per entry path, a base that replaced the show / hide mechanism, "controlled by a backend parameter", cross-file calls that silently no-op, "logic identical, UI follows the base" ports, scripted edits to views |
 | `code-quality-gates.md` | writing or judging a diff: the seven dimensions, and Gate 6 self-review |
 | `consistency-gate.md` | before proposing a change: existing implementation first, semantic integrity, identifier lifecycle, cross-layer meaning, solution comparison (Gate 7) |
 | `data-strategy.md` | an identifier / update / delete / copy / restructure strategy is in question; whole-collection replacement; is a new identity mechanism justified |

@@ -89,7 +89,13 @@ reference document. A behaviour the baseline lacks does not become a blocker -
 only a level-1 requirement creates a gap. Reference/memory extras go in as
 `FOLLOW-UP`, non-blocking, or are left out.
 
-**Stop condition:** every level-1 requirement has a row with a classification.
+**Ticket fit check (unasked, part of Gate 1).** Alongside the table, test each
+level-1 line against current code, the other lines, other screens / clients and the
+copy, and raise every **confirmed** doubt as a question with an owner - before the
+plan, not after the user spots it. Procedure and row format: `thinking/ticket-fit-check.md`.
+
+**Stop condition:** every level-1 requirement has a row with a classification, and
+every confirmed doubt is either asked (with a default) or recorded as `ticket matches current state`.
 
 ---
 

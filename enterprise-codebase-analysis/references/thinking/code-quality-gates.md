@@ -64,6 +64,7 @@ An implemented method proves nothing until its caller is named.
   condition that can no longer be false, an error path that now returns the wrong
   failure, and **a return value nobody reads** (a validation result assigned and
   discarded is the classic one - it compiles, and validates nothing).
+- On a page with client-side show / hide, "reachable" also means **visible**: name the code that opens each touched element on every entry path (`ui-visibility-and-port.md`).
 - Finally compare behaviour to the requirement, not implementation to the plan:
   "the method exists and is correct" is not "the ticket's behaviour happens".
 
